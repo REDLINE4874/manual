@@ -425,7 +425,7 @@ function setSidebarCollapsed(collapsed) {
   const sb = document.getElementById("sidebar");
   sb.classList.toggle("collapsed", collapsed);
   const toggleBtn = document.getElementById("sidebarToggle");
-  if (toggleBtn) toggleBtn.textContent = collapsed ? "☰" : "";
+  if (toggleBtn) toggleBtn.textContent = collapsed ? "☰" : "☰";
   try {
     localStorage.setItem("sidebarCollapsed", collapsed ? "1" : "0");
   } catch (e) {}
