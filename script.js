@@ -445,6 +445,12 @@ document
   try {
     saved = localStorage.getItem("sidebarCollapsed");
   } catch (e) {}
+
+  if (saved === null) {
+    setSidebarCollapsed(true);
+    return;
+  }
+
   if (saved === "1") setSidebarCollapsed(true);
 })();
 
