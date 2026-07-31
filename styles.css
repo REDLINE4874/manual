@@ -34,6 +34,10 @@ img{ max-width:100%; display:block; }
 button{ font-family:inherit; cursor:pointer; }
 a{ color:inherit; }
 
+.script-text strong{
+    color:#D6003F;
+    font-weight:700;
+}
 /* ---------- App shell ---------- */
 .app{
   display:flex;
