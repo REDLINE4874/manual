@@ -235,7 +235,7 @@ const EXTERNAL_LINKS = [
   { name: "Agendas", url: "https://agendas-rab6.onrender.com", icon: "📅" },
   {
     name: "Vicidial",
-    url: "https://centrosmed.directo.com/agc/vicidial.php",
+    url: "https://aliadosmed.directo.com/agc/vicidial.php",
     icon: "☎️",
   },
   {
