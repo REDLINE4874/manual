@@ -516,8 +516,8 @@ a{ color:inherit; }
   border-radius:8px;
   padding:8px 11px;
 }
-.stat .label{ font-size:18px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:600; margin-bottom:3px; }
-.stat .value{ font-family:var(--font-display); font-size:15px; font-weight:800; line-height:1.25; color:#D6003F; }
+.stat .label{ font-size:17px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:800; margin-bottom:3px; }
+.stat .value{ font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.25; color:#D6003F; }
 .stat.accent{ border-color:transparent; }
 
 .extra-block{
