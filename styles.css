@@ -219,6 +219,40 @@ a{ color:inherit; }
 .sidebar.collapsed .nav-item .nav-label{ display:none; }
 .sidebar.collapsed .nav-calc{ padding-left:0; padding-right:0; }
 
+/* ---------- Tooltip flotante de iconos (sidebar colapsado) ---------- */
+.sidebar-tooltip{
+  position:fixed;
+  transform:translateY(-50%);
+  background:#062430;
+  color:#fff;
+  padding:9px 16px;
+  border-radius:8px;
+  font-size:13.5px;
+  font-weight:600;
+  letter-spacing:0.1px;
+  white-space:nowrap;
+  box-shadow:0 10px 28px rgba(6,36,48,0.35);
+  z-index:3000;
+  pointer-events:none;
+  animation:sidebarTooltipIn .14s ease;
+}
+.sidebar-tooltip::before{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:-5px;
+  transform:translateY(-50%);
+  width:10px;
+  height:10px;
+  background:#062430;
+  border-radius:2px;
+  transform:translateY(-50%) rotate(45deg);
+}
+@keyframes sidebarTooltipIn{
+  from{ opacity:0; transform:translateY(-50%) translateX(-6px); }
+  to{ opacity:1; transform:translateY(-50%) translateX(0); }
+}
+
 .nav-calc{
   margin-top:auto;
   padding-top:18px;

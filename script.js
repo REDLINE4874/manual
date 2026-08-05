@@ -454,6 +454,67 @@ document
   if (saved === "1") setSidebarCollapsed(true);
 })();
 
+/* ---------- Sidebar: tooltip flotante al hacer hover en los iconos ---------- */
+(function initSidebarTooltips() {
+  const sidebar = document.getElementById("sidebar");
+  let tooltipEl = null;
+
+  function showTooltip(target) {
+    // Solo cuando el sidebar está colapsado (modo solo iconos) y en escritorio
+    if (!sidebar.classList.contains("collapsed")) return;
+
+    const text = target.getAttribute("title") || target.getAttribute("data-tooltip");
+    if (!text) return;
+
+    // Evitar que aparezca el tooltip nativo del navegador duplicado
+    target.setAttribute("data-tooltip", text);
+    target.removeAttribute("title");
+
+    hideTooltip();
+    tooltipEl = document.createElement("div");
+    tooltipEl.className = "sidebar-tooltip";
+    tooltipEl.textContent = text;
+    document.body.appendChild(tooltipEl);
+
+    const rect = target.getBoundingClientRect();
+    tooltipEl.style.top = rect.top + rect.height / 2 + "px";
+    tooltipEl.style.left = rect.right + 14 + "px";
+  }
+
+  function hideTooltip() {
+    if (tooltipEl) {
+      tooltipEl.remove();
+      tooltipEl = null;
+    }
+  }
+
+  sidebar.addEventListener(
+    "mouseenter",
+    (e) => {
+      const item = e.target.closest && e.target.closest(".nav-item");
+      if (item) showTooltip(item);
+    },
+    true
+  );
+
+  sidebar.addEventListener(
+    "mouseleave",
+    (e) => {
+      const item = e.target.closest && e.target.closest(".nav-item");
+      if (item) hideTooltip();
+    },
+    true
+  );
+
+  // Ocultar si se colapsa/expande el sidebar mientras el mouse está encima
+  document
+    .getElementById("sidebarToggle")
+    .addEventListener("click", hideTooltip);
+
+  // Ocultar al hacer scroll dentro del sidebar (evita que quede "flotando")
+  sidebar.addEventListener("scroll", hideTooltip);
+})();
+
 /* ============================================================
    Calculadora 1: conversión de puntos
    ============================================================ */
