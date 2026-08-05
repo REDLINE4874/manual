@@ -409,7 +409,6 @@ a{ color:inherit; }
     align-items:flex-start;
     justify-content:flex-start;
     gap:24px;
-    margin-bottom:30px;
     text-align:left;
 }
 .detail-img-col{
