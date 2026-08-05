@@ -545,7 +545,7 @@ a{ color:inherit; }
 .validity-note b{ color:var(--ink); }
 
 .waiver-block{
-  margin-top:22px;
+
   background:#FBF6EC;
   border:1px solid rgba(169,134,59,0.35);
   border-radius:var(--radius-lg);
