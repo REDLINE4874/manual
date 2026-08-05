@@ -351,26 +351,24 @@ function openCard(id) {
     : '<p class="script-text">Sin información de vigencia.</p>';
 
   cont.innerHTML = `
+    <h1 class="detail-page-title">${c.name}</h1>
+
     <div class="detail-header">
-      <div class="detail-img-wrap"><img style="margin-top: 100px" src="${c.image}" alt="${c.name}"></div>
+      <div class="detail-img-col">
+        <div class="detail-segment-tag"><span class="dot" style="background:${c.color}"></span>${seg.label}</div>
+        <div class="detail-img-wrap"><img src="${c.image}" alt="${c.name}"></div>
+      </div>
 
-      <div class="detail-content-col">
-        <div class="detail-title-row">
-          <div class="detail-segment-tag"><span class="dot" style="background:${c.color}"></span>${seg.label}</div>
-          <h1>${c.name}</h1>
-        </div>
-
-        <div class="costos-panel" style="--accent:${c.color}">
-          <div class="costos-title">Costos y comisiones</div>
-          <div class="costos-grid">
-            <div class="stat"><div class="label">Ingresos mensuales</div><div class="value">${c.income}</div></div>
-            <div class="stat"><div class="label">CAT anual</div><div class="value">${c.cat}</div></div>
-            <div class="stat"><div class="label">Tasa de interés anual</div><div class="value">${c.rate}</div></div>
-            <div class="stat"><div class="label">Administración mensual</div><div class="value">${c.admin}</div></div>
-            <div class="stat"><div class="label">Adicional</div><div class="value">${c.additional}</div></div>
-            <div class="stat stat-button" onclick="openScript()">
-            <div class="script-icon"></div><div class="label">Script de venta</div><div class="value">Haz clic para visualizar →</div></div></div>
-          </div>
+      <div class="costos-panel" style="--accent:${c.color}">
+        <div class="costos-title">Costos y comisiones</div>
+        <div class="costos-grid">
+          <div class="stat"><div class="label">Ingresos mensuales</div><div class="value">${c.income}</div></div>
+          <div class="stat"><div class="label">CAT anual</div><div class="value">${c.cat}</div></div>
+          <div class="stat"><div class="label">Tasa de interés anual</div><div class="value">${c.rate}</div></div>
+          <div class="stat"><div class="label">Administración mensual</div><div class="value">${c.admin}</div></div>
+          <div class="stat"><div class="label">Adicional</div><div class="value">${c.additional}</div></div>
+          <div class="stat stat-button" onclick="openScript()">
+          <div class="script-icon"></div><div class="label">Script de venta</div><div class="value">Haz clic para visualizar →</div></div></div>
         </div>
       </div>
     </div>

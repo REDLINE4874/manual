@@ -384,6 +384,10 @@ a{ color:inherit; }
   font-size:11.5px; text-transform:uppercase; letter-spacing:1.2px;
   font-weight:700; color:var(--ink-soft);
   margin-bottom:8px;
+  padding:6px 12px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:999px;
 }
 .detail-segment-tag .dot{ width:9px; height:9px; border-radius:50%; }
 .detail-info h1{
@@ -393,37 +397,38 @@ a{ color:inherit; }
   letter-spacing:-0.5px;
 }
 /* ---------- Card detail: imagen izquierda + nombre arriba de la tabla, alineado a la izquierda ---------- */
+.detail-page-title{
+    font-family:var(--font-display);
+    font-size:clamp(24px,2.8vw,32px);
+    margin:0 0 22px;
+    letter-spacing:-0.5px;
+    text-align:left;
+}
 .detail-header{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:flex-start;
-    gap:30px;
+    gap:24px;
     margin-bottom:30px;
     text-align:left;
 }
-.detail-img-wrap{
+.detail-img-col{
     flex:0 0 220px;
     width:220px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+.detail-img-wrap{
+    width:100%;
+    margin-top:10px;
 }
 .detail-img-wrap img{
     width:100%;
     display:block;
 }
-.detail-content-col{
-   
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    text-align:left;
-}
-.detail-title-row{
-    
-    text-align:left;
-    width:100%;
-}
 .costos-panel{
-    width:100%;
+    min-width:0;
     background: var(--paper);
     border:1px solid var(--line);
     border-radius:var(--radius-lg);
@@ -454,7 +459,7 @@ a{ color:inherit; }
 
 .detail-two-col{
     display:grid;
-    grid-template-columns:repeat(2, 1fr);
+    grid-template-columns: 60% 40%;
     gap:22px;
     margin-top:22px;
     align-items:flex-start;
@@ -808,11 +813,22 @@ footer.page-footer{
 
     .detail-header{
         flex-direction: column;
+        align-items:center;
+        text-align:center;
     }
 
-    .detail-title-row,
+    .detail-img-col{
+        align-items:center;
+        width:100%;
+    }
+
+    .detail-page-title,
     .costos-panel{
         width: 100%;
+    }
+
+    .detail-page-title{
+        text-align:center;
     }
 
 }
