@@ -232,7 +232,7 @@ const SEGMENTS = [
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  { name: "Agendas", url: "https://agendas-rab6.onrender.com", icon: "📅" },
+  { name: "Agendas", url: "", icon: "📅" },
   {
     name: "Vicidial",
     url: "https://aliadosmed.directo.com/agc/vicidial.php",
