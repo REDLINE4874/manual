@@ -53,7 +53,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta CLÁSICA le genera una administración mensual de $67.92 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 87.4% sin IVA. Tasa de interés anual promedio ponderada de 61.62% tasa variable y una comisión por administración mensual de $67.92 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey.</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
@@ -82,7 +82,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta TELETÓN le genera una administración mensual de $45 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 85.8% sin IVA. Tasa de interés anual promedio ponderada de 61.57% tasa variable y una comisión por administración mensual de $45 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
@@ -108,7 +108,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC ORO, la cual le estará regresando un 7% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta ORO le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.4% sin IVA. Tasa de interés anual promedio ponderada de 59.61% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
@@ -140,7 +140,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC DESCUBRE, la cual ya es una categoría PLATINUM con la cual podrá viajar a playas nacionales con un certificado 2x1 en boletos de avión; puede obtenerlo como bienvenida durante los primeros 3 meses con su tarjeta, o en cada aniversario. Para ello es necesario acumular 600 puntos en los primeros 3 meses, y para el de aniversario, acumular mínimo 4,500 Momentos Banamex, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta DESCUBRE le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 85.0% sin IVA. Tasa de interés anual promedio ponderada de 59.72% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
@@ -171,7 +171,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC PLATINUM, una de nuestras mejores tarjetas, brindándole un excelente costo-beneficio, además de los servicios de asistencia gratuitos que Libra Premium tiene para usted: asistencia vial, asistencia legal y gestoría, asistencia en el hogar y asistencia médica, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta PLATINUM le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 39.9% sin IVA. Tasa de interés anual promedio ponderada de 31.10% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
@@ -203,7 +203,7 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC EXPLORA, la cual ya es una categoría PLATINUM que le estará brindando beneficios exclusivos de esta categoría, como 10 accesos gratuitos anuales en aeropuertos de la Ciudad de México (T1 y T2), Guadalajara y Monterrey, para brindarle mayor comodidad en sus viajes, incluso meses sin intereses en múltiples espacios, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta EXPLORA le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 79.5% sin IVA. Tasa de interés anual promedio ponderada de 57.17% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Activar la TDC digital y NetKey.</strong>",
+      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital el primer mes.</strong></strong>",
       "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
     ],
