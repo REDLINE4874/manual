@@ -237,7 +237,7 @@ const SEGMENTS = [
 const DIGITOS = [
   { id: "invex", name: "INVEX", images: ["img/INX-2.jpeg", "img/INX-1.jpeg"] },
   { id: "bbva", name: "BBVA", images: ["img/BBVA-1.jpeg","img/BBVA-2.jpeg"] },
-  { id: "banamex", name: "BANAMEX", images: ["img/BANA-1.jpeg","img/BANA-2.jpeg","img/BANA-3.jpeg","img/BANA-4.jpeg"] },
+  { id: "banamex", name: "BANAMEX", images: ["img/BANA-1.jpeg","img/BANA-2.jpeg","img/BANA-3.jpeg","img/BANA-4.jpeg","img/BANA-5.jpeg"] },
   { id: "plata", name: "PLATA Card", images: ["img/Plata-1.jpeg","img/Plata-2.jpeg","img/Plata-3.jpeg","img/Plata-4.jpeg"] },
   { id: "nu", name: "NU", images: [] },
   { id: "santander", name: "SANTANDER", images: [] },
