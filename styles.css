@@ -360,17 +360,14 @@ footer.page-footer{
         align-items:center;
         text-align:center;
     }
-
     .detail-img-col{
         align-items:center;
         width:100%;
     }
-
     .detail-page-title,
     .costos-panel{
         width: 100%;
     }
-
     .detail-page-title{
         text-align:center;
     }
