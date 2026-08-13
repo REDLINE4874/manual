@@ -247,22 +247,22 @@ const DIGITOS = [
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  { name: "Agendas", url: "https://agendas-rab6.onrender.com/", icon: "📅" },
+  { name: "Agendas", url: "https://agendas-rab6.onrender.com/", icon: "img/agenda.svg" },
   {
     name: "Vicidial",
     url: "https://aliadosmed.directo.com/agc/vicidial.php",
-    icon: "☎️",
+    icon: "img/dial.svg",
   },
   {
     name: "CRM",
     url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
-    icon: "🤝",
+    icon: "img/crm.svg",
   },
-  { name: "Renapo (CURP)", url: "https://www.gob.mx/curp", icon: "🪪" },
+  { name: "Renapo (CURP)", url: "https://www.gob.mx/curp", icon: "img/curp.svg" },
   {
     name: "Formalización",
     url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-    icon: "📊",
+    icon: "img/drive.svg",
   },
 ];
 
@@ -285,7 +285,7 @@ function renderNav() {
     <div class="nav-group-label">Enlaces</div>`;
   EXTERNAL_LINKS.forEach((link) => {
     html += `<a class="nav-item" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
-      <span class="ico">${link.icon}</span><span class="nav-label">${link.name}</span><span class="ext-arrow">↗</span>
+      <img class="ico" src="${link.icon}" alt="${link.name}"><span class="nav-label">${link.name}</span><span class="ext-arrow">↗</span>
     </a>`;
   });
   html += `</div>`;
@@ -294,8 +294,8 @@ function renderNav() {
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
-  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico">💠</span><span class="nav-label">Calculadora de puntos</span></button>
-  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico">🔢</span><span class="nav-label">Dígitos</span></button>`;
+  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><img class="ico" src="img/cal.svg"><span class="nav-label">Calculadora de puntos</span></button>
+  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><img class="ico" src="img/dig.svg"><span class="nav-label">Dígitos</span></button>`;
   document.getElementById("sidebar").appendChild(calc);
 
   // add a home nav item at very top of nav container (before groups)

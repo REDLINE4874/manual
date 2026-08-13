@@ -204,7 +204,7 @@ a{ color:inherit; }
 .nav-item.active{ background:#EAF2F4; color:var(--brand-teal); font-weight:700; }
 .nav-item.active .dot{ box-shadow:none; }
 .nav-item .nav-label{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.nav-item .ico{ flex-shrink:0; font-size:20px;  text-align:center; }
+.nav-item .ico{ flex-shrink:0; width:20px; height:20px; object-fit:contain; }
 
 /* ---------- Collapsed sidebar state ---------- */
 .sidebar.collapsed .brand-block{ justify-content:center; }
