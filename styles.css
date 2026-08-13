@@ -391,7 +391,7 @@ a{ color:inherit; }
 /* ---------- Dígitos: detalle por banco ---------- */
 .digito-cards-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(220px, 300px));
+  grid-template-columns:repeat(auto-fit, minmax(220px, 400px));
   justify-content:center;
   gap:18px;
   margin-top:24px;
@@ -407,7 +407,7 @@ a{ color:inherit; }
   align-items:center;
   justify-content:center;
 }
-.digito-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+.digito-card img{ width:100%; object-fit:cover; display:block; }
 .digito-placeholder{
   color:var(--ink-soft);
   font-size:13px;
