@@ -285,8 +285,7 @@ function renderNav() {
     <div class="nav-group-label">Enlaces</div>`;
   EXTERNAL_LINKS.forEach((link) => {
     html += `<a class="nav-item" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
-      <img class="ico" src="${link.icon}" alt="${link.name}"><span class="nav-label">${link.name}</span><span class="ext-arrow">↗</span>
-    </a>`;
+<span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span><span class="nav-label">${link.name}</span><span class="ext-arrow">↗</span>    </a>`;
   });
   html += `</div>`;
 
@@ -294,8 +293,8 @@ function renderNav() {
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
-  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><img class="ico" src="img/cal.svg"><span class="nav-label">Calculadora de puntos</span></button>
-  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><img class="ico" src="img/dig.svg"><span class="nav-label">Dígitos</span></button>`;
+  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('img/cal.svg');mask-image:url('img/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
+  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('img/dig.svg');mask-image:url('img/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
   document.getElementById("sidebar").appendChild(calc);
 
   // add a home nav item at very top of nav container (before groups)
@@ -304,7 +303,7 @@ function renderNav() {
   homeBtn.setAttribute("data-view", "home");
   homeBtn.title = "Inicio / Menú general";
   homeBtn.innerHTML =
-    '<span class="ico">🏠</span><span class="nav-label">Inicio / Menú general</span>';
+    '<span class="ico" style="-webkit-mask-image:url(\'img/home.svg\');mask-image:url(\'img/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';;
   homeBtn.onclick = () => showView("home");
   nav.prepend(homeBtn);
 }
