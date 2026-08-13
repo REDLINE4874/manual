@@ -196,7 +196,7 @@ a{ color:inherit; }
 .nav-item .ext-arrow{ margin-left:auto;  font-size:15px; flex-shrink:0; }
 .sidebar.collapsed .nav-item .ext-arrow{ display:none; }
 .nav-item .dot{
-  width:20px; height:20px; border-radius:50%;
+  width:20px; height:20px; border-radius:30%;
   flex-shrink:0;
   box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.5);
 }
