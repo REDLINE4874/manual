@@ -240,7 +240,7 @@ const DIGITOS = [
   { id: "banamex", name: "BANAMEX", images: ["img/BANA-1.jpeg","img/BANA-2.jpeg","img/BANA-3.jpeg","img/BANA-4.jpeg","img/BANA-5.jpeg"] },
   { id: "plata", name: "PLATA Card", images: ["img/Plata-1.jpeg","img/Plata-2.jpeg","img/Plata-3.jpeg","img/Plata-4.jpeg"] },
   { id: "nu", name: "NU", images: [] },
-  { id: "santander", name: "SANTANDER", images: [] },
+  { id: "C&A", name: "C&A Bradescard", images: ["img/CYA-1.jpeg"] },
 ];
 
 /* ============================================================
