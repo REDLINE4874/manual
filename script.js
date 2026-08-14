@@ -589,7 +589,7 @@ function calcPuntos() {
     "es-MX",
     { maximumFractionDigits: 2 },
   );
-  document.getElementById("p_out_bono").textContent = bono.toLocaleString(
+  document.getElementById("p_out_bono").textContent  = "$" + bono.toLocaleString(
     "es-MX",
     { maximumFractionDigits: 2 },
   );
