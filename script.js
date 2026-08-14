@@ -247,22 +247,22 @@ const DIGITOS = [
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  { name: "Agendas", url: "https://agendas-rab6.onrender.com/", icon: "img/agenda.svg" },
+  { name: "Agendas", url: "https://agendas-rab6.onrender.com/", icon: "assets/agenda.svg" },
   {
     name: "Vicidial",
     url: "https://aliadosmed.directo.com/agc/vicidial.php",
-    icon: "img/dial.svg",
+    icon: "assets/dial.svg",
   },
   {
     name: "CRM",
     url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
-    icon: "img/crm.svg",
+    icon: "assets/crm.svg",
   },
-  { name: "Renapo (CURP)", url: "https://www.gob.mx/curp", icon: "img/curp.svg" },
+  { name: "Renapo (CURP)", url: "https://www.gob.mx/curp", icon: "assets/curp.svg" },
   {
     name: "Formalización",
     url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-    icon: "img/drive.svg",
+    icon: "assets/drive.svg",
   },
 ];
 
@@ -293,8 +293,8 @@ function renderNav() {
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
-  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('img/cal.svg');mask-image:url('img/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
-  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('img/dig.svg');mask-image:url('img/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
+  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('assets/cal.svg');mask-image:url('assets/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
+  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('assets/dig.svg');mask-image:url('assets/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
   document.getElementById("sidebar").appendChild(calc);
 
   // add a home nav item at very top of nav container (before groups)
@@ -303,7 +303,7 @@ function renderNav() {
   homeBtn.setAttribute("data-view", "home");
   homeBtn.title = "Inicio / Menú general";
   homeBtn.innerHTML =
-    '<span class="ico" style="-webkit-mask-image:url(\'img/home.svg\');mask-image:url(\'img/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';;
+    '<span class="ico" style="-webkit-mask-image:url(\'assets/home.svg\');mask-image:url(\'assets/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';;
   homeBtn.onclick = () => showView("home");
   nav.prepend(homeBtn);
 }
