@@ -11,8 +11,7 @@ const CARDS = [
     name: "JOY Banamex",
     segment: "clasico",
     color: "#009CC6",
-    image:
-      "img/joy.png",
+    image: "img/joy.png",
     income: "15 MIL",
     cat: "82.7% sin IVA",
     rate: "61.80%",
@@ -23,10 +22,8 @@ const CARDS = [
     script:
       "Según su perfil, el producto que le estaría recomendando es la TDC JOY, una tarjeta de crédito que aparte de no tener cobro por administración (anualidad), es la tarjeta más segura, ya que no tiene el CVV impreso en la parte posterior de la tarjeta, además como ventaja exclusiva usted podrá modificar su fecha de corte 1 vez al año. Únicamente tendría que gastar 300 pesos al mes para evitar la comisión de administración de $149 + IVA, para ello, yo lo apoyaré con su solicitud.\n\nCAT PROMEDIO 82.7% sin IVA. Tasa de interés anual promedio ponderada de 61.80% tasa variable, la cual es sin costo de comisión por administración y al realizar al menos una compra de $300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA, ¿de acuerdo?",
     bonification: [
-      "<strong>Realizar una compra mínima de $300 al mes para evitar la comisión de penalización por inactividad de $149 + IVA.</strong>"
+      "<strong>Realizar una compra mínima de $300 al mes para evitar la comisión de penalización por inactividad de $149 + IVA.</strong>",
     ],
-
-
 
     benefits: [
       "<strong>Descuentos y promociones todo el año en negocios con participación con Banamex</strong>",
@@ -41,8 +38,7 @@ const CARDS = [
     name: "Clásica Banamex",
     segment: "clasico",
     color: "#D6003F",
-    image:
-      "img/clasica.png",
+    image: "img/clasica.png",
     income: "15 MIL",
     cat: "87.4% sin IVA",
     rate: "61.62%",
@@ -70,8 +66,7 @@ const CARDS = [
     name: "Teletón Banamex",
     segment: "clasico",
     color: "#a813ff",
-    image:
-      "img/teleton.png",
+    image: "img/teleton.png",
     income: "15 MIL",
     cat: "85.8% sin IVA",
     rate: "61.57%",
@@ -96,8 +91,7 @@ const CARDS = [
     name: "Oro Banamex",
     segment: "oro",
     color: "#A9863B",
-    image:
-      "img/oro.png",
+    image: "img/oro.png",
     income: "25 MIL",
     cat: "84.4% sin IVA",
     rate: "59.61%",
@@ -128,8 +122,7 @@ const CARDS = [
     name: "Descubre Banamex",
     segment: "oro",
     color: "#003848",
-    image:
-      "img/descubre.png",
+    image: "img/descubre.png",
     income: "25 MIL",
     cat: "85.0% sin IVA",
     rate: "59.72%",
@@ -159,8 +152,7 @@ const CARDS = [
     name: "Platinum Banamex",
     segment: "platinum",
     color: "#5B6367",
-    image:
-      "img/platinum.png",
+    image: "img/platinum.png",
     income: "75 MIL",
     cat: "39.9% sin IVA",
     rate: "31.10%",
@@ -191,8 +183,7 @@ const CARDS = [
     name: "Explora Banamex",
     segment: "platinum",
     color: "#706F6F",
-    image:
-      "img/explora.png",
+    image: "img/explora.png",
     income: "75 MIL",
     cat: "79.5% sin IVA",
     rate: "57.17%",
@@ -216,8 +207,7 @@ const CARDS = [
       "<strong>SEGUROS MASTERCARD:</strong> Recibe asistencias de viaje, equipaje, autos y toda la protección que necesitas.",
       "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
     ],
-    extraImage:
-      "img/explora-beneficios.png",
+    extraImage: "img/explora-beneficios.png",
     extraTitle: "Destinos y certificado 2x1 (beneficios de viaje)",
   },
 ];
@@ -236,9 +226,28 @@ const SEGMENTS = [
    ============================================================ */
 const DIGITOS = [
   { id: "invex", name: "INVEX", images: ["img/INX-2.jpeg", "img/INX-1.jpeg"] },
-  { id: "bbva", name: "BBVA", images: ["img/BBVA-1.jpeg","img/BBVA-2.jpeg"] },
-  { id: "banamex", name: "BANAMEX", images: ["img/BANA-1.jpeg","img/BANA-2.jpeg","img/BANA-3.jpeg","img/BANA-4.jpeg","img/BANA-5.jpeg"] },
-  { id: "plata", name: "PLATA Card", images: ["img/Plata-1.jpeg","img/Plata-2.jpeg","img/Plata-3.jpeg","img/Plata-4.jpeg"] },
+  { id: "bbva", name: "BBVA", images: ["img/BBVA-1.jpeg", "img/BBVA-2.jpeg"] },
+  {
+    id: "banamex",
+    name: "BANAMEX",
+    images: [
+      "img/BANA-1.jpeg",
+      "img/BANA-2.jpeg",
+      "img/BANA-3.jpeg",
+      "img/BANA-4.jpeg",
+      "img/BANA-5.jpeg",
+    ],
+  },
+  {
+    id: "plata",
+    name: "PLATA Card",
+    images: [
+      "img/Plata-1.jpeg",
+      "img/Plata-2.jpeg",
+      "img/Plata-3.jpeg",
+      "img/Plata-4.jpeg",
+    ],
+  },
   { id: "nu", name: "NU", images: [] },
   { id: "C&A", name: "C&A Bradescard", images: ["img/CYA-1.jpeg"] },
 ];
@@ -247,7 +256,11 @@ const DIGITOS = [
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  { name: "Agendas", url: "https://agendas-rab6.onrender.com/", icon: "assets/agenda.svg" },
+  {
+    name: "Agendas",
+    url: "https://agendas-rab6.onrender.com/",
+    icon: "assets/agenda.svg",
+  },
   {
     name: "Vicidial",
     url: "https://aliadosmed.directo.com/agc/vicidial.php",
@@ -258,7 +271,11 @@ const EXTERNAL_LINKS = [
     url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/crm.svg",
   },
-  { name: "Renapo (CURP)", url: "https://www.gob.mx/curp", icon: "assets/curp.svg" },
+  {
+    name: "Renapo (CURP)",
+    url: "https://www.gob.mx/curp",
+    icon: "assets/curp.svg",
+  },
   {
     name: "Formalización",
     url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
@@ -303,7 +320,7 @@ function renderNav() {
   homeBtn.setAttribute("data-view", "home");
   homeBtn.title = "Inicio / Menú general";
   homeBtn.innerHTML =
-    '<span class="ico" style="-webkit-mask-image:url(\'assets/home.svg\');mask-image:url(\'assets/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';;
+    '<span class="ico" style="-webkit-mask-image:url(\'assets/home.svg\');mask-image:url(\'assets/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';
   homeBtn.onclick = () => showView("home");
   nav.prepend(homeBtn);
 }
@@ -523,7 +540,8 @@ document
     // Solo cuando el sidebar está colapsado (modo solo iconos) y en escritorio
     if (!sidebar.classList.contains("collapsed")) return;
 
-    const text = target.getAttribute("title") || target.getAttribute("data-tooltip");
+    const text =
+      target.getAttribute("title") || target.getAttribute("data-tooltip");
     if (!text) return;
 
     // Evitar que aparezca el tooltip nativo del navegador duplicado
@@ -554,7 +572,7 @@ document
       const item = e.target.closest && e.target.closest(".nav-item");
       if (item) showTooltip(item);
     },
-    true
+    true,
   );
 
   sidebar.addEventListener(
@@ -563,7 +581,7 @@ document
       const item = e.target.closest && e.target.closest(".nav-item");
       if (item) hideTooltip();
     },
-    true
+    true,
   );
 
   // Ocultar si se colapsa/expande el sidebar mientras el mouse está encima
@@ -589,10 +607,8 @@ function calcPuntos() {
     "es-MX",
     { maximumFractionDigits: 2 },
   );
-  document.getElementById("p_out_bono").textContent  = "$" + bono.toLocaleString(
-    "es-MX",
-    { maximumFractionDigits: 2 },
-  );
+  document.getElementById("p_out_bono").textContent =
+    "$" + bono.toLocaleString("es-MX", { maximumFractionDigits: 2 });
 }
 document.getElementById("p_tarjeta").addEventListener("change", calcPuntos);
 document.getElementById("p_gasto").addEventListener("input", calcPuntos);
