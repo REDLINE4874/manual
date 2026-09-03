@@ -206,7 +206,7 @@ a{ color:inherit; }
   from{ opacity:0; transform:translateY(-50%) translateX(-6px); }
   to{ opacity:1; transform:translateY(-50%) translateX(0); }}
 
-.nav-calc{ margin-top:auto; padding-top:18px; border-top:1px solid var(--sidebar-border);}
+.nav-calc{  padding-top:18px; border-top:1px solid var(--sidebar-border);}
 .nav-calc .nav-item{ background:color-mix(in srgb, var(--brand-red) 18%, transparent); color:#FFD9E2;}
 .nav-calc .nav-item.active{ background:var(--brand-red); color:#fff; }
 .nav-calc .nav-item:hover{ background:color-mix(in srgb, var(--brand-red) 30%, transparent); }
