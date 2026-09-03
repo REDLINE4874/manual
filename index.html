@@ -13,6 +13,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" async></script>
+    <script src="src/components/theme-toggle.js" async></script>
   </head>
   <body>
     <div class="overlay" id="overlay"></div>
@@ -38,6 +39,11 @@
           </div>
         </div>
         <div id="navContainer"><!-- generado por JS --></div>
+        <!-- Selector de tema -->
+        <div class="theme-switch-container">
+          <span class="theme-label">Tema</span>
+          <theme-toggle size="md"></theme-toggle>
+        </div>
       </nav>
 
       <main class="main">
