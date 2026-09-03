@@ -33,6 +33,12 @@
   --sidebar-border: rgba(255,255,255,0.14);
   --sidebar-tooltip-bg: #062430;
 
+  /* ---------- Cajas / tarjetas ---------- */
+  --card-border: rgba(18,35,44,0.12);
+  --card-border-strong: rgba(18,35,44,0.18);
+  --card-highlight: rgba(255,255,255,0.70);
+  --card-shadow-inset: rgba(255,255,255,0.45);
+
   --input-bg: #FCFBF8;
   --code-bg: rgba(18,35,44,0.06);
 
@@ -90,6 +96,12 @@ body.dark-theme{
   --sidebar-active: #EAF2F4;
   --sidebar-border: rgba(255,255,255,0.12);
   --sidebar-tooltip-bg: #07171D;
+
+  /* ---------- Cajas / tarjetas ---------- */
+  --card-border: rgba(255,255,255,0.13);
+  --card-border-strong: rgba(255,255,255,0.18);
+  --card-highlight: rgba(255,255,255,0.055);
+  --card-shadow-inset: rgba(255,255,255,0.06);
 
   --input-bg: #142127;
   --code-bg: rgba(255,255,255,0.07);
@@ -312,7 +324,7 @@ a{ color:inherit; }
 .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px;}
 .stat{ background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--accent, var(--brand-red)); border-radius:8px; padding:8px 11px;}
 .stat .label{ font-size:17px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:800; margin-bottom:3px; }
-.stat .value{ font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.25; color:#D6003F; }
+.stat .value{ font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.25; color:var(--brand-red); }
 .stat.accent{ border-color:transparent; }
 
 .extra-block{margin-top:22px;background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow);}
@@ -334,6 +346,92 @@ a{ color:inherit; }
 .benefits-list li{ position:relative; padding-left:22px; font-size:15px; line-height:1.55; color:var(--ink);}
 .benefits-list li::before{ content:""; position:absolute; left:0; top:6px; width:9px; 
   height:9px; border-radius:50%; background:var(--brand-red);}
+
+/* ============================================================
+   CAJAS / TARJETAS — acabado premium para modo oscuro
+   ============================================================ */
+
+/* Tema claro: conserva un borde muy discreto */
+.tcard,
+.digito-card,
+.costos-panel,
+.extra-block,
+.calc-card,
+.stat,
+.detail-segment-tag,
+.updated-badge {
+  border-color:var(--card-border);
+}
+
+/* Tema oscuro: borde luminoso sutil + profundidad */
+body.dark-mode .tcard,
+body.dark-mode .digito-card,
+body.dark-mode .costos-panel,
+body.dark-mode .extra-block,
+body.dark-mode .calc-card,
+body.dark-mode .stat,
+body.dark-mode .updated-badge,
+body.dark-mode .detail-segment-tag {
+  border:2px solid var(--card-border);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.32),
+    inset 0 1px 0 var(--card-shadow-inset);
+}
+
+/* Las cajas principales reciben un marco ligeramente más marcado */
+body.dark-mode .calc-card,
+body.dark-mode .costos-panel {
+  border-color:var(--card-border-strong);
+  box-shadow:
+    0 14px 35px rgba(0,0,0,.38),
+    inset 0 1px 0 var(--card-shadow-inset);
+}
+
+/* La tarjeta de producto mantiene el levantamiento al pasar el mouse */
+body.dark-mode .tcard:hover {
+  border-color:var(--card-border-strong);
+  box-shadow:
+    0 18px 38px rgba(0,0,0,.42),
+    inset 0 1px 0 var(--card-highlight);
+}
+
+/* Elementos pequeños, con menos peso visual */
+body.dark-mode .formula-note,
+body.dark-mode .validity-note {
+  border-color:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+/* El bloque dorado conserva su identidad, pero gana definición */
+body.dark-mode .waiver-block {
+  border-color:rgba(198,166,90,.38);
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+/* Inputs: borde visible sin parecer un botón */
+body.dark-mode .field select,
+body.dark-mode .field input {
+  border-color:rgba(255,255,255,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+
+/* Botones de banco */
+body.dark-mode .digito-btn {
+  border-color:var(--card-border);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.24),
+    inset 0 1px 0 var(--card-shadow-inset);
+}
+
+/* Modal con el mismo lenguaje visual */
+body.dark-mode .modal-box {
+  border:2px solid var(--card-border);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.50),
+    inset 0 1px 0 var(--card-shadow-inset);
+}
 
 /* ---------- Calculator view ---------- */
 .calc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start;}
@@ -391,44 +489,6 @@ footer.page-footer{
   position:relative; animation:modalIn .25s;}
 .modal-close{position:absolute; right:20px;top:20px; border:none; background:none; font-size:30px; cursor:pointer;}
 .modal-script{margin-top:20px; white-space:pre-wrap; line-height:1.7; color:var(--ink);}
-.theme-switch-container{
-    margin-top:auto;
-
-    padding-top:16px;
-
-    border-top:1px solid var(--sidebar-border);
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:12px;
-
-    min-height:50px;
-}
-
-.theme-label{
-    font-size:11px;
-    text-transform:uppercase;
-    letter-spacing:1.2px;
-
-    font-weight:600;
-
-    color:var(--sidebar-muted);
-}
-
-.theme-switch-container theme-toggle{
-    display:block;
-    flex-shrink:0;
-}
-
-.sidebar.collapsed .theme-switch-container{
-    justify-content:center;
-}
-
-.sidebar.collapsed .theme-label{
-    display:none;
-}
 
 @keyframes modalIn{
 
@@ -442,9 +502,33 @@ footer.page-footer{
         opacity:1;
     }
 }
+/* =========================================================
+   CAMBIO DE TEMA
+   ========================================================= */
+.theme-switch-container{
+  margin-top:auto;
+  padding-top:16px;
+  border-top:1px solid var(--sidebar-border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:50px;
+}
+.theme-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  font-weight:600;
+  color:var(--sidebar-muted);
+}
+.sidebar.collapsed .theme-switch-container{justify-content:center;}
+.sidebar.collapsed .theme-label{display:none;}
+.theme-switch-container theme-toggle{flex-shrink:0;}
+
 /* ---------- Overlay for mobile nav ---------- */
 .overlay{
-  position:fixed; inset:0; background:rgba(10,20,25,0.5);
+  position:fixed; inset:0; background:var(--modal-overlay);
   display:none; z-index:39;
 }
 .overlay.show{ display:block; }
@@ -455,7 +539,7 @@ footer.page-footer{
     position:fixed; left:0; top:0; height:100%; z-index:41;
     transform:translateX(-102%);
     transition:transform .25s ease;
-    box-shadow:0 0 40px rgba(0,0,0,0.3);
+    box-shadow:0 0 40px rgba(0,0,0,.30);
   }
   .sidebar.open{ transform:translateX(0); }
   .topbar{ display:flex; }
