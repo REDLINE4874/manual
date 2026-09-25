@@ -13,14 +13,14 @@ const CARDS = [
     color: "#009CC6",
     image: "img/joy.png",
     income: "15 MIL",
-    cat: "82.7% sin IVA",
-    rate: "61.80%",
+    cat: "81.2% sin IVA",
+    rate: "60.93%",
     admin: "Sin comisión de por vida",
     additional: "No tiene",
     validity:
-      "<strong>CAT PROMEDIO 82.7% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>61.80% tasa variable</strong>, la cual es sin costo de comisión por administración y al realizar al menos una compra de <strong>$300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 81.2% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.93% tasa variable</strong>, la cual es sin costo de comisión por administración y al realizar al menos una compra de <strong>$300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC JOY, una tarjeta de crédito que aparte de no tener cobro por administración (anualidad), es la tarjeta más segura, ya que no tiene el CVV impreso en la parte posterior de la tarjeta, además como ventaja exclusiva usted podrá modificar su fecha de corte 1 vez al año. Únicamente tendría que gastar 300 pesos al mes para evitar la comisión de administración de $149 + IVA, para ello, yo lo apoyaré con su solicitud.\n\nCAT PROMEDIO 82.7% sin IVA. Tasa de interés anual promedio ponderada de 61.80% tasa variable, la cual es sin costo de comisión por administración y al realizar al menos una compra de $300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC JOY, una tarjeta de crédito que aparte de no tener cobro por administración (anualidad), es la tarjeta más segura, ya que no tiene el CVV impreso en la parte posterior de la tarjeta, además como ventaja exclusiva usted podrá modificar su fecha de corte 1 vez al año. Únicamente tendría que gastar 300 pesos al mes para evitar la comisión de administración de $149 + IVA, para ello, yo lo apoyaré con su solicitud.\n\nCAT PROMEDIO 81.2% sin IVA. Tasa de interés anual promedio ponderada de 60.93% tasa variable, la cual es sin costo de comisión por administración y al realizar al menos una compra de $300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Realizar una compra mínima de $300 al mes para evitar la comisión de penalización por inactividad de $149 + IVA.</strong>",
     ],
@@ -40,14 +40,14 @@ const CARDS = [
     color: "#D6003F",
     image: "img/clasica.png",
     income: "15 MIL",
-    cat: "87.4% sin IVA",
-    rate: "61.62%",
+    cat: "86.2% sin IVA",
+    rate: "60.93%",
     admin: "$67.92 sin IVA",
     additional: "$33.75 sin IVA",
     validity:
-      "<strong>CAT PROMEDIO 87.4% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>61.62% tasa variable</strong> y una comisión por <strong>administración mensual de $67.92 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 86.2% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.93% tasa variable</strong> y una comisión por <strong>administración mensual de $67.92 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta CLÁSICA le genera una administración mensual de $67.92 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 87.4% sin IVA. Tasa de interés anual promedio ponderada de 61.62% tasa variable y una comisión por administración mensual de $67.92 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta CLÁSICA le genera una administración mensual de $67.92 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 86.2% sin IVA. Tasa de interés anual promedio ponderada de 60.93% tasa variable y una comisión por administración mensual de $67.92 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey.</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
@@ -68,14 +68,14 @@ const CARDS = [
     color: "#a813ff",
     image: "img/teleton.png",
     income: "15 MIL",
-    cat: "85.8% sin IVA",
-    rate: "61.57%",
+    cat: "84.9% sin IVA",
+    rate: "60.92%",
     admin: "$45 sin IVA",
     additional: "Sin costo",
     validity:
-      "<strong>CAT PROMEDIO 85.8% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>61.57% tasa variable</strong> y una comisión por <strong>administración mensual $45 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 84.9% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.92% tasa variable</strong> y una comisión por <strong>administración mensual $45 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta TELETÓN le genera una administración mensual de $45 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 85.8% sin IVA. Tasa de interés anual promedio ponderada de 61.57% tasa variable y una comisión por administración mensual de $45 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta TELETÓN le genera una administración mensual de $45 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.9% sin IVA. Tasa de interés anual promedio ponderada de 60.92% tasa variable y una comisión por administración mensual de $45 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
@@ -93,14 +93,14 @@ const CARDS = [
     color: "#A9863B",
     image: "img/oro.png",
     income: "25 MIL",
-    cat: "84.4% sin IVA",
-    rate: "59.61%",
+    cat: "83.5% sin IVA",
+    rate: "58.95%",
     admin: "$102.50 sin IVA",
     additional: "$51.67 sin IVA",
     validity:
-      "<strong>CAT PROMEDIO 84.4% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>59.61% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 83.5% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>58.95% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC ORO, la cual le estará regresando un 7% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta ORO le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.4% sin IVA. Tasa de interés anual promedio ponderada de 59.61% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC ORO, la cual le estará regresando un 7% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta ORO le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 83.5% sin IVA. Tasa de interés anual promedio ponderada de 58.95% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
@@ -124,14 +124,14 @@ const CARDS = [
     color: "#003848",
     image: "img/descubre.png",
     income: "25 MIL",
-    cat: "85.0% sin IVA",
-    rate: "59.72%",
+    cat: "84.0% sin IVA",
+    rate: "59.01%",
     admin: "$102.50 sin IVA",
     additional: "$51.67 sin IVA",
     validity:
-      "<strong>CAT PROMEDIO 85.0% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>59.72% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 84.0% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>59.01% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC DESCUBRE, la cual ya es una categoría PLATINUM con la cual podrá viajar a playas nacionales con un certificado 2x1 en boletos de avión; puede obtenerlo como bienvenida durante los primeros 3 meses con su tarjeta, o en cada aniversario. Para ello es necesario acumular 600 puntos en los primeros 3 meses, y para el de aniversario, acumular mínimo 4,500 Momentos Banamex, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta DESCUBRE le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 85.0% sin IVA. Tasa de interés anual promedio ponderada de 59.72% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC DESCUBRE, la cual ya es una categoría PLATINUM con la cual podrá viajar a playas nacionales con un certificado 2x1 en boletos de avión; puede obtenerlo como bienvenida durante los primeros 3 meses con su tarjeta, o en cada aniversario. Para ello es necesario acumular 600 puntos en los primeros 3 meses, y para el de aniversario, acumular mínimo 4,500 Momentos Banamex, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta DESCUBRE le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.0% sin IVA. Tasa de interés anual promedio ponderada de 59.01% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
@@ -154,14 +154,14 @@ const CARDS = [
     color: "#5B6367",
     image: "img/platinum.png",
     income: "75 MIL",
-    cat: "39.9% sin IVA",
-    rate: "31.10%",
+    cat: "39.4% sin IVA",
+    rate: "30.47%",
     admin: "$227.08 sin IVA",
     additional: "$113.33 sin IVA",
     validity:
-      "<strong>CAT PROMEDIO 39.9% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>31.10% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 39.4% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>30.47% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC PLATINUM, una de nuestras mejores tarjetas, brindándole un excelente costo-beneficio, además de los servicios de asistencia gratuitos que Libra Premium tiene para usted: asistencia vial, asistencia legal y gestoría, asistencia en el hogar y asistencia médica, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta PLATINUM le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 39.9% sin IVA. Tasa de interés anual promedio ponderada de 31.10% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC PLATINUM, una de nuestras mejores tarjetas, brindándole un excelente costo-beneficio, además de los servicios de asistencia gratuitos que Libra Premium tiene para usted: asistencia vial, asistencia legal y gestoría, asistencia en el hogar y asistencia médica, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta PLATINUM le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 39.4% sin IVA. Tasa de interés anual promedio ponderada de 30.47% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
@@ -185,14 +185,14 @@ const CARDS = [
     color: "#706F6F",
     image: "img/explora.png",
     income: "75 MIL",
-    cat: "79.5% sin IVA",
-    rate: "57.17%",
+    cat: "78.5% sin IVA",
+    rate: "56.48%",
     admin: "$227.08 sin IVA",
     additional: "$113.33 sin IVA",
     validity:
-      "<strong>CAT PROMEDIO 79.5% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>24 de Marzo del 2026 al 24 de Septiembre del 2026.</strong> Tasa de interés anual promedio ponderada de <strong>57.17% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
+      "<strong>CAT PROMEDIO 78.5% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>56.48% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
     script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC EXPLORA, la cual ya es una categoría PLATINUM que le estará brindando beneficios exclusivos de esta categoría, como 10 accesos gratuitos anuales en aeropuertos de la Ciudad de México (T1 y T2), Guadalajara y Monterrey, para brindarle mayor comodidad en sus viajes, incluso meses sin intereses en múltiples espacios, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta EXPLORA le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 79.5% sin IVA. Tasa de interés anual promedio ponderada de 57.17% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
+      "Según su perfil, el producto que le estaría recomendando es la TDC EXPLORA, la cual ya es una categoría PLATINUM que le estará brindando beneficios exclusivos de esta categoría, como 10 accesos gratuitos anuales en aeropuertos de la Ciudad de México (T1 y T2), Guadalajara y Monterrey, para brindarle mayor comodidad en sus viajes, incluso meses sin intereses en múltiples espacios, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta EXPLORA le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 78.5% sin IVA. Tasa de interés anual promedio ponderada de 56.48% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
     bonification: [
       "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
       "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
