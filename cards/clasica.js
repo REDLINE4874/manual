@@ -21,7 +21,7 @@ window.CARD_DATA.clasica = {
     "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
   ],
   benefits: [
-    "<strong>5% EN PUNTOS PREMIA</strong>: Obtenlo por tus compras y úsalos para comprar lo que quieras o como dinero en efectivo en Cajeros Automáticos Citibanamex.",
+    "<strong>5% EN PUNTOS PREMIA</strong>: Obtenlo por tus compras y úsalos para comprar lo que quieras o como dinero en efectivo en Cajeros Automáticos Citibanamex.(Vigencia de los puntos 18 meses.)",
     "<strong>PUNTOS PREMIA DOBLES</strong> al cargar gasolina todos los días de la semana ( topado a 1000 puntos por semana) LE INVITAMOS A CONSULTAR TÉRMINOS Y CONDICIONES.",
     "<strong>3, 6 o 12 Pagos fijos en Salud y belleza</strong> (<strong>COMPRA MINIMA DE $3,000</strong>) ( hospitales, laboratorios medicos de cualquier especialidad, farmacias y clinicas de salud y belleza) Monto minimo de la compra de $3000 llamando al 55 2226 3639",
     "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",

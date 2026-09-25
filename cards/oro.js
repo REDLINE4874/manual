@@ -21,7 +21,7 @@ window.CARD_DATA.oro = {
     "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
   ],
   benefits: [
-    "<strong>7% EN PUNTOS PREMIA</strong>: En tus compras y úsalos para comprar lo que quieras o como dinero en efectivo.",
+    "<strong>7% EN PUNTOS PREMIA</strong>: En tus compras y úsalos para comprar lo que quieras o como dinero en efectivo. (Vigencia de los puntos 18 meses.)",
     "<strong>PUNTOS PREMIA DOBLES</strong> al cargar gasolina todos los días de la semana ( topado a 1000 puntos por semana) LE INVITAMOS A CONSULTAR TÉRMINOS Y CONDICIONES.",
     "<strong>3 meses sin intereses en viajes, salud y belleza</strong> (<strong>COMPRA MINIMA $1,500</strong>) ( hospitales, laboratorios medicos de cualquier especialidad, farmacias y clinicas de salud y belleza)",
     "<strong>Meses sin intereses en negocios participantes:</strong> Compra tus viajes, tecnología, ropa y mucho más.",

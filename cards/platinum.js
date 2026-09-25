@@ -21,7 +21,7 @@ window.CARD_DATA.platinum = {
     "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
   ],
   benefits: [
-    "<strong>10% EN PUNTOS PREMIA:</strong> Cada que realices compras con tu TDC Platinum.",
+    "<strong>10% EN PUNTOS PREMIA:</strong> Cada que realices compras con tu TDC Platinum. (Vigencia de los puntos 18 meses.)",
     "<strong>LIBRA Premium:</strong> Siéntete protegido con los servicios de asistencia gratuitos que libra Premiun tiene para ti: Asistencia Vial, Asistencia Legal y Gestoría, Asistencia en el Hogar, AsistenciaMedica.",
     "<strong>10 accesos GRATIS en las SALAS BEYOND</strong> para usted y 1 acompañante y… <strong>4 accesos a Salas Lounge Key</strong> en mas de 1200 salas VIP alrededor del mundo al año <strong>(Los accesos fuera de estas cortesias tienen un costo de $32 dolares por persona).</strong>",
     "<strong>MASTERCARD CONCIERGE</strong> asistente personal 24/7, Atención personalizada en todo el mundo para realizar reservas de restaurantes, coordinación de eventos especiales, entre otras.",
