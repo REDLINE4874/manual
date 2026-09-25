@@ -116,13 +116,13 @@ function renderExploraBenefitsTable(data) {
       <div class="extra-block explora-table-block" style="margin-top:22px;">
         <div class="explora-destinations-grid">
           <div class="explora-destination-group">
-            <h3>Destinos a EEUU</h3>
+            <h2>Destinos a EEUU</h2>
             <ul class="explora-destination-list">
               ${usList.map((item) => `<li>${item}</li>`).join("")}
             </ul>
           </div>
           <div class="explora-destination-group">
-            <h3>Destinos nacionales</h3>
+            <h2>Destinos nacionales</h2>
             <ul class="explora-destination-list">
               ${nationalList.map((item) => `<li>${item}</li>`).join("")}
             </ul>
