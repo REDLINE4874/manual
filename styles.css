@@ -903,6 +903,151 @@ body.dark-mode .modal-box {
     inset 0 1px 0 var(--card-shadow-inset);
 }
 
+/* Modal en modo oscuro: iconos y encabezados en blanco */
+html[data-theme="dark"] .modal-script .section-header h2,
+body[data-theme="dark"] .modal-script .section-header h2,
+body.dark-mode .modal-script .section-header h2,
+body.dark .modal-script .section-header h2,
+html.dark .modal-script .section-header h2,
+body.dark-theme .modal-script .section-header h2,
+html[data-theme="dark"] .modal-script .redencion-container .section-header h2,
+body[data-theme="dark"] .modal-script .redencion-container .section-header h2,
+body.dark-mode .modal-script .redencion-container .section-header h2,
+body.dark .modal-script .redencion-container .section-header h2,
+html.dark .modal-script .redencion-container .section-header h2,
+body.dark-theme .modal-script .redencion-container .section-header h2,
+html[data-theme="dark"] .modal-script .explora-destination-group h3,
+body[data-theme="dark"] .modal-script .explora-destination-group h3,
+body.dark-mode .modal-script .explora-destination-group h3,
+body.dark .modal-script .explora-destination-group h3,
+html.dark .modal-script .explora-destination-group h3,
+body.dark-theme .modal-script .explora-destination-group h3,
+html[data-theme="dark"] .modal-script .explora-certificate-title,
+body[data-theme="dark"] .modal-script .explora-certificate-title,
+body.dark-mode .modal-script .explora-certificate-title,
+body.dark .modal-script .explora-certificate-title,
+html.dark .modal-script .explora-certificate-title,
+body.dark-theme .modal-script .explora-certificate-title,
+html[data-theme="dark"] .modal-script .explora-certificate-copy h3,
+body[data-theme="dark"] .modal-script .explora-certificate-copy h3,
+body.dark-mode .modal-script .explora-certificate-copy h3,
+body.dark .modal-script .explora-certificate-copy h3,
+html.dark .modal-script .explora-certificate-copy h3,
+body.dark-theme .modal-script .explora-certificate-copy h3,
+html[data-theme="dark"] .modal-script .redencion-card-content p,
+body[data-theme="dark"] .modal-script .redencion-card-content p,
+body.dark-mode .modal-script .redencion-card-content p,
+body.dark .modal-script .redencion-card-content p,
+html.dark .modal-script .redencion-card-content p,
+body.dark-theme .modal-script .redencion-card-content p,
+html[data-theme="dark"] .modal-script .redencion-card-content strong,
+body[data-theme="dark"] .modal-script .redencion-card-content strong,
+body.dark-mode .modal-script .redencion-card-content strong,
+body.dark .modal-script .redencion-card-content strong,
+html.dark .modal-script .redencion-card-content strong,
+body.dark-theme .modal-script .redencion-card-content strong,
+html[data-theme="dark"] .modal-script .explora-destination-list li,
+body[data-theme="dark"] .modal-script .explora-destination-list li,
+body.dark-mode .modal-script .explora-destination-list li,
+body.dark .modal-script .explora-destination-list li,
+html.dark .modal-script .explora-destination-list li,
+body.dark-theme .modal-script .explora-destination-list li,
+html[data-theme="dark"] .modal-script .explora-certificate-copy p,
+body[data-theme="dark"] .modal-script .explora-certificate-copy p,
+body.dark-mode .modal-script .explora-certificate-copy p,
+body.dark .modal-script .explora-certificate-copy p,
+html.dark .modal-script .explora-certificate-copy p,
+body.dark-theme .modal-script .explora-certificate-copy p {
+  color: #fff;
+}
+
+html[data-theme="dark"] .modal-script .header-icon svg,
+body[data-theme="dark"] .modal-script .header-icon svg,
+body.dark-mode .modal-script .header-icon svg,
+body.dark .modal-script .header-icon svg,
+html.dark .modal-script .header-icon svg,
+body.dark-theme .modal-script .header-icon svg,
+html[data-theme="dark"] .modal-script .redencion-card-icon svg,
+body[data-theme="dark"] .modal-script .redencion-card-icon svg,
+body.dark-mode .modal-script .redencion-card-icon svg,
+body.dark .modal-script .redencion-card-icon svg,
+html.dark .modal-script .redencion-card-icon svg,
+body.dark-theme .modal-script .redencion-card-icon svg,
+html[data-theme="dark"] .modal-script .explora-certificate-icon,
+body[data-theme="dark"] .modal-script .explora-certificate-icon,
+body.dark-mode .modal-script .explora-certificate-icon,
+body.dark .modal-script .explora-certificate-icon,
+html.dark .modal-script .explora-certificate-icon,
+body.dark-theme .modal-script .explora-certificate-icon,
+html[data-theme="dark"] .modal-script .explora-certificate-icon svg,
+body[data-theme="dark"] .modal-script .explora-certificate-icon svg,
+body.dark-mode .modal-script .explora-certificate-icon svg,
+body.dark .modal-script .explora-certificate-icon svg,
+html.dark .modal-script .explora-certificate-icon svg,
+body.dark-theme .modal-script .explora-certificate-icon svg,
+html[data-theme="dark"] .modal-script .explora-destination-list li::before,
+body[data-theme="dark"] .modal-script .explora-destination-list li::before,
+body.dark-mode .modal-script .explora-destination-list li::before,
+body.dark .modal-script .explora-destination-list li::before,
+html.dark .modal-script .explora-destination-list li::before,
+body.dark-theme .modal-script .explora-destination-list li::before,
+html[data-theme="dark"] .modal-script .step-badge,
+body[data-theme="dark"] .modal-script .step-badge,
+body.dark-mode .modal-script .step-badge,
+body.dark .modal-script .step-badge,
+html.dark .modal-script .step-badge,
+body.dark-theme .modal-script .step-badge {
+  color: #fff;
+  stroke: #fff;
+}
+
+html[data-theme="dark"] .modal-script .step-badge,
+body[data-theme="dark"] .modal-script .step-badge,
+body.dark-mode .modal-script .step-badge,
+body.dark .modal-script .step-badge,
+html.dark .modal-script .step-badge,
+body.dark-theme .modal-script .step-badge {
+  background-color: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+html[data-theme="dark"] .modal-script .explora-destination-list li::before,
+body[data-theme="dark"] .modal-script .explora-destination-list li::before,
+body.dark-mode .modal-script .explora-destination-list li::before,
+body.dark .modal-script .explora-destination-list li::before,
+html.dark .modal-script .explora-destination-list li::before,
+body.dark-theme .modal-script .explora-destination-list li::before,
+html[data-theme="dark"] .modal-script .explora-certificate-icon svg,
+body[data-theme="dark"] .modal-script .explora-certificate-icon svg,
+body.dark-mode .modal-script .explora-certificate-icon svg,
+body.dark .modal-script .explora-certificate-icon svg,
+html.dark .modal-script .explora-certificate-icon svg,
+body.dark-theme .modal-script .explora-certificate-icon svg {
+  fill: none;
+}
+
+html[data-theme="dark"] .modal-script .redencion-card,
+body[data-theme="dark"] .modal-script .redencion-card,
+body.dark-mode .modal-script .redencion-card,
+body.dark .modal-script .redencion-card,
+html.dark .modal-script .redencion-card,
+body.dark-theme .modal-script .redencion-card,
+html[data-theme="dark"] .modal-script .explora-certificate-card,
+body[data-theme="dark"] .modal-script .explora-certificate-card,
+body.dark-mode .modal-script .explora-certificate-card,
+body.dark .modal-script .explora-certificate-card,
+html.dark .modal-script .explora-certificate-card,
+body.dark-theme .modal-script .explora-certificate-card,
+html[data-theme="dark"] .modal-script .explora-destination-group,
+body[data-theme="dark"] .modal-script .explora-destination-group,
+body.dark-mode .modal-script .explora-destination-group,
+body.dark .modal-script .explora-destination-group,
+html.dark .modal-script .explora-destination-group,
+body.dark-theme .modal-script .explora-destination-group {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.12);
+}
+
 /* ---------- Calculator view ---------- */
 .calc-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start;}
 @media(max-width:860px)
