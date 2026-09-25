@@ -251,15 +251,47 @@ function renderNav() {
     html += `</div>`;
   });
 
-  html += `<div class="nav-group">
-    <div class="nav-group-label">Enlaces</div>`;
-  EXTERNAL_LINKS.forEach((link) => {
-    html += `<a class="nav-item" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
-<span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span><span class="nav-label">${link.name}</span><span class="ext-arrow">↗</span>    </a>`;
-  });
-  html += `</div>`;
+  html += `<div class="nav-group nav-dropdown-group">
+    <button class="nav-item nav-dropdown-trigger" type="button" aria-expanded="false" title="Enlaces">
+      <svg class="nav-svg-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10.5 13.5l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <path d="M8 15.5l-2.5 2.5a3 3 0 1 1-4.2-4.2L3.8 11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <path d="M16 8.5l2.5-2.5a3 3 0 1 1 4.2 4.2L20.2 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="2" fill="none"></circle>
+      </svg>
+      <span class="nav-label">Enlaces</span>
+      <span class="caret">▾</span>
+    </button>
+    <div class="nav-submenu">${EXTERNAL_LINKS.map((link) => `
+      <a class="nav-item nav-subitem" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
+        <span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span>
+        <span class="nav-label">${link.name}</span>
+        <span class="ext-arrow">↗</span>
+      </a>
+    `).join("")}</div>
+  </div>`;
 
   nav.innerHTML = html;
+
+  const dropdownTrigger = nav.querySelector(".nav-dropdown-trigger");
+  if (dropdownTrigger) {
+    dropdownTrigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const group = dropdownTrigger.closest(".nav-dropdown-group");
+      const isOpen = group.classList.toggle("expanded");
+      dropdownTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+  }
+
+  document.addEventListener("click", (event) => {
+    const group = event.target.closest(".nav-dropdown-group");
+    document.querySelectorAll(".nav-dropdown-group").forEach((item) => {
+      if (item !== group) {
+        item.classList.remove("expanded");
+        item.querySelector(".nav-dropdown-trigger")?.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
