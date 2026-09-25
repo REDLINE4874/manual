@@ -1,222 +1,175 @@
-/* ============================================================
-   DATOS DE LAS TARJETAS
-   Para modificar cualquier dato (ingresos, CAT, tasa, comisiones)
-   edita directamente los valores de este arreglo.
-   ============================================================ */
+
 let currentScript = "";
 let currentCardName = "";
-const CARDS = [
-  {
-    id: "joy",
-    name: "JOY Banamex",
-    segment: "clasico",
-    color: "#009CC6",
-    image: "img/joy.png",
-    income: "15 MIL",
-    cat: "81.2% sin IVA",
-    rate: "60.93%",
-    admin: "Sin comisión de por vida",
-    additional: "No tiene",
-    validity:
-      "<strong>CAT PROMEDIO 81.2% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.93% tasa variable</strong>, la cual es sin costo de comisión por administración y al realizar al menos una compra de <strong>$300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC JOY, una tarjeta de crédito que aparte de no tener cobro por administración (anualidad), es la tarjeta más segura, ya que no tiene el CVV impreso en la parte posterior de la tarjeta, además como ventaja exclusiva usted podrá modificar su fecha de corte 1 vez al año. Únicamente tendría que gastar 300 pesos al mes para evitar la comisión de administración de $149 + IVA, para ello, yo lo apoyaré con su solicitud.\n\nCAT PROMEDIO 81.2% sin IVA. Tasa de interés anual promedio ponderada de 60.93% tasa variable, la cual es sin costo de comisión por administración y al realizar al menos una compra de $300 MN al mes para evitar la comisión de penalización por inactividad de $149+IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Realizar una compra mínima de $300 al mes para evitar la comisión de penalización por inactividad de $149 + IVA.</strong>",
-    ],
-
-    benefits: [
-      "<strong>Descuentos y promociones todo el año en negocios con participación con Banamex</strong>",
-      "<strong>Puede elegir su fecha de corte (una vez al año)</strong>",
-      "<strong>Una tarjeta mas segura sin código de seguridad de la tarjeta impreso</strong> para mayor seguridad en sus compras en linea (CVV)",
-      "<strong><strong><strong>Preventas exclusivas</strong></strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-      "<strong>Mastercard global service respaldo en caso de perdida de TDC en 48 hrs te entregan la reposición.</strong>",
-    ],
-  },
-  {
-    id: "clasica",
-    name: "Clásica Banamex",
-    segment: "clasico",
-    color: "#D6003F",
-    image: "img/clasica.png",
-    income: "15 MIL",
-    cat: "86.2% sin IVA",
-    rate: "60.93%",
-    admin: "$67.92 sin IVA",
-    additional: "$33.75 sin IVA",
-    validity:
-      "<strong>CAT PROMEDIO 86.2% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.93% tasa variable</strong> y una comisión por <strong>administración mensual de $67.92 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta CLÁSICA le genera una administración mensual de $67.92 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 86.2% sin IVA. Tasa de interés anual promedio ponderada de 60.93% tasa variable y una comisión por administración mensual de $67.92 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey.</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>5% EN PUNTOS PREMIA</strong>: Obtenlo por tus compras y úsalos para comprar lo que quieras o como dinero en efectivo en Cajeros Automáticos Citibanamex.",
-      "<strong>PUNTOS PREMIA DOBLES</strong> al cargar gasolina todos los días de la semana ( topado a 1000 puntos por semana) LE INVITAMOS A CONSULTAR TÉRMINOS Y CONDICIONES.",
-      "<strong>3, 6 o 12 Pagos fijos en Salud y belleza</strong> (<strong>COMPRA MINIMA DE $3,000</strong>) ( hospitales, laboratorios medicos de cualquier especialidad, farmacias y clinicas de salud y belleza) Monto minimo de la compra de $3000 llamando al 55 2226 3639",
-      "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-      "<strong>ELIGE EL DIA QUE QUIERAS PAGAR CAMBIANDO TU FECHA DE CORTE UNA VEZ AL AÑO</strong>",
-    ],
-  },
-  {
-    id: "teleton",
-    name: "Teletón Banamex",
-    segment: "clasico",
-    color: "#a813ff",
-    image: "img/teleton.png",
-    income: "15 MIL",
-    cat: "84.9% sin IVA",
-    rate: "60.92%",
-    admin: "$45 sin IVA",
-    additional: "Sin costo",
-    validity:
-      "<strong>CAT PROMEDIO 84.9% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.92% tasa variable</strong> y una comisión por <strong>administración mensual $45 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta TELETÓN le genera una administración mensual de $45 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.9% sin IVA. Tasa de interés anual promedio ponderada de 60.92% tasa variable y una comisión por administración mensual de $45 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>6 tarjetas adicionales sin costo.</strong>",
-      "<strong><strong>Preventas exclusivas</strong></strong>:Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-    ],
-  },
-  {
-    id: "oro",
-    name: "Oro Banamex",
-    segment: "oro",
-    color: "#A9863B",
-    image: "img/oro.png",
-    income: "25 MIL",
-    cat: "83.5% sin IVA",
-    rate: "58.95%",
-    admin: "$102.50 sin IVA",
-    additional: "$51.67 sin IVA",
-    validity:
-      "<strong>CAT PROMEDIO 83.5% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>58.95% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC ORO, la cual le estará regresando un 7% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta ORO le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 83.5% sin IVA. Tasa de interés anual promedio ponderada de 58.95% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>7% EN PUNTOS PREMIA</strong>: En tus compras y úsalos para comprar lo que quieras o como dinero en efectivo.",
-      "<strong>PUNTOS PREMIA DOBLES</strong> al cargar gasolina todos los días de la semana ( topado a 1000 puntos por semana) LE INVITAMOS A CONSULTAR TÉRMINOS Y CONDICIONES.",
-      "<strong>3 meses sin intereses en viajes, salud y belleza</strong> (<strong>COMPRA MINIMA $1,500</strong>) ( hospitales, laboratorios medicos de cualquier especialidad, farmacias y clinicas de salud y belleza)",
-      "<strong>Meses sin intereses en negocios participantes:</strong> Compra tus viajes, tecnología, ropa y mucho más.",
-      "<strong>Seguro de Accidente en viajes:</strong> Obtén hasta 400 USD de cobertura por incidente en caso de robo o daño accidental.",
-      "<strong>Master Seguro de Viajes</strong> Obtén hasta 250,000 USD para cuidar tu integridad y la de tu familia",
-      "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-      "<strong>Seguro por uso y facturación fraudulenta de su TDC:</strong> Cubre hasta el saldo de la cuenta, siempre y cuando sea por robo, extravío o facturación fraudulenta del plástico.",
-    ],
-  },
-  {
-    id: "descubre",
-    name: "Descubre Banamex",
-    segment: "oro",
-    color: "#003848",
-    image: "img/descubre.png",
-    income: "25 MIL",
-    cat: "84.0% sin IVA",
-    rate: "59.01%",
-    admin: "$102.50 sin IVA",
-    additional: "$51.67 sin IVA",
-    validity:
-      "<strong>CAT PROMEDIO 84.0% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>59.01% tasa variable</strong> y una comisión por <strong>administración mensual de $102.50 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC DESCUBRE, la cual ya es una categoría PLATINUM con la cual podrá viajar a playas nacionales con un certificado 2x1 en boletos de avión; puede obtenerlo como bienvenida durante los primeros 3 meses con su tarjeta, o en cada aniversario. Para ello es necesario acumular 600 puntos en los primeros 3 meses, y para el de aniversario, acumular mínimo 4,500 Momentos Banamex, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta DESCUBRE le genera una administración mensual de $102.50 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.0% sin IVA. Tasa de interés anual promedio ponderada de 59.01% tasa variable y una comisión por administración mensual de $102.50 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>1 PUNTO MOMENTO BANAMEX:</strong> por cada dólar gastado (o su equivalente en pesos).",
-      "<strong>Accesos gratuitos e ilimitados en Salas VIP Elite Lounge Mastercard</strong> localizado en la T1 del aeropuerto Internacional de la CDMX.",
-      "<strong>2X1 EN BOLETOS DE AVIÓN:</strong> Viaja a playas nacionales con un certificado 2x1 en boletos de avión, puedes obtenerlo como bienvenida durante los primeros 3 meses con tu tarjeta o en cada aniversario. La condición para obtener el de bienvenida es acumular un total de <strong>600 puntos en los primeros 3 meses</strong>, y para obtener el de aniversario, debe <strong>acumular mínimo 4,500 Puntos .</strong> Playas seleccionadas: <strong>Acapulco, La Paz, Puerto Vallarta, Huatulco, Cozumel, Cancun, Los Cabos, Veracruz, Mazatlán, Zihuatlanejo.</strong>",
-      "<strong>MASTERCARD CONCIERGE</strong> asistente personal 24/7, Atención personalizada en todo el mundo para realizar reservas de restaurantes, coordinación de eventos especiales, entre otras.",
-      "<strong>Elite Valet MasterCard :</strong> En el Aeropuerto Internacional de la Ciudad de México encontraras el servicio de Elite Valet MC. Con tu Tarjeta Citibanamex obtén 50% de descuento. El servicio es por hasta 5 días naturales, 2 entradas por mes.",
-      "<strong>DINING PROGRAM:</strong> Obtén 20% descuento en tus consumos en restaurantes seleccionados al reservar a través del Mastercard Concierge. ¡Recibe una bebida de cortesía por persona como bienvenida!",
-      "<strong><strong>Preventas exclusivas</strong></strong>:Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-    ],
-  },
-  {
-    id: "platinum",
-    name: "Platinum Banamex",
-    segment: "platinum",
-    color: "#5B6367",
-    image: "img/platinum.png",
-    income: "75 MIL",
-    cat: "39.4% sin IVA",
-    rate: "30.47%",
-    admin: "$227.08 sin IVA",
-    additional: "$113.33 sin IVA",
-    validity:
-      "<strong>CAT PROMEDIO 39.4% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>30.47% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC PLATINUM, una de nuestras mejores tarjetas, brindándole un excelente costo-beneficio, además de los servicios de asistencia gratuitos que Libra Premium tiene para usted: asistencia vial, asistencia legal y gestoría, asistencia en el hogar y asistencia médica, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta PLATINUM le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 39.4% sin IVA. Tasa de interés anual promedio ponderada de 30.47% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>10% EN PUNTOS PREMIA:</strong> Cada que realices compras con tu TDC Platinum.",
-      "<strong>LIBRA Premium:</strong> Siéntete protegido con los servicios de asistencia gratuitos que libra Premiun tiene para ti: Asistencia Vial, Asistencia Legal y Gestoría, Asistencia en el Hogar, AsistenciaMedica.",
-      "<strong>10 accesos GRATIS en las SALAS BEYOND</strong> para usted y 1 acompañante y… <strong>4 accesos a Salas Mastercard Airport Experiences</strong> en mas de 800 salas VIP alrededor del mundo al año.",
-      "<strong>MASTERCARD CONCIERGE</strong> asistente personal 24/7, Atención personalizada en todo el mundo para realizar reservas de restaurantes, coordinación de eventos especiales, entre otras.",
-      "<strong>DINING PROGRAM:</strong> Obtén 20% descuento en tus consumos en restaurantes seleccionados al reservar a través del Mastercard Concierge. ¡Recibe una bebida de cortesía por persona como bienvenida!",
-      "<strong><strong>Elite Valet MasterCard:</strong></strong> En el Aeropuerto Internacional de la Ciudad de México encontraras el servicio de Elite Valet MC. Con tu Tarjeta Citibanamex Platinum obtén 50% de descuento. El servicio es por hasta 5 días naturales, 2 entradas por mes.",
-      "<strong>Meses sin intereses en negocios participantes:</strong> Compra tus viajes, tecnología, ropa y mucho más.",
-      "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-    ],
-  },
-  {
-    id: "explora",
-    name: "Explora Banamex",
-    segment: "platinum",
-    color: "#706F6F",
-    image: "img/explora.png",
-    income: "75 MIL",
-    cat: "78.5% sin IVA",
-    rate: "56.48%",
-    admin: "$227.08 sin IVA",
-    additional: "$113.33 sin IVA",
-    validity:
-      "<strong>CAT PROMEDIO 78.5% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>56.48% tasa variable</strong> y una comisión por <strong>administración mensual de $227.08 sin IVA</strong>, ¿de acuerdo?",
-    script:
-      "Según su perfil, el producto que le estaría recomendando es la TDC EXPLORA, la cual ya es una categoría PLATINUM que le estará brindando beneficios exclusivos de esta categoría, como 10 accesos gratuitos anuales en aeropuertos de la Ciudad de México (T1 y T2), Guadalajara y Monterrey, para brindarle mayor comodidad en sus viajes, incluso meses sin intereses en múltiples espacios, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta EXPLORA le genera una administración mensual de $227.08 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 78.5% sin IVA. Tasa de interés anual promedio ponderada de 56.48% tasa variable y una comisión por administración mensual de $227.08 sin IVA, ¿de acuerdo?",
-    bonification: [
-      "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
-      "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",
-      "<strong>A partir del segundo mes y hasta el mes 12 deberá mantener un consumo mínimo en compras de $300 con la tarjeta de crédito física o digital, para exentar la administración mensual.</strong>",
-    ],
-    benefits: [
-      "<strong>1.15 PUNTOS MOMENTOS BANAMEX:</strong> por cada dólar gastado (o su equivalente en pesos). ¡Tus Tarjetas adicionales también generan puntos por compras!",
-      "<strong>2X1 EN BOLETOS DE AVIÓN:</strong> Viaja a playas nacionales con un certificado 2x1 en boletos de avión, puedes obtenerlo como bienvenida durante los primeros 3 meses con tu tarjeta o en cada aniversario. La condición para obtener el de bienvenida es acumular <strong><strong>1,300 puntos en los primeros 3 meses</strong></strong>, y para obtener el de aniversario, debe acumular <strong>mínimo 10,000 PUNTOS</strong>.",
-      "<strong>10 accesos GRATIS en las SALAS BEYOND</strong> para usted y 1 acompañante y… <strong>4 accesos a Salas Mastercard Airport Experiences</strong> en mas de 800 salas VIP alrededor del mundo al año",
-      "<strong>MASTERCARD CONCIERGE</strong> asistente personal 24/7, Atención personalizada en todo el mundo para realizar reservas de restaurantes, coordinación de eventos especiales, entre otras.",
-      "<strong><strong>Elite Valet MasterCard:</strong></strong> En el Aeropuerto Internacional de la Ciudad de México encontraras el servicio de Elite Valet MC. Con tu Tarjeta Citibanamex Platinum obtén 50% de descuento. El servicio es por hasta 5 días naturales, 2 entradas por mes.",
-      "<strong>SEGUROS MASTERCARD:</strong> Recibe asistencias de viaje, equipaje, autos y toda la protección que necesitas.",
-      "<strong><strong>Preventas exclusivas</strong></strong>: Compra tus boletos antes que nadie, elige el mejor lugar para tus eventos culturales, deportivos y lo mejor de los espectáculos en México.",
-    ],
-    extraImage: "img/explora-beneficios.png",
-    extraTitle: "Destinos y certificado 2x1 (beneficios de viaje)",
-  },
-];
+const CARDS = Object.values(window.CARD_DATA || {});
 
 const SEGMENTS = [
   { id: "clasico", label: "Segmento Clásico", bar: "#009CC6" },
   { id: "oro", label: "Segmento Oro", bar: "#A9863B" },
   { id: "platinum", label: "Segmento Platinum", bar: "#5B6367" },
 ];
+
+const REDENCION_ITEMS = [
+  {
+    id: 1,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`,
+    text: "Para pagar la comisión por administración / anualidad de tu Tarjeta de Crédito",
+  },
+  {
+    id: 2,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>`,
+    text: "Abona tus puntos como dinero al saldo de tu Tarjeta de Crédito",
+  },
+  {
+    id: 3,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`,
+    text: `<strong>Productos del catálogo:</strong> Cambia tus Puntos por productos de nuestro exclusivo catálogo, solo entra a www.banamexrewards.com`,
+  },
+  {
+    id: 4,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="10" height="14" rx="2"></rect><path d="M5 7V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3"></path><rect x="14" y="11" width="8" height="6" rx="1"></rect><circle cx="16" cy="18" r="1.5"></circle><circle cx="20" cy="18" r="1.5"></circle></svg>`,
+    text: "Cambia tus Puntos por noches de hotel, renta de autos o para vivir experiencias increíbles",
+  },
+  {
+    id: 5,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="12" cy="14" r="2"></circle></svg>`,
+    text: "Cambia tus Puntos por certificados electrónicos",
+  },
+  {
+    id: 6,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`,
+    text: `<strong>Paga con tus Puntos en los siguientes puntos de venta:</strong> Liverpool, La Comer, Soriana, Sumesa, City Market, Fresko La Comer`,
+  },
+  {
+    id: 7,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.3c.4-.2.6-.6.5-1.1z"></path></svg>`,
+    text: `Obtén una tarifa fija en puntos para volar en cualquier temporada, solo es necesario reservar con 21 días de anticipación en la página www.banamex.com/momentosbanamex`,
+  },
+  {
+    id: 8,
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
+    text: `<strong>Catálogo de mercancía:</strong> cambia tus Puntos por artículos del catálogo, incluyendo productos Apple dentro del sitio www.banamexrewards.com`,
+  },
+];
+
+function renderRedencionPuntos() {
+  return `
+    <div class="redencion-container">
+      <header class="section-header">
+        <div class="header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"></polyline>
+            <rect x="2" y="7" width="20" height="5"></rect>
+            <line x1="12" y1="22" x2="12" y2="7"></line>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+          </svg>
+        </div>
+        <h2>2. REDENCIÓN</h2>
+      </header>
+
+      <div class="redencion-grid">
+        ${REDENCION_ITEMS.map(
+          (item) => `
+            <article class="redencion-card">
+              <div class="redencion-card-icon">${item.icon}</div>
+              <div class="redencion-card-content">
+                <span class="step-badge">${item.id}</span>
+                <p>${item.text}</p>
+              </div>
+            </article>
+          `,
+        ).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderExploraBenefitsTable(data) {
+  const rows = Array.isArray(data) ? data : data && Array.isArray(data.rows) ? data.rows : [];
+  const destinations = data && !Array.isArray(data) && data.destinations ? data.destinations : null;
+  const certificates = data && !Array.isArray(data) && data.certificates ? data.certificates : null;
+
+  if (destinations || certificates) {
+    const usList = destinations?.us || [];
+    const nationalList = destinations?.national || [];
+
+    const certificateCards = (certificates || [])
+      .map((item) => {
+        const icon = item.icon === "cake"
+          ? '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 30h40v6H12zm4-8h32v8H16zm-4 8h40v4H12zm0 0v10h40V30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 22h24v10H20zm-2-8h28v8H18zm9 0v8m14-8v8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M26 40h12v10H26z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M20 50h24M24 58h16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
+          : '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="26" width="48" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="18" y="16" width="30" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M22 26V16M42 26V16M12 42h40M18 50h30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M32 26v24M26 32h12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+
+        return `
+          <article class="explora-certificate-card">
+            <div class="explora-certificate-icon">${icon}</div>
+            <div class="explora-certificate-copy">
+              <h3>${item.title}</h3>
+              <p>${item.text}</p>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+
+    return `
+      <div class="extra-block explora-table-block" style="margin-top:22px;">
+        <div class="explora-destinations-grid">
+          <div class="explora-destination-group">
+            <h3>Destinos a EEUU</h3>
+            <ul class="explora-destination-list">
+              ${usList.map((item) => `<li>${item}</li>`).join("")}
+            </ul>
+          </div>
+          <div class="explora-destination-group">
+            <h3>Destinos nacionales</h3>
+            <ul class="explora-destination-list">
+              ${nationalList.map((item) => `<li>${item}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+
+        <h2 class="explora-certificate-title">Obtén tu certificado 2x1 al cumplir con los requisitos</h2>
+
+        <div class="explora-certificate-grid">
+          ${certificateCards}
+        </div>
+      </div>
+    `;
+  }
+
+  if (rows.length) {
+    return `
+      <div class="extra-block explora-table-block" style="margin-top:22px;">
+        <h2>Destinos y certificado 2x1 (beneficios de viaje)</h2>
+        <div class="explora-table-wrap">
+          <table class="explora-benefits-table">
+            <thead>
+              <tr>
+                <th>Beneficio</th>
+                <th>Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows
+                .map(
+                  (row) => `
+                    <tr>
+                      <td>${row.beneficio}</td>
+                      <td>${row.descripcion}</td>
+                    </tr>
+                  `,
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  return "";
+}
 
 /* ============================================================
    DATOS: dígitos por banco
@@ -382,6 +335,16 @@ function openCard(id) {
     ? `<p class="script-text">${c.validity}</p>`
     : '<p class="script-text">Sin información de vigencia.</p>';
 
+  const redencionHtml = ["descubre", "explora"].includes(c.id)
+    ? renderRedencionPuntos()
+    : "";
+
+  const extraContentHtml = c.id === "explora" && c.travelBenefitsTable
+    ? renderExploraBenefitsTable(c.travelBenefitsTable)
+    : c.extraImage
+      ? `<div class="extra-block" style="margin-top:22px;"><h2>${c.extraTitle}</h2><img src="${c.extraImage}" alt="Beneficios ${c.name}"></div>`
+      : "";
+
   cont.innerHTML = `
     <h1 class="detail-page-title">${c.name}</h1>
 
@@ -413,7 +376,9 @@ function openCard(id) {
       <div class="extra-block"><h2>Vigencias</h2>${vigenciasHtml}</div>
     </div>
 
-    ${c.extraImage ? `<div class="extra-block" style="margin-top:22px;"><h2>${c.extraTitle}</h2><img src="${c.extraImage}" alt="Beneficios ${c.name}"></div>` : ""}
+    ${redencionHtml}
+
+    ${extraContentHtml}
   `;
   showView("card");
   document
@@ -594,43 +559,6 @@ document
 })();
 
 /* ============================================================
-   Calculadora 1: conversión de puntos
-   ============================================================ */
-function calcPuntos() {
-  const pct = parseFloat(document.getElementById("p_tarjeta").value);
-  const gasto = parseFloat(document.getElementById("p_gasto").value) || 0;
-  const puntos = gasto * pct;
-  const bono = puntos * 0.1;
-  document.getElementById("p_out_pct").textContent =
-    (pct * 100).toFixed(0) + "%";
-  document.getElementById("p_out_puntos").textContent = puntos.toLocaleString(
-    "es-MX",
-    { maximumFractionDigits: 2 },
-  );
-  document.getElementById("p_out_bono").textContent =
-    "$" + bono.toLocaleString("es-MX", { maximumFractionDigits: 2 });
-}
-document.getElementById("p_tarjeta").addEventListener("change", calcPuntos);
-document.getElementById("p_gasto").addEventListener("input", calcPuntos);
-
-/* ============================================================
-   Calculadora 2: tasas de interés
-   ============================================================ */
-function calcIntereses() {
-  const anual = parseFloat(document.getElementById("i_tarjeta").value);
-  const deuda = parseFloat(document.getElementById("i_deuda").value) || 0;
-  const mensual = anual / 12;
-  const intereses = deuda * mensual;
-  document.getElementById("i_out_anual").textContent =
-    (anual * 100).toFixed(2) + "%";
-  document.getElementById("i_out_mensual").textContent =
-    (mensual * 100).toFixed(2) + "%";
-  document.getElementById("i_out_intereses").textContent =
-    "$" + intereses.toLocaleString("es-MX", { maximumFractionDigits: 2 });
-}
-document.getElementById("i_tarjeta").addEventListener("change", calcIntereses);
-document.getElementById("i_deuda").addEventListener("input", calcIntereses);
-/* ============================================================
    funciones para mostrar / ocultar modal de script
    ============================================================ */
 function openScript() {
@@ -659,6 +587,5 @@ document.getElementById("scriptModal").addEventListener("click", (e) => {
 renderNav();
 renderHome();
 renderDigitos();
-calcPuntos();
-calcIntereses();
+initCalculators();
 showView("home");
