@@ -334,6 +334,64 @@ function renderHome() {
   cont.innerHTML = html;
 }
 
+function renderBenefitItem(item) {
+  if (!item) return "";
+
+  if (typeof item === "string") return item;
+
+  const text = item.text || item.label || "";
+  const link = (() => {
+    if (typeof item.link === "string") {
+      return { url: item.link, label: item.label || "Ver más" };
+    }
+    if (item.link && typeof item.link === "object") {
+      return {
+        url: item.link.url || item.link.href || "#",
+        label: item.link.label || item.link.text || item.label || "Ver más",
+      };
+    }
+    if (typeof item.href === "string") {
+      return { url: item.href, label: item.label || "Ver más" };
+    }
+    return null;
+  })();
+
+  const actions = Array.isArray(item.actions)
+    ? item.actions
+    : item.modalType
+      ? [{ label: item.label || "Ver más", modalType: item.modalType, title: item.title || item.label || text }]
+      : [];
+
+  if (actions.length) {
+    const buttonsHtml = actions
+      .map((action) => {
+        const actionLabel = action.label || "Ver más";
+        const actionType = action.modalType || "";
+        const actionTitle = action.title || actionLabel || text;
+        return `<button type="button" class="benefit-link benefit-link-button" data-modal-type="${actionType}" data-modal-title="${actionTitle}">${actionLabel}</button>`;
+      })
+      .join("");
+
+    return `
+      <span class="benefit-item-wrapper">
+        <span class="benefit-copy">
+          ${text}
+          ${buttonsHtml}
+        </span>
+      </span>
+    `;
+  }
+
+  const safeText = text ? `<span class="benefit-copy">${text}</span>` : "";
+  const safeLink = link && link.url
+    ? `<a class="benefit-link" href="${link.url}" target="_blank" rel="noopener noreferrer">${link.label}</a>`
+    : "";
+
+  return safeText || safeLink
+    ? `<span class="benefit-item-wrapper">${safeText}${safeLink}</span>`
+    : "";
+}
+
 /* ============================================================
    RENDER: detalle de tarjeta
    ============================================================ */
@@ -345,11 +403,74 @@ function openCard(id) {
   const seg = SEGMENTS.find((s) => s.id === c.segment);
   const cont = document.getElementById("cardDetailContainer");
 
+  const benefitsList = Array.isArray(c.benefits)
+    ? c.benefits.map((benefit) => (typeof benefit === "string" ? { text: benefit } : benefit))
+    : [];
+
+  if (c.id === "descubre" && benefitsList[0]) {
+    benefitsList[0] = {
+      ...benefitsList[0],
+      text: benefitsList[0].text || "",
+      actions: [{
+        label: "Ver redención",
+        modalType: "redencion",
+        title: "2. REDENCIÓN",
+      }],
+    };
+  }
+
+  if (c.id === "explora") {
+    const puntosIndex = benefitsList.findIndex((benefit) => {
+      const text = typeof benefit === "string" ? benefit : benefit.text || "";
+      return text.toLowerCase().includes("puntos") || text.toLowerCase().includes("momentos");
+    });
+
+    const destinoIndex = benefitsList.findIndex((benefit) => {
+      const text = typeof benefit === "string" ? benefit : benefit.text || "";
+      return text.toLowerCase().includes("destinos") || text.toLowerCase().includes("certificado");
+    });
+
+    const redencionAction = {
+      label: "Ver redención",
+      modalType: "redencion",
+      title: "2. REDENCIÓN",
+    };
+
+    const destinosAction = {
+      label: "Ver destinos",
+      modalType: "destinos",
+      title: "Destinos y certificado 2x1 (beneficios de viaje)",
+    };
+
+    if (puntosIndex >= 0) {
+      benefitsList[puntosIndex] = {
+        ...benefitsList[puntosIndex],
+        text: benefitsList[puntosIndex].text || "",
+        actions: [redencionAction],
+      };
+    }
+
+    if (destinoIndex >= 0) {
+      benefitsList[destinoIndex] = {
+        ...benefitsList[destinoIndex],
+        text: benefitsList[destinoIndex].text || "",
+        actions: [destinosAction],
+      };
+    } else {
+      benefitsList.push({
+        text: "Destinos y certificado 2x1",
+        actions: [destinosAction],
+      });
+    }
+  }
+
   const benefitsHtml =
-    c.benefits && c.benefits.length
+    benefitsList.length
       ? `
     <ul class="benefits-list">
-      ${c.benefits.map((b) => `<li>${b}</li>`).join("")}
+      ${benefitsList
+        .map((b) => `<li>${renderBenefitItem(b)}</li>`)
+        .join("")}
     </ul>`
       : '<p class="script-text">Sin beneficios adicionales registrados.</p>';
 
@@ -367,13 +488,7 @@ function openCard(id) {
     ? `<p class="script-text">${c.validity}</p>`
     : '<p class="script-text">Sin información de vigencia.</p>';
 
-  const redencionHtml = ["descubre", "explora"].includes(c.id)
-    ? renderRedencionPuntos()
-    : "";
-
-  const extraContentHtml = c.id === "explora" && c.travelBenefitsTable
-    ? renderExploraBenefitsTable(c.travelBenefitsTable)
-    : c.extraImage
+  const extraContentHtml = c.extraImage
       ? `<div class="extra-block" style="margin-top:22px;"><h2>${c.extraTitle}</h2><img src="${c.extraImage}" alt="Beneficios ${c.name}"></div>`
       : "";
 
@@ -408,10 +523,23 @@ function openCard(id) {
       <div class="extra-block"><h2>Vigencias</h2>${vigenciasHtml}</div>
     </div>
 
-    ${redencionHtml}
-
     ${extraContentHtml}
   `;
+
+  cont.querySelectorAll(".benefit-link-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const modalType = button.getAttribute("data-modal-type");
+      const modalTitle = button.getAttribute("data-modal-title") || "Beneficio";
+
+      if (modalType === "redencion") {
+        openInfoModal(modalTitle, renderRedencionPuntos());
+      }
+      if (modalType === "destinos") {
+        openInfoModal(modalTitle, renderExploraBenefitsTable(c.travelBenefitsTable));
+      }
+    });
+  });
+
   showView("card");
   document
     .querySelectorAll(".nav-item")
@@ -593,12 +721,19 @@ document
 /* ============================================================
    funciones para mostrar / ocultar modal de script
    ============================================================ */
+function openInfoModal(title, html) {
+  document.getElementById("modalTitle").textContent = title;
+  const modalScript = document.getElementById("modalScript");
+  modalScript.innerHTML = html || "";
+  document.getElementById("scriptModal").classList.add("show");
+}
+
 function openScript() {
   document.getElementById("modalTitle").textContent =
     "Script de venta - " + currentCardName;
 
-  document.getElementById("modalScript").textContent =
-    currentScript || "No hay script registrado.";
+  const modalScript = document.getElementById("modalScript");
+  modalScript.textContent = currentScript || "No hay script registrado.";
 
   document.getElementById("scriptModal").classList.add("show");
 }
