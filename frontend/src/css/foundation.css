@@ -1,0 +1,124 @@
+/* ============================================================
+   MANUAL DE TARJETAS BANAMEX — hoja de estilos
+   Paleta y tokens de diseño reunidos aquí arriba para editar fácil
+   ============================================================ */
+:root{
+  /* ---------- Tema claro ---------- */
+  --bg: #F4F2EC;
+  --paper: #FFFFFF;
+  --surface: #FCFBF8;
+  --surface-soft: #FAF8F3;
+  --surface-gold: #FBF6EC;
+
+  --ink: #12232C;
+  --ink-soft: #4B5B63;
+  --ink-muted: #6F7E84;
+
+  --line: rgba(18,35,44,0.12);
+  --line-strong: rgba(18,35,44,0.18);
+
+  --brand-red: #D6003F;
+  --brand-red-hover: #B90036;
+  --brand-teal: #003848;
+  --brand-teal-hover: #00556C;
+  --gold: #A9863B;
+
+  --sidebar-bg: #003848;
+  --sidebar-text: #EAF2F4;
+  --sidebar-text-soft: #A9C4CB;
+  --sidebar-muted: #7FA3AC;
+  --sidebar-item: #D9E7EA;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --sidebar-active: #EAF2F4;
+  --sidebar-border: rgba(255,255,255,0.14);
+  --sidebar-tooltip-bg: #062430;
+
+  /* ---------- Cajas / tarjetas ---------- */
+  --card-border: rgba(18,35,44,0.12);
+  --card-border-strong: rgba(18,35,44,0.18);
+  --card-highlight: rgba(255,255,255,0.70);
+  --card-shadow-inset: rgba(255,255,255,0.45);
+
+  --input-bg: #FCFBF8;
+  --code-bg: rgba(18,35,44,0.06);
+
+  --shadow: 0 8px 30px rgba(18,35,44,0.08);
+  --shadow-hover: 0 14px 34px rgba(18,35,44,0.14);
+  --modal-overlay: rgba(0,0,0,0.45);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+
+  --font-display: 'Space Grotesk', 'Arial Narrow', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sidebar-w: 280px;
+  --sidebar-w-collapsed: 76px;
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   TEMA OSCURO
+   Compatible con data-theme="dark" o class="dark"
+   ============================================================ */
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.dark-mode,
+html.dark,
+body.dark,
+body.dark-theme{
+  --bg: #0E171B;
+  --paper: #172329;
+  --surface: #1B2A30;
+  --surface-soft: #18262C;
+  --surface-gold: #2A251B;
+
+  --ink: #F1F6F7;
+  --ink-soft: #B5C5C9;
+  --ink-muted: #8FA4AA;
+
+  --line: rgba(220,240,244,0.12);
+  --line-strong: rgba(220,240,244,0.20);
+
+  --brand-red: #F02E67;
+  --brand-red-hover: #FF4D7F;
+  --brand-teal: #0A4C5E;
+  --brand-teal-hover: #0D657A;
+  --gold: #C6A65A;
+
+  --sidebar-bg: #071F27;
+  --sidebar-text: #EEF7F9;
+  --sidebar-text-soft: #B3CDD3;
+  --sidebar-muted: #8FB3BC;
+  --sidebar-item: #D3E3E7;
+  --sidebar-hover: rgba(255,255,255,0.10);
+  --sidebar-active: #EAF2F4;
+  --sidebar-border: rgba(255,255,255,0.12);
+  --sidebar-tooltip-bg: #07171D;
+
+  /* ---------- Cajas / tarjetas ---------- */
+  --card-border: rgba(255,255,255,0.13);
+  --card-border-strong: rgba(255,255,255,0.18);
+  --card-highlight: rgba(255,255,255,0.055);
+  --card-shadow-inset: rgba(255,255,255,0.06);
+
+  --input-bg: #142127;
+  --code-bg: rgba(255,255,255,0.07);
+
+  --shadow: 0 8px 30px rgba(0,0,0,0.28);
+  --shadow-hover: 0 14px 34px rgba(0,0,0,0.40);
+  --modal-overlay: rgba(0,0,0,0.68);
+
+  color-scheme: dark;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
+body, .sidebar, .topbar, .tcard, .digito-btn, .digito-card, .costos-panel, .extra-block, .calc-card, .stat, .updated-badge, .detail-segment-tag, .field select, .field input, .formula-note, .validity-note, .waiver-block, .modal-box{ transition:background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease; }
+img{ max-width:100%; display:block; }
+button{ font-family:inherit; cursor:pointer; }
+a{ color:inherit; }
+
+.script-text strong{ color:var(--brand-red); font-weight:700;}
