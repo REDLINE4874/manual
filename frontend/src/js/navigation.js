@@ -9,12 +9,12 @@ const EXTERNAL_LINKS = [
   },
   {
     name: "Vicidial",
-    url: "https://aliadosmed.directo.com/agc/vicidial.php",
+    url: "https://aliadosmed4.directo.com/agc/vicidial.php",
     icon: "assets/icons/dial.svg",
   },
   {
     name: "CRM",
-    url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
+    url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
   {
