@@ -60,13 +60,15 @@ function renderNav() {
       <span class="nav-label">Enlaces</span>
       <span class="caret">▾</span>
     </button>
-    <div class="nav-submenu">${EXTERNAL_LINKS.map((link) => `
+    <div class="nav-submenu">${EXTERNAL_LINKS.map(
+      (link) => `
       <a class="nav-item nav-subitem" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
         <span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span>
         <span class="nav-label">${link.name}</span>
         <span class="ext-arrow">↗</span>
       </a>
-    `).join("")}</div>
+    `,
+    ).join("")}</div>
   </div>`;
 
   nav.innerHTML = html;
@@ -86,7 +88,9 @@ function renderNav() {
     document.querySelectorAll(".nav-dropdown-group").forEach((item) => {
       if (item !== group) {
         item.classList.remove("expanded");
-        item.querySelector(".nav-dropdown-trigger")?.setAttribute("aria-expanded", "false");
+        item
+          .querySelector(".nav-dropdown-trigger")
+          ?.setAttribute("aria-expanded", "false");
       }
     });
   });

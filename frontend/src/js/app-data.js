@@ -12,8 +12,16 @@ const SEGMENTS = [
 
 /* Imágenes disponibles para la vista de dígitos de cada banco. */
 const DIGITOS = [
-  { id: "invex", name: "INVEX", images: ["assets/images/INX-2.jpeg", "assets/images/INX-1.jpeg"] },
-  { id: "bbva", name: "BBVA", images: ["assets/images/BBVA-1.jpeg", "assets/images/BBVA-2.jpeg"] },
+  {
+    id: "invex",
+    name: "INVEX",
+    images: ["assets/images/INX-2.jpeg", "assets/images/INX-1.jpeg"],
+  },
+  {
+    id: "bbva",
+    name: "BBVA",
+    images: ["assets/images/BBVA-1.jpeg", "assets/images/BBVA-2.jpeg"],
+  },
   {
     id: "banamex",
     name: "BANAMEX",
