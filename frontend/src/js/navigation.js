@@ -17,11 +17,11 @@ const EXTERNAL_LINKS = [
     url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
-  {
-    name: "Renapo (CURP)",
-    url: "https://www.gob.mx/curp",
-    icon: "assets/icons/curp.svg",
-  },
+  // {
+  //   name: "Renapo (CURP)",
+  //   url: "https://www.gob.mx/curp",
+  //   icon: "assets/icons/curp.svg",
+  // },
   // {
   //   name: "Formalización",
   //   url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
