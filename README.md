@@ -16,7 +16,13 @@ local.
 │   │   └── images/      # Imágenes de tarjetas, bancos y favicon
 │   └── src/
 │       ├── css/
-│       │   └── styles.css
+│       │   ├── styles.css             # Punto de entrada; importa los módulos CSS
+│       │   ├── foundation.css         # Variables, temas y estilos base
+│       │   ├── layout.css             # Estructura, navegación y vista principal
+│       │   ├── card-details.css       # Detalles y beneficios de tarjetas
+│       │   ├── dark-theme.css         # Acabados del tema oscuro
+│       │   ├── calculator-modals.css  # Calculadora y ventanas modales
+│       │   └── responsive.css         # Ajustes para pantallas pequeñas
 │       └── js/
 │           ├── cards/                 # Datos de cada tarjeta
 │           ├── components/            # Componentes reutilizables
@@ -35,6 +41,12 @@ local.
 
 La interfaz, los estilos, la lógica de navegación, las calculadoras y los datos
 de las tarjetas están en `frontend/`.
+
+Los estilos se organizan en módulos dentro de `frontend/src/css/`. El archivo
+`styles.css`, enlazado desde `frontend/index.html`, importa los módulos en el
+orden necesario: estilos base, estructura, detalles de tarjetas, tema oscuro,
+calculadora y modales, y ajustes responsivos. Para agregar o reorganizar estilos,
+edita el módulo correspondiente y conserva el orden de importación.
 
 ### Backend
 
