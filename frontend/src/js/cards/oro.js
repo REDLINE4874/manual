@@ -5,7 +5,7 @@ window.CARD_DATA.oro = {
   name: "Oro Banamex",
   segment: "oro",
   color: "#A9863B",
-  image: "img/oro.png",
+  image: "assets/images/oro.png",
   income: "25 MIL",
   cat: "83.5% sin IVA",
   rate: "58.95%",

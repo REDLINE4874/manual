@@ -5,7 +5,7 @@ window.CARD_DATA.clasica = {
   name: "Clásica Banamex",
   segment: "clasico",
   color: "#D6003F",
-  image: "img/clasica.png",
+  image: "assets/images/clasica.png",
   income: "15 MIL",
   cat: "86.2% sin IVA",
   rate: "60.93%",

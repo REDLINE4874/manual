@@ -5,7 +5,7 @@ window.CARD_DATA.joy = {
   name: "JOY Banamex",
   segment: "clasico",
   color: "#009CC6",
-  image: "img/joy.png",
+  image: "assets/images/joy.png",
   income: "15 MIL",
   cat: "81.2% sin IVA",
   rate: "60.93%",

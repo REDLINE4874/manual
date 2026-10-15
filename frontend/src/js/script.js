@@ -175,34 +175,34 @@ function renderExploraBenefitsTable(data) {
    DATOS: dígitos por banco
    Para agregar las imágenes de cada banco, sustituye el arreglo
    "images" con las rutas de tus archivos, por ejemplo:
-   images: ["img/invex-1.png", "img/invex-2.png", "img/invex-3.png"]
+   images: ["assets/images/invex-1.png", "assets/images/invex-2.png", "assets/images/invex-3.png"]
    ============================================================ */
 const DIGITOS = [
-  { id: "invex", name: "INVEX", images: ["img/INX-2.jpeg", "img/INX-1.jpeg"] },
-  { id: "bbva", name: "BBVA", images: ["img/BBVA-1.jpeg", "img/BBVA-2.jpeg"] },
+  { id: "invex", name: "INVEX", images: ["assets/images/INX-2.jpeg", "assets/images/INX-1.jpeg"] },
+  { id: "bbva", name: "BBVA", images: ["assets/images/BBVA-1.jpeg", "assets/images/BBVA-2.jpeg"] },
   {
     id: "banamex",
     name: "BANAMEX",
     images: [
-      "img/BANA-1.jpeg",
-      "img/BANA-2.jpeg",
-      "img/BANA-3.jpeg",
-      "img/BANA-4.jpeg",
-      "img/BANA-5.jpeg",
+      "assets/images/BANA-1.jpeg",
+      "assets/images/BANA-2.jpeg",
+      "assets/images/BANA-3.jpeg",
+      "assets/images/BANA-4.jpeg",
+      "assets/images/BANA-5.jpeg",
     ],
   },
   {
     id: "plata",
     name: "PLATA Card",
     images: [
-      "img/Plata-1.jpeg",
-      "img/Plata-2.jpeg",
-      "img/Plata-3.jpeg",
-      "img/Plata-4.jpeg",
+      "assets/images/Plata-1.jpeg",
+      "assets/images/Plata-2.jpeg",
+      "assets/images/Plata-3.jpeg",
+      "assets/images/Plata-4.jpeg",
     ],
   },
   { id: "nu", name: "NU", images: [] },
-  { id: "C&A", name: "C&A Bradescard", images: ["img/CYA-1.jpeg"] },
+  { id: "C&A", name: "C&A Bradescard", images: ["assets/images/CYA-1.jpeg"] },
 ];
 
 /* ============================================================
@@ -212,27 +212,27 @@ const EXTERNAL_LINKS = [
   {
     name: "Agendas",
     url: "https://agendas-rab6.onrender.com/",
-    icon: "assets/agenda.svg",
+    icon: "assets/icons/agenda.svg",
   },
   {
     name: "Vicidial",
     url: "https://aliadosmed.directo.com/agc/vicidial.php",
-    icon: "assets/dial.svg",
+    icon: "assets/icons/dial.svg",
   },
   {
     name: "CRM",
     url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
-    icon: "assets/crm.svg",
+    icon: "assets/icons/crm.svg",
   },
   {
     name: "Renapo (CURP)",
     url: "https://www.gob.mx/curp",
-    icon: "assets/curp.svg",
+    icon: "assets/icons/curp.svg",
   },
   {
     name: "Formalización",
     url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-    icon: "assets/drive.svg",
+    icon: "assets/icons/drive.svg",
   },
 ];
 
@@ -295,8 +295,8 @@ function renderNav() {
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
-  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('assets/cal.svg');mask-image:url('assets/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
-  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('assets/dig.svg');mask-image:url('assets/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
+  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('assets/icons/cal.svg');mask-image:url('assets/icons/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
+  <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
   document.getElementById("sidebar").appendChild(calc);
 
   // add a home nav item at very top of nav container (before groups)
@@ -305,7 +305,7 @@ function renderNav() {
   homeBtn.setAttribute("data-view", "home");
   homeBtn.title = "Inicio / Menú general";
   homeBtn.innerHTML =
-    '<span class="ico" style="-webkit-mask-image:url(\'assets/home.svg\');mask-image:url(\'assets/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';
+    '<span class="ico" style="-webkit-mask-image:url(\'assets/icons/home.svg\');mask-image:url(\'assets/icons/home.svg\')"></span><span class="nav-label">Inicio / Menú general</span>';
   homeBtn.onclick = () => showView("home");
   nav.prepend(homeBtn);
 }

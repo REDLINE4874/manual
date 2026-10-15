@@ -5,7 +5,7 @@ window.CARD_DATA.teleton = {
   name: "Teletón Banamex",
   segment: "clasico",
   color: "#a813ff",
-  image: "img/teleton.png",
+  image: "assets/images/teleton.png",
   income: "15 MIL",
   cat: "84.9% sin IVA",
   rate: "60.92%",

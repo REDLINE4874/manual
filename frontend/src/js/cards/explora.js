@@ -5,7 +5,7 @@ window.CARD_DATA.explora = {
   name: "Explora Banamex",
   segment: "platinum",
   color: "#706F6F",
-  image: "img/explora.png",
+  image: "assets/images/explora.png",
   income: "75 MIL",
   cat: "78.5% sin IVA",
   rate: "56.48%",

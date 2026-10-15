@@ -5,7 +5,7 @@ window.CARD_DATA.descubre = {
   name: "Descubre Banamex",
   segment: "oro",
   color: "#003848",
-  image: "img/descubre.png",
+  image: "assets/images/descubre.png",
   income: "25 MIL",
   cat: "84.0% sin IVA",
   rate: "59.01%",

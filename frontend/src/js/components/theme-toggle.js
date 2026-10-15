@@ -7,7 +7,7 @@
  * No depende de CSS ni JS externo: todo vive encapsulado en su Shadow DOM.
  *
  * USO:
- *   1) Incluye este archivo:  <script src="theme-toggle.js" defer></script>
+ *   1) Incluye este archivo:  <script src="src/js/components/theme-toggle.js" defer></script>
  *   2) Coloca la etiqueta donde quieras el switch:  <theme-toggle></theme-toggle>
  *
  * TAMAÑO:

@@ -5,7 +5,7 @@ window.CARD_DATA.platinum = {
   name: "Platinum Banamex",
   segment: "platinum",
   color: "#5B6367",
-  image: "img/platinum.png",
+  image: "assets/images/platinum.png",
   income: "75 MIL",
   cat: "39.4% sin IVA",
   rate: "30.47%",
