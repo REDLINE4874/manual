@@ -21,8 +21,7 @@
  *      <theme-toggle size="40"></theme-toggle> y el tamaño se ajustará a 40px de ancho.
  *******************************************************************************************
  * El componente:
- *   - Activa la clase "dark-mode" en <body> (misma convención que el CSS existente):
- *         body.dark-mode { ... }
+ *   - Activa la clase "dark" en <body> para aplicar el tema oscuro.
  *   - Respeta la preferencia del sistema operativo al cargar.
  *   - Guarda la elección del usuario en localStorage (persiste entre visitas).
  *   - Emite un evento "theme-change" con el detalle { theme: "dark"|"light" }
@@ -367,8 +366,7 @@ class ThemeToggle extends HTMLElement {
     this.$btn.classList.toggle('dark', isDark);
     this.$btn.setAttribute('aria-checked', String(isDark));
 
-    // Activa el modo oscuro con la MISMA convención que ya usa tu CSS:
-    // body.dark-mode { ... }
+    // Activa la clase que el CSS usa para aplicar el tema oscuro.
     document.body.classList.toggle('dark', isDark);
 
     if (persist) {

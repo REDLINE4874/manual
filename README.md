@@ -18,10 +18,16 @@ local.
 │       ├── css/
 │       │   └── styles.css
 │       └── js/
-│           ├── cards/       # Datos de cada tarjeta
-│           ├── components/  # Componentes reutilizables
-│           ├── calculators.js
-│           └── script.js    # Navegación y lógica principal
+│           ├── cards/                 # Datos de cada tarjeta
+│           ├── components/            # Componentes reutilizables
+│           ├── app-data.js            # Datos compartidos
+│           ├── benefit-renderers.js   # Vistas de beneficios y redención
+│           ├── card-details.js        # Detalles de tarjetas
+│           ├── calculators.js         # Calculadoras
+│           ├── modals.js              # Ventanas modales
+│           ├── navigation.js          # Menús y cambio de vistas
+│           ├── script.js              # Inicialización de la aplicación
+│           └── sidebar.js             # Comportamiento del menú lateral
 └── README.md
 ```
 
