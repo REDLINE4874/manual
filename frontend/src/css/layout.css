@@ -86,7 +86,8 @@
 .nav-item.active{ background:var(--sidebar-active); color:var(--brand-teal); font-weight:700; }
 .nav-item.active .dot{ box-shadow:none; }
 .nav-item .nav-label{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.nav-item .ico{flex-shrink: 0; width: 20px; height: 20px; background-color:var(--sidebar-item); -webkit-mask-size: contain; mask-size: contain; 
+.ico{-webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-position:center; mask-position:center; -webkit-mask-mode:alpha; mask-mode:alpha;}
+.nav-item .ico{flex-shrink: 0; width: 20px; height: 20px; background-color:var(--sidebar-item);
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; 
   transition: background-color .15s ease;}
 .nav-item:hover .ico{ background-color: var(--brand-teal); }
