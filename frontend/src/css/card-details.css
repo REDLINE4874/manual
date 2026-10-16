@@ -55,8 +55,16 @@
 .costos-title{font-family:var(--font-display); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:1.2px; 
   color:var(--accent, var(--brand-red));margin-bottom:14px; display:flex; align-items:center; gap:8px;}
 .costos-title::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--accent, var(--brand-red));}
-.costos-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;}
-@media(max-width:640px){ .costos-grid{ grid-template-columns:1fr 1fr; } }
+.costos-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px;}
+.stat{ min-width:0; }
+.stat .label,
+.stat .value{ overflow-wrap:anywhere; word-break:break-word; }
+@media(max-width:640px){
+  .costos-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+  .stat{ padding-left:8px; padding-right:8px; }
+  .stat .label{ font-size:13px; }
+  .stat .value{ font-size:14px; }
+}
 
 .detail-two-col{
     display:grid;
@@ -496,4 +504,3 @@
 .benefit-link:hover,
 .benefit-link-button:hover{ transform:translateY(-1px); opacity:.95; }
 .benefit-link-button{ appearance:none; }
-
