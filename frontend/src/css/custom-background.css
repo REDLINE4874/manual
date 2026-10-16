@@ -1,0 +1,134 @@
+body.custom-background {
+  --bg: var(--page-background);
+  --paper: var(--bg);
+  --surface: var(--bg-3);
+  --surface-soft: var(--bg-3);
+  --surface-gold: var(--bg-3);
+  --ink: var(--text);
+  --ink-soft: var(--text-muted);
+  --ink-muted: var(--text-muted);
+  --line: var(--border);
+  --line-strong: var(--border);
+  --card-border: var(--border);
+  --card-border-strong: var(--border);
+  --sidebar-bg: var(--bg-3);
+  --sidebar-text: var(--text);
+  --sidebar-text-soft: var(--text-muted);
+  --sidebar-muted: var(--text-muted);
+  --sidebar-item: var(--text);
+  --sidebar-hover: var(--bg);
+  --sidebar-active: var(--bg);
+  --sidebar-border: var(--border);
+  --sidebar-tooltip-bg: var(--bg-3);
+  background: var(--page-background);
+}
+
+body.custom-background .utility-nav {
+  background: var(--custom-sidebar-background);
+  color: var(--text);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body.custom-background .sidebar {
+  background: var(--custom-sidebar-background);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.custom-background .topbar { background: var(--custom-sidebar-background); color: var(--text); }
+body.custom-background .nav-item.active { color: var(--text); }
+
+body.custom-background .utility-action,
+body.custom-background .utility-links__trigger {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.custom-background .utility-action:hover,
+body.custom-background .utility-links__trigger:hover,
+body.custom-background .utility-links__menu a:hover {
+  background: var(--bg);
+}
+
+body.custom-background .utility-links__menu {
+  background: var(--custom-navbar-background);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.custom-background .utility-links__menu a { color: var(--text); }
+
+/* Colores de marca usados como texto: se ajustan al fondo elegido. */
+body.custom-background .script-text strong,
+body.custom-background .hero .eyebrow,
+body.custom-background .back-link:hover,
+body.custom-background .stat .value,
+body.custom-background .costos-title,
+body.custom-background .section-header h2,
+body.custom-background .redencion-card-content a,
+body.custom-background .explora-benefits-table td:first-child,
+body.custom-background .explora-destination-list li::before,
+body.custom-background .explora-certificate-icon,
+body.custom-background .digito-btn:hover {
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .waiver-title {
+  color: var(--custom-gold-text);
+}
+
+body.custom-background .costos-title::before {
+  background: var(--custom-accent-text);
+}
+
+body.custom-background .redencion-card-icon svg {
+  stroke: var(--custom-accent-text);
+}
+
+body.custom-background .detail-segment-tag,
+body.custom-background .explora-benefits-table td:first-child,
+body.custom-background .explora-destination-list li::before,
+body.custom-background .explora-certificate-icon,
+body.custom-background .section-header h2,
+body.custom-background .redencion-card-content a:hover {
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .digito-btn:hover {
+  border-color: var(--custom-accent-text);
+}
+
+body.custom-background .nav-item.active .ico,
+body.custom-background .nav-item:hover .ico {
+  background-color: var(--custom-accent-text);
+}
+
+body.custom-background .tcard,
+body.custom-background .digito-card,
+body.custom-background .costos-panel,
+body.custom-background .extra-block,
+body.custom-background .calc-card,
+body.custom-background .stat,
+body.custom-background .updated-badge,
+body.custom-background .detail-segment-tag,
+body.custom-background .formula-note,
+body.custom-background .validity-note,
+body.custom-background .waiver-block,
+body.custom-background .modal-box {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.custom-background .field input,
+body.custom-background .field select,
+body.custom-background textarea {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+body.custom-background .header-logo { filter: brightness(0) contrast(1) saturate(0) invert(0); }
+body.custom-background-dark .header-logo { filter: brightness(0) invert(1); }

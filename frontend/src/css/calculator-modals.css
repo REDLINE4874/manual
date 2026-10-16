@@ -113,6 +113,13 @@ footer.page-footer{
   gap:12px;
   min-height:50px;
 }
+.theme-control{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:0;
+}
 .theme-label{
   font-size:11px;
   text-transform:uppercase;
@@ -122,5 +129,16 @@ footer.page-footer{
 }
 .sidebar.collapsed .theme-switch-container{justify-content:center;}
 .sidebar.collapsed .theme-label{display:none;}
+.sidebar.collapsed .theme-switch-container{
+  flex-direction:column;
+  gap:8px;
+}
+.sidebar.collapsed .theme-control{width:100%;}
 .theme-switch-container theme-toggle{flex-shrink:0;}
-
+.sidebar.collapsed .theme-switch-container theme-toggle{
+  --w:38px;
+  --h:20px;
+  --pad:2px;
+  --knob:16px;
+  --tx:18px;
+}

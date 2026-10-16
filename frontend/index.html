@@ -30,6 +30,7 @@
     <script src="src/js/modals.js" defer></script>
     <script src="src/js/script.js" defer></script>
     <script src="src/js/components/theme-toggle.js" defer></script>
+    <script src="src/js/components/theme-background-picker.js" defer></script>
   </head>
   <body>
     <div class="overlay" id="overlay"></div>
@@ -55,14 +56,44 @@
           </div>
         </div>
         <div id="navContainer"><!-- generado por JS --></div>
-        <!-- Selector de tema -->
-        <div class="theme-switch-container">
-          <span class="theme-label">Tema</span>
-          <theme-toggle size="md"></theme-toggle>
-        </div>
       </nav>
 
       <main class="main">
+        <nav class="utility-nav" id="utilityNav" aria-label="Herramientas del manual">
+          <div class="utility-nav__controls">
+            <div class="utility-control">
+              <span class="utility-control__label">Fondo</span>
+              <theme-background-picker></theme-background-picker>
+            </div>
+            <div class="utility-control">
+              <span class="utility-control__label">Tema</span>
+              <theme-toggle size="md"></theme-toggle>
+            </div>
+            <button class="utility-action" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos">
+              <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/cal.svg');mask-image:url('assets/icons/cal.svg')"></span>
+              <span>Calculadora</span>
+            </button>
+            <button class="utility-action" data-view="digitos" onclick="showView('digitos')" title="Dígitos">
+              <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span>
+              <span>Dígitos</span>
+            </button>
+          </div>
+          <div class="utility-links" id="utilityLinks">
+            <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
+              <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span>
+              <span>Enlaces</span>
+              <span class="utility-links__caret">▾</span>
+            </button>
+            <div class="utility-links__menu">
+              <a href="https://agendas-rab6.onrender.com/" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span><span>Agendas</span><span>↗</span></a>
+              <a href="https://aliadosmed4.directo.com/agc/vicidial.php" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/dial.svg');mask-image:url('assets/icons/dial.svg')"></span><span>Vicidial</span><span>↗</span></a>
+              <a href="http://aliados2.medc.com.mx:7070/MA_ALIADOS" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/crm.svg');mask-image:url('assets/icons/crm.svg')"></span><span>CRM</span><span>↗</span></a>
+              <a href="https://www.gob.mx/curp" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/curp.svg');mask-image:url('assets/icons/curp.svg')"></span><span>Renapo (CURP)</span><span>↗</span></a>
+              <a href="https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span><span>Formalización</span><span>↗</span></a>
+              <a href="https://www.banamex.com/es/localizador-sucursales.html?lid=MX|index-H4-Information-IrLocalizadorSucursales-ES" target="_blank" rel="noopener noreferrer"><span class="ico" style="-webkit-mask-image:url('assets/icons/sucursales.svg');mask-image:url('assets/icons/sucursales.svg')"></span><span>Sucursales</span><span>↗</span></a>
+            </div>
+          </div>
+        </nav>
         <section class="view active" id="view-home">
           <div class="hero">
             <div>

@@ -176,9 +176,9 @@ function openDigito(id) {
   `;
   showView("digito-detail");
   document
-    .querySelectorAll(".nav-item")
+    .querySelectorAll(".nav-item, .utility-action")
     .forEach((b) => b.classList.remove("active"));
-  const navBtn = document.querySelector('.nav-item[data-view="digitos"]');
+  const navBtn = document.querySelector('[data-view="digitos"]');
   if (navBtn) navBtn.classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -192,9 +192,9 @@ function showView(name) {
     .forEach((v) => v.classList.remove("active"));
   document.getElementById("view-" + name).classList.add("active");
   document
-    .querySelectorAll(".nav-item")
+    .querySelectorAll(".nav-item, .utility-action")
     .forEach((b) => b.classList.remove("active"));
-  const navBtn = document.querySelector(`.nav-item[data-view="${name}"]`);
+  const navBtn = document.querySelector(`[data-view="${name}"]`);
   if (navBtn) navBtn.classList.add("active");
   closeSidebar();
   window.scrollTo({ top: 0, behavior: "smooth" });
