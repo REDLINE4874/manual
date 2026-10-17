@@ -117,23 +117,83 @@ function renderNav() {
    ============================================================ */
 function renderHome() {
   const cont = document.getElementById("segmentsContainer");
-  let html = "";
-  SEGMENTS.forEach((seg) => {
-    html += `<div class="segment-block">
-      <div class="segment-title"><span class="bar" style="background:${seg.bar}"></span>${seg.label}</div>
-      <div class="card-grid">`;
-    CARDS.filter((c) => c.segment === seg.id).forEach((c) => {
-      html += `<button class="tcard" onclick="openCard('${c.id}')">
-        <img src="${c.image}" alt="${c.name}">
-        <div class="tc-body">
-          <div class="tc-name">${c.name}</div>
-          <div class="tc-meta">Ingresos desde ${c.income} · CAT ${c.cat}</div>
+  cont.innerHTML = `
+    <div class="segment-block">
+      <div class="segment-heading">
+        <h2 class="segment-title">Todas las tarjetas</h2>
+        <div class="carousel-controls">
+          <button class="carousel-manual-control" type="button" data-direction="-1" aria-label="Tarjeta anterior">‹</button>
+          <button class="carousel-manual-control" type="button" data-direction="1" aria-label="Tarjeta siguiente">›</button>
+          <button class="carousel-toggle" type="button" aria-pressed="false" aria-label="Pausar movimiento automático">Pausar</button>
         </div>
-      </button>`;
-    });
-    html += `</div></div>`;
+      </div>
+      <div class="card-grid" id="card-carousel" role="region" aria-label="Todas las tarjetas" tabindex="0">
+        <div class="card-track">
+          <div class="card-set">
+            ${CARDS.map((c) => {
+              const segment = SEGMENTS.find((item) => item.id === c.segment);
+              return `<button class="tcard" onclick="openCard('${c.id}')">
+                <img src="${c.image}" alt="${c.name}">
+                <div class="tc-body">
+                  <span class="tc-segment" style="--segment-color:${segment?.bar || "var(--brand-teal)"}">${segment?.label || "Otros"}</span>
+                  <div class="tc-name">${c.name}</div>
+                  <div class="tc-meta">Ingresos desde ${c.income} · CAT ${c.cat}</div>
+                </div>
+              </button>`;
+            }).join("")}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  const carousel = cont.querySelector(".card-grid");
+  const track = carousel.querySelector(".card-track");
+  const firstSet = track.querySelector(".card-set");
+  const clone = firstSet.cloneNode(true);
+  clone.setAttribute("aria-hidden", "true");
+  clone.inert = true;
+  clone.querySelectorAll("button").forEach((button) => {
+    button.tabIndex = -1;
   });
-  cont.innerHTML = html;
+  track.appendChild(clone);
+
+  const updateSpeed = () => {
+    const duration = firstSet.getBoundingClientRect().width / 35;
+    track.style.setProperty("--carousel-duration", `${duration}s`);
+  };
+  const getCardStep = () =>
+    firstSet.querySelector(".tcard").getBoundingClientRect().width +
+    parseFloat(getComputedStyle(firstSet).gap);
+  const toggle = cont.querySelector(".carousel-toggle");
+  toggle.addEventListener("click", () => {
+    const isPaused = track.classList.toggle("is-paused");
+    toggle.setAttribute("aria-pressed", String(isPaused));
+    toggle.setAttribute(
+      "aria-label",
+      `${isPaused ? "Reanudar" : "Pausar"} movimiento automático`,
+    );
+    toggle.textContent = isPaused ? "Reanudar" : "Pausar";
+  });
+  cont.querySelectorAll(".carousel-manual-control").forEach((button) => {
+    button.addEventListener("click", () => {
+      const direction = Number(button.dataset.direction);
+      const animation = track
+        .getAnimations()
+        .find((item) => item.animationName === "card-carousel-scroll");
+
+      if (animation) {
+        const duration = Number(animation.effect.getComputedTiming().duration);
+        const currentTime = Number(animation.currentTime) || 0;
+        const nextTime = currentTime + (direction * getCardStep() * 1000) / 35;
+        animation.currentTime = ((nextTime % duration) + duration) % duration;
+        return;
+      }
+
+      carousel.scrollLeft += direction * getCardStep();
+    });
+  });
+  window.addEventListener("resize", updateSpeed);
+  updateSpeed();
 }
 
 /* ============================================================
