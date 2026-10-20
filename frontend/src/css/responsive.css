@@ -45,10 +45,10 @@
   .commission-timeline{grid-template-columns:repeat(2,1fr);}
  
 }
-@media(max-width:700px){
+@media(max-width:1220px){
   .utility-nav__actions .utility-action,
   .utility-nav__actions .utility-links__trigger{gap:0;padding:9px;}
-  .utility-nav__actions .utility-action > span:not(.utility-action__icon),
+  .utility-nav__actions .utility-action > span:not(.utility-action__icon):not(.commission-icon),
   .utility-nav__actions .utility-links__trigger > span:not(.utility-action__icon){display:none;}
 }
 @media(max-width:480px){
