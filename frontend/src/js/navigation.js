@@ -60,7 +60,7 @@ function renderNav() {
       <span class="nav-label">Enlaces</span>
       <span class="caret">▾</span>
     </button>
-    <div class="nav-submenu">${EXTERNAL_LINKS.map(
+    <div class="nav-submenu">${EXTERNAL_LINKS.filter((link) => !link.url.includes("docs.google.com") && !link.url.includes("agendas-rab6.onrender.com")).map(
       (link) => `
       <a class="nav-item nav-subitem" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
         <span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span>
@@ -382,6 +382,28 @@ function showView(name) {
     .forEach((b) => b.classList.remove("active"));
   const navBtn = document.querySelector(`[data-view="${name}"]`);
   if (navBtn) navBtn.classList.add("active");
+  document.querySelectorAll(".internal-tab").forEach((tab) => {
+    const active = tab.dataset.view === name;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", String(active));
+  });
   closeSidebar();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openExternalView(url, title = "Contenido externo") {
+  const frame = document.getElementById("externalFrame");
+  const heading = document.getElementById("externalFrameTitle");
+  const externalLink = document.getElementById("externalFrameOpen");
+
+  if (!frame || !heading || !externalLink) {
+    window.open(url, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  heading.textContent = title;
+  frame.title = title;
+  frame.src = url;
+  externalLink.href = url;
+  showView("external");
 }
