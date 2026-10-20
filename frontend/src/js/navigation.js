@@ -255,6 +255,7 @@ function renderHome() {
         </div>
         <p class="validation-table-note">Verifica la tarjeta antes de continuar.</p>
       </div>
+            <p class="validation-warning"><strong>Importante:</strong> las tarjetas marcadas como “No autentican” no deben continuar en el proceso.</p>
       <div class="validation-columns" role="list" aria-label="Clasificación de tarjetas que autentican y que no autentican">
         ${VALID_CARD_GROUPS.map((group) => `
           <article class="validation-column ${group.statusClass}" role="listitem">
@@ -268,7 +269,7 @@ function renderHome() {
           </article>
         `).join("")}
       </div>
-      <p class="validation-warning"><strong>Importante:</strong> las tarjetas marcadas como “No autentican” no deben continuar en el proceso.</p>
+      
     </section>`;
 
   const carousel = cont.querySelector(".card-grid");

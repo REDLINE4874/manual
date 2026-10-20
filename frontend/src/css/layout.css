@@ -279,7 +279,7 @@
 .validation-card-logo--initials{display:grid;place-items:center;background:color-mix(in srgb,var(--brand-teal) 22%,var(--paper));color:var(--brand-teal);font-size:9px;font-weight:800;letter-spacing:-.2px;}
 .validation-column.is-invalid .validation-card-list li{background:color-mix(in srgb,var(--brand-red) 8%,var(--paper));}
 .validation-column.is-invalid .validation-card-logo--initials{background:color-mix(in srgb,var(--brand-red) 20%,var(--paper));color:var(--brand-red);}
-.validation-warning{margin:13px 0 0;padding:12px 14px;border-left:3px solid var(--brand-red);border-radius:6px;background:color-mix(in srgb,var(--brand-red) 8%,var(--paper));color:var(--ink-soft);font-size:13px;}
+.validation-warning{margin:13px 0 13px 0;padding:12px 14px;border-left:3px solid var(--brand-red);border-radius:6px;background:color-mix(in srgb,var(--brand-red) 8%,var(--paper));color:var(--ink-soft);font-size:13px;}
 .validation-warning strong{color:var(--brand-red);}
 @media (hover:none), (pointer:coarse){
   .tcard .tc-body{opacity:1;transform:none;}
