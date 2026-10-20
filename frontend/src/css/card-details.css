@@ -60,14 +60,14 @@
 .detail-img-col{flex:0 0 170px; width:170px; display:flex; flex-direction:column; align-items:flex-start;}
 .detail-img-wrap{flex:0 0 auto;width:100%;margin-top:8px;}
 .detail-img-wrap img{ width:100%; display:block;}
-.costos-panel{min-width:0; background: var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg); 
+.costos-panel{min-width:0; max-width:900px; background: var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg); 
   flex:1; padding:14px 16px; box-shadow:var(--shadow);}
 .costos-title{font-family:var(--font-display); font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:1.2px; 
   color:var(--accent, var(--brand-red));margin-bottom:10px; display:flex; align-items:center; gap:8px;}
 .costos-title::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--accent, var(--brand-red));}
 .costos-grid{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px;}
 .detail-header .stat{ min-width:0; padding:8px 10px; }
-.detail-header .stat .label{font-size:11px;line-height:1.25;letter-spacing:.45px;margin-bottom:4px;}
+.detail-header .stat .label{font-size:px;line-height:1.25;letter-spacing:.45px;margin-bottom:4px;}
 .detail-header .stat .value{font-size:14px;line-height:1.25;}
 .detail-header .stat-button{background:color-mix(in srgb, var(--accent, var(--brand-red)) 9%, var(--paper));}
 .detail-header .stat-button:hover{border-color:var(--accent, var(--brand-red));}
@@ -130,7 +130,7 @@
 
 .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px;}
 .stat{ background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--accent, var(--brand-red)); border-radius:8px; padding:8px 11px;}
-.stat .label{ font-size:17px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:800; margin-bottom:3px; }
+.stat .label{  text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:800; margin-bottom:3px; }
 .stat .value{ font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.25; color:var(--brand-red); }
 .stat.accent{ border-color:transparent; }
 
