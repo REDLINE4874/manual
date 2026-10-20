@@ -268,7 +268,7 @@
 .validation-status{display:inline-flex;align-items:center;border-radius:999px;padding:7px 12px;background:color-mix(in srgb,var(--brand-teal) 16%,var(--paper));color:var(--brand-teal);font-size:13px;font-weight:700;white-space:nowrap;}
 .validation-column.is-invalid .validation-status{background:color-mix(in srgb,var(--brand-red) 14%,var(--paper));color:var(--brand-red);}
 .validation-card-list{display:flex;flex-direction:column;gap:6px;margin:0;padding:13px 12px 14px;list-style:none;}
-.validation-card-list li{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;background:color-mix(in srgb,var(--brand-teal) 8%,var(--paper));color:var(--ink);font-size:12px;line-height:1.2;}
+.validation-card-list li{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:6px;background:color-mix(in srgb,var(--brand-teal) 8%,var(--paper));color:var(--ink);font-size:14px;line-height:1.25;}
 .validation-card-logo{display:block;flex:0 0 24px;width:24px;height:24px;border-radius:5px;}
 .validation-card-logo--image{object-fit:contain;background:#fff;}
 .validation-card-logo--brand{-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;}

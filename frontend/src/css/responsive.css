@@ -6,6 +6,9 @@
 .overlay.show{ display:block; }
 
 /* ---------- Responsive ---------- */
+@media(max-width:1056px){
+ .validation-columns{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
 @media(max-width:1000px){
   .utility-nav{
     display:grid;
@@ -37,6 +40,7 @@
   .main > .view{ padding:26px 18px 60px; }
   .detail-head{ gap:20px; }
   .detail-img-wrap{ flex:0 0 auto; max-width:150px; width:150px; margin:0 auto; }
+ 
 }
 @media(max-width:700px){
   .utility-nav__actions .utility-action,
@@ -56,7 +60,6 @@
   .segment-title{font-size:17px;}
   .validation-table-heading{display:block;}
   .validation-table-note{margin-top:8px;text-align:left;}
-  .validation-columns{grid-template-columns:repeat(2,minmax(0,1fr));}
   .stat-grid{ grid-template-columns:1fr 1fr; }
   .calc-results{ grid-template-columns:1fr; }
 }
