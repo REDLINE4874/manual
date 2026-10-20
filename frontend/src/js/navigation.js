@@ -115,6 +115,108 @@ function renderNav() {
 /* ============================================================
    RENDER: grid del menú principal (home)
    ============================================================ */
+const VALID_CARD_GROUPS = [
+  {
+    category: "Bancarias",
+    status: "Autentican",
+    statusClass: "is-valid",
+    cards: [
+      "Banorte", "Banamex", "Afirme", "Banregio", "Santander", "HSBC",
+      "American Express (Crédito)", "Inbursa", "Scotiabank", "Invex", "Banbajío",
+      "BBVA", "IXE", "Falabella", "Banjercito",
+    ],
+  },
+  {
+    category: "Departamentales",
+    status: "Autentican",
+    statusClass: "is-valid",
+    cards: [
+      "Liverpool", "Palacio de Hierro", "C&A (Visa)", "Suburbia", "Soriana (Falabella)",
+      "Sanborns", "Walmart", "Bradescard (Visa o Mastercard)", "BanCoppel", "Sears",
+    ],
+  },
+  {
+    category: "Fintech",
+    status: "Autentican",
+    statusClass: "is-valid",
+    cards: ["Stori", "Nu", "Plata Card (Tarjeta de usos especiales)"],
+  },
+  {
+    category: "Varias",
+    status: "No autentican",
+    statusClass: "is-invalid",
+    cards: [
+      "Coppel Departamental", "Famsa", "Banco Azteca", "Hey Banco", "La Surtidora",
+      "La Del Sol", "Tarjeta Amiga", "Mercado Pago", "Didi Card", "Rappi Card",
+      "Penfile Banamex", "Perfiles Banamex", "Tarjetas de Débito", "American Express (Servicios)",
+    ],
+  },
+];
+
+const CARD_LOGOS = {
+  Banorte: "Banorte.svg",
+  Banamex: "Banamex.svg",
+  "Penfile Banamex": "Banamex.svg",
+  "Perfiles Banamex": "Banamex.svg",
+  Afirme: "afirme.svg",
+  Banregio: "banregio.svg",
+  Santander: "santander.png",
+  HSBC: "hsbc.svg",
+  "American Express": "americanexpress.svg",
+  Inbursa: "inbursa.png",
+  Scotiabank: "scotiabank.webp",
+  Invex: "invex.webp",
+  Banbajío: "banbajio.svg",
+  BBVA: "BBVA.svg",
+  IXE: "IXE.png",
+  Falabella: "FALABELLA.webp",
+  Banjercito: "BANJERCITO.svg",
+  Liverpool: "LIVERPOOL.webp",
+  "Palacio de Hierro": "PALACIO DE HIERRO.png",
+  "C&A": "C&A.svg",
+  Suburbia: "SUBURBIA.png",
+  Soriana: "soriana.svg",
+  Sanborns: "SANBORNS.webp",
+  Walmart: "WAMART.webp",
+  Bradescard: "BRADESCARD.svg",
+  BanCoppel: "BANCOPPEL.svg",
+  Sears: "SEARS.png",
+  Stori: "STORI.png",
+  Nu: "NU.svg",
+  "Plata Card": "PLATA.jpeg",
+  Famsa: "FAMSA.png",
+  "Banco Azteca": "BANCO AZTECA.svg",
+  "Hey Banco": "HEY BANCO.png",
+  "Mercado Pago": "mercadopago.svg",
+  Didi: "DIDI CARD.svg",
+  Rappi: "RAPPI CARD.jpg",
+  "La Surtidora": "SURTIDORA.png",
+  "La Del Sol": "LA DEL SOL.png",
+  "Tarjeta Amiga": "TAJETA AMIGA.png",
+};
+
+const CARD_LOGO_MASKS = new Set(["American Express", "HSBC", "Soriana", "Mercado Pago"]);
+
+function getCardLogoMarkup(card) {
+  const logoKey = Object.keys(CARD_LOGOS).find((key) => card.startsWith(key));
+  if (logoKey) {
+    const logoClass = logoKey.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    if (CARD_LOGO_MASKS.has(logoKey)) {
+      return `<span class="validation-card-logo validation-card-logo--brand logo-${logoClass}" style="-webkit-mask-image:url('assets/logos/${CARD_LOGOS[logoKey]}');mask-image:url('assets/logos/${CARD_LOGOS[logoKey]}')" aria-hidden="true"></span>`;
+    }
+    return `<img class="validation-card-logo validation-card-logo--image" src="assets/logos/${CARD_LOGOS[logoKey]}" alt="" aria-hidden="true">`;
+  }
+  const initials = card
+    .replace(/\([^)]*\)/g, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+  return `<span class="validation-card-logo validation-card-logo--initials" aria-hidden="true">${initials}</span>`;
+}
+
 function renderHome() {
   const cont = document.getElementById("segmentsContainer");
   cont.innerHTML = `
@@ -144,7 +246,30 @@ function renderHome() {
           </div>
         </div>
       </div>
-    </div>`;
+    </div>
+    <section class="validation-table-section" aria-labelledby="validation-table-title">
+      <div class="validation-table-heading">
+        <div>
+          <span class="eyebrow">Identifica · valida · autentica</span>
+          <h2 class="segment-title" id="validation-table-title">Tarjetas válidas para autenticar</h2>
+        </div>
+        <p class="validation-table-note">Verifica la tarjeta antes de continuar.</p>
+      </div>
+      <div class="validation-columns" role="list" aria-label="Clasificación de tarjetas que autentican y que no autentican">
+        ${VALID_CARD_GROUPS.map((group) => `
+          <article class="validation-column ${group.statusClass}" role="listitem">
+            <header class="validation-column-header">
+              <h3>${group.category}</h3>
+              <span class="validation-status">${group.status}</span>
+            </header>
+            <ul class="validation-card-list">
+              ${group.cards.map((card) => `<li>${getCardLogoMarkup(card)}<span>${card}</span></li>`).join("")}
+            </ul>
+          </article>
+        `).join("")}
+      </div>
+      <p class="validation-warning"><strong>Importante:</strong> las tarjetas marcadas como “No autentican” no deben continuar en el proceso.</p>
+    </section>`;
 
   const carousel = cont.querySelector(".card-grid");
   const track = carousel.querySelector(".card-track");

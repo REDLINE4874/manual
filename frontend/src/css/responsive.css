@@ -54,6 +54,9 @@
   .utility-nav__updated-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
   .utility-control__label{display:none;}
   .segment-title{font-size:17px;}
+  .validation-table-heading{display:block;}
+  .validation-table-note{margin-top:8px;text-align:left;}
+  .validation-columns{grid-template-columns:repeat(2,minmax(0,1fr));}
   .stat-grid{ grid-template-columns:1fr 1fr; }
   .calc-results{ grid-template-columns:1fr; }
 }
