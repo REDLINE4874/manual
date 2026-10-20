@@ -142,7 +142,7 @@ const VALID_CARD_GROUPS = [
     cards: ["Stori", "Nu", "Plata Card (Tarjeta de usos especiales)"],
   },
   {
-    category: "Varias",
+    category: "No Validas",
     status: "No autentican",
     statusClass: "is-invalid",
     cards: [

@@ -138,10 +138,10 @@ function openCard(id) {
       const modalTitle = button.getAttribute("data-modal-title") || "Beneficio";
 
       if (modalType === "redencion") {
-        openInfoModal(modalTitle, renderRedencionPuntos());
+        openInfoModal(modalTitle, renderRedencionPuntos(), "redencion");
       }
       if (modalType === "destinos") {
-        openInfoModal(modalTitle, renderExploraBenefitsTable(c.travelBenefitsTable));
+        openInfoModal(modalTitle, renderExploraBenefitsTable(c.travelBenefitsTable), "destinos");
       }
     });
   });
