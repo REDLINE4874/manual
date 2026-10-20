@@ -72,6 +72,10 @@
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span>
               <span>Dígitos</span>
             </button>
+            <button class="utility-action" data-view="comision" onclick="showView('comision')" title="Comisi&#243;n por administraci&#243;n">
+              <span class="commission-icon" aria-hidden="true">$</span>
+              <span>Comisi&#243;n</span>
+            </button>
             <div class="utility-links" id="utilityLinks">
               <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
                 <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span>
@@ -112,6 +116,23 @@
             </div>
           </div>
           <div id="segmentsContainer"><!-- generado por JS --></div>
+        </section>
+
+        <section class="view commission-view" id="view-comision">
+          <button class="back-link" onclick="showView('home')">&#8592; Volver al men&#250;</button>
+          <div class="commission-hero"><div><span class="eyebrow">Nueva promoci&#243;n</span><h1>Comisi&#243;n por administraci&#243;n</h1><p>Durante el primer a&#241;o con la tarjeta, la comisi&#243;n se cobra mensualmente y puedes exentarla cumpliendo una compra m&#237;nima con tu tarjeta digital.</p></div><div class="commission-hero-badge" aria-label="La comisi&#243;n puede exentarse durante el primer a&#241;o"><span class="commission-hero-badge__symbol">$</span><strong>Exenta</strong><span>primer a&#241;o</span></div></div>
+          <div class="commission-summary" aria-label="Gu&#237;a r&#225;pida para explicar el beneficio">
+            <article class="commission-summary__item"><span class="commission-summary__step">1 · Al contratar</span><h2>El primer mes es bonificado</h2><p>El cliente realiza la compra m&#237;nima y paga la primera mensualidad. Despu&#233;s de cubrir ese pago, se le bonifica la mensualidad.</p></article>
+            <article class="commission-summary__item"><span class="commission-summary__step">2 · Para exentar</span><h2>Debe comprar $300 al mes</h2><p>Del mes 2 al 12, debe acumular al menos $300 durante el mes anterior para exentar la comisi&#243;n del siguiente mes.</p></article>
+            <article class="commission-summary__item"><span class="commission-summary__step">3 · Despu&#233;s del a&#241;o</span><h2>La comisi&#243;n vuelve a cobrarse</h2><p>Al terminar el primer a&#241;o, el cobro mensual se aplica normalmente. Solo participan tarjetas que tienen esta comisi&#243;n.</p></article>
+          </div>
+          <div class="commission-eligibility"><div class="commission-eligibility__icon">i</div><div><h2>Condiciones importantes</h2><p><strong>El beneficio es v&#225;lido &#250;nicamente durante el primer a&#241;o</strong> con la tarjeta. A partir del segundo a&#241;o, la comisi&#243;n por administraci&#243;n mensual se aplicar&#225; de manera normal.</p><p>Solo est&#225; disponible para tarjetas que tienen cobro por administraci&#243;n mensual. <strong>JOY no participa porque no tiene esta comisi&#243;n.</strong></p></div></div>
+          <div class="commission-section-heading"><span class="eyebrow">El proceso</span><h2>As&#237; funciona la promoci&#243;n</h2></div>
+          <div class="commission-steps"><article class="commission-step"><span class="commission-step__number">01</span><div><h3>Recibe y activa tu tarjeta</h3><p>Acude a sucursal para recibir la tarjeta f&#237;sica y solicita su activaci&#243;n. Activa tambi&#233;n la tarjeta digital desde NetKey.</p></div></article><article class="commission-step"><span class="commission-step__number">02</span><div><h3>Compra y paga la primera mensualidad</h3><p>Realiza la compra m&#237;nima indicada y paga la primera mensualidad. Una vez cubierto el pago, se aplica la bonificaci&#243;n del primer mes.</p></div></article><article class="commission-step"><span class="commission-step__number">03</span><div><h3>Cumple la meta mensual</h3><p>A partir del mes 2, realiza compras por al menos <strong>$300</strong> durante el mes anterior para exentar la comisi&#243;n del siguiente mes.</p></div></article></div>
+          <div class="commission-rule-grid"><article class="commission-rule commission-rule--success"><span class="commission-rule__icon">&#10003;</span><div><h3>Si cumples la meta</h3><p>La comisi&#243;n por administraci&#243;n del mes correspondiente se exenta autom&#225;ticamente.</p></div></article><article class="commission-rule commission-rule--warning"><span class="commission-rule__icon">!</span><div><h3>Si no cumples la meta</h3><p>Se realiza el cargo de la comisi&#243;n por administraci&#243;n mensual correspondiente.</p></div></article></div>
+          <div class="commission-section-heading commission-section-heading--timeline"><span class="eyebrow">Ejemplo</span><h2>La condici&#243;n se revisa mes a mes</h2><p>El resultado de cada mes depende del consumo realizado en el mes anterior.</p></div>
+          <div class="commission-timeline" aria-label="Ejemplo de aplicaci&#243;n mensual"><article class="commission-month commission-month--success"><span class="commission-month__label">Mes 1</span><h3>Compra con tarjeta digital</h3><strong>Bonificaci&#243;n aplicada</strong></article><article class="commission-month commission-month--success"><span class="commission-month__label">Mes 2</span><h3>Consumo anterior: <b>$350</b></h3><strong>Comisi&#243;n exenta</strong></article><article class="commission-month commission-month--warning"><span class="commission-month__label">Mes 3</span><h3>Consumo anterior: <b>$220</b></h3><strong>Se realiza el cargo</strong></article><article class="commission-month commission-month--success"><span class="commission-month__label">Mes 4</span><h3>Consumo anterior: <b>$480</b></h3><strong>Comisi&#243;n exenta</strong></article></div>
+          <aside class="commission-note"><strong>Idea clave:</strong> el mes 1 se aplica la bonificaci&#243;n; del mes 2 al 12, solo se exenta la mensualidad de los meses en los que s&#237; se cumple la condici&#243;n. Al terminar el primer a&#241;o, la comisi&#243;n se aplicar&#225; normalmente.</aside>
         </section>
 
         <section class="view" id="view-card">

@@ -40,6 +40,9 @@
   .main > .view{ padding:26px 18px 60px; }
   .detail-head{ gap:20px; }
   .detail-img-wrap{ flex:0 0 auto; max-width:150px; width:150px; margin:0 auto; }
+  .commission-hero{padding:24px;}
+  .commission-steps{grid-template-columns:1fr;}
+  .commission-timeline{grid-template-columns:repeat(2,1fr);}
  
 }
 @media(max-width:700px){
@@ -62,6 +65,11 @@
   .validation-table-note{margin-top:8px;text-align:left;}
   .stat-grid{ grid-template-columns:1fr 1fr; }
   .calc-results{ grid-template-columns:1fr; }
+  .commission-hero{display:block;padding:20px;}
+  .commission-hero-badge{margin:22px auto 0;width:108px;height:108px;}
+  .commission-summary{grid-template-columns:1fr;gap:10px;margin-bottom:32px;}
+  .commission-rule-grid,.commission-timeline{grid-template-columns:1fr;}
+  .commission-step{padding:17px;}
 }
 
 @media(prefers-reduced-motion:reduce){
