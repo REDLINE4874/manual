@@ -65,6 +65,7 @@
 .document-frame-wrap{overflow:hidden;margin-top:26px;border:1px solid var(--sidebar-border);border-radius:16px;background:var(--surface,#fff);box-shadow:var(--shadow);}
 .document-frame{display:block;width:100%;height:min(78vh,900px);border:0;}
 #view-guia .document-frame-wrap{width:min(100%,820px);margin-left:auto;margin-right:auto;}
+#view-agendas .document-frame-wrap{width:min(100%,1150px);margin-left:auto;margin-right:auto;}
 body.iframe-scroll-active{overflow:hidden;}
 .internal-tabs{display:flex;align-items:center;gap:6px;padding:8px 28px 0;background:var(--sidebar-bg);border-top:1px solid var(--sidebar-border);}
 .internal-tab{border:1px solid var(--sidebar-border);border-bottom:0;border-radius:10px 10px 0 0;padding:9px 16px;background:transparent;color:var(--sidebar-text-soft);font:600 12px var(--font-body);cursor:grab;transition:background .2s ease,color .2s ease,opacity .2s ease;}
