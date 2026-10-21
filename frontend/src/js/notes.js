@@ -20,6 +20,7 @@ const authButton = document.getElementById("authButton");
 
 let notesClient = null;
 let currentNotesUser = null;
+let noteUsers = [];
 
 function setNotesStatus(message, isError = false) {
   [notesStatus, noteSaveStatus].forEach((element) => {
@@ -52,25 +53,28 @@ function renderNotes(notes, sharePermissions = new Map()) {
     <article class="note-card" data-note-id="${escapeNoteHtml(note.id)}">
       <h2>${escapeNoteHtml(note.title || "Sin título")}</h2>
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
-      ${canEdit ? `<button class="note-card__edit" type="button" data-edit-note="${escapeNoteHtml(note.id)}">Editar</button>` : ""}
-      ${isOwner ? `
-        <div class="note-card__share">
-          <input type="email" data-share-email list="notesUserDirectory" placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
-          <select class="note-card__select custom-select" data-share-permission aria-label="Permiso para compartir">
-            <option value="view">Solo lectura</option>
-            <option value="edit">Puede editar</option>
-          </select>
-          <button type="button" data-share-note="${escapeNoteHtml(note.id)}">Compartir</button>
+      <div class="note-card__options">
+        <div class="note-card__buttons">
+          ${canEdit ? `<button class="note-card__edit" type="button" data-edit-note="${escapeNoteHtml(note.id)}">Editar</button>` : ""}
+          ${isOwner ? `<button class="note-card__delete" type="button" data-delete-note="${escapeNoteHtml(note.id)}">Eliminar</button>` : ""}
         </div>
-      ` : ""}
-      ${isOwner ? `<button class="note-card__delete" type="button" data-delete-note="${escapeNoteHtml(note.id)}">Eliminar</button>` : ""}
+        ${isOwner ? `
+          <div class="note-card__share">
+            <div class="note-user-picker">
+              <input type="email" data-share-email autocomplete="off" placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
+              <div class="note-user-results" data-note-user-results role="listbox" hidden></div>
+            </div>
+            <select class="note-card__select custom-select" data-share-permission aria-label="Permiso para compartir">
+              <option value="view">Solo lectura</option>
+              <option value="edit">Puede editar</option>
+            </select>
+            <button type="button" data-share-note="${escapeNoteHtml(note.id)}">Compartir</button>
+          </div>
+        ` : ""}
+      </div>
     </article>
   `;
   }).join("");
-  notesList.insertAdjacentHTML(
-    "beforeend",
-    '<datalist id="notesUserDirectory"></datalist>',
-  );
   notesList.querySelectorAll("select.note-card__select").forEach((select) => {
     if (typeof enhanceCustomSelect === "function") enhanceCustomSelect(select);
   });
@@ -100,12 +104,27 @@ async function loadNoteUsers() {
     setNotesStatus(`No se pudieron cargar los usuarios: ${error.message}`, true);
     return;
   }
-  const directory = notesList?.querySelector("#notesUserDirectory");
-  if (!directory) return;
-  directory.innerHTML = (data || [])
+  noteUsers = (data || [])
     .filter(({ email }) => email)
-    .map(({ email }) => `<option value="${escapeNoteHtml(email)}"></option>`)
-    .join("");
+    .map(({ email }) => email.toLowerCase());
+  const activeInput = notesList?.querySelector("[data-share-email]:focus");
+  if (activeInput) renderNoteUserResults(activeInput);
+}
+
+function renderNoteUserResults(input) {
+  const picker = input.closest(".note-user-picker");
+  const results = picker?.querySelector("[data-note-user-results]");
+  if (!results) return;
+  const query = input.value.trim().toLowerCase();
+  const matches = noteUsers
+    .filter((email) => !query || email.includes(query))
+    .slice(0, 8);
+  results.innerHTML = matches.map((email) => `
+    <button type="button" class="note-user-option" data-note-user="${escapeNoteHtml(email)}" role="option">
+      ${escapeNoteHtml(email)}
+    </button>
+  `).join("");
+  results.hidden = matches.length === 0;
 }
 
 function renderNotesSession(session) {
@@ -289,7 +308,22 @@ if (!notesReady) {
   googleSignInButton?.addEventListener("click", signInWithGoogle);
   signOutButton?.addEventListener("click", () => notesClient.auth.signOut());
   noteForm?.addEventListener("submit", saveNote);
+  notesList?.addEventListener("input", (event) => {
+    if (event.target.matches("[data-share-email]")) renderNoteUserResults(event.target);
+  });
+  notesList?.addEventListener("focusin", (event) => {
+    if (event.target.matches("[data-share-email]")) renderNoteUserResults(event.target);
+  });
   notesList?.addEventListener("click", (event) => {
+    const userOption = event.target.closest("[data-note-user]");
+    if (userOption) {
+      const picker = userOption.closest(".note-user-picker");
+      const input = picker?.querySelector("[data-share-email]");
+      if (input) input.value = userOption.dataset.noteUser;
+      const results = picker?.querySelector("[data-note-user-results]");
+      if (results) results.hidden = true;
+      return;
+    }
     const deleteButton = event.target.closest("[data-delete-note]");
     if (deleteButton) deleteNote(deleteButton.dataset.deleteNote, deleteButton);
     const shareButton = event.target.closest("[data-share-note]");

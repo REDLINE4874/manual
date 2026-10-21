@@ -228,15 +228,15 @@ body.custom-background .note-editor textarea::placeholder {
 }
 
 body.custom-background .note-card {
-  background: color-mix(in srgb, var(--page-background) 18%, #ffffff);
-  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, transparent);
-  color: #17202a;
+  background: var(--note-background);
+  border-color: transparent;
+  color: var(--note-ink);
   box-shadow: 0 3px 12px rgba(0, 0, 0, .14);
 }
 
 body.custom-background .note-card h2,
 body.custom-background .note-card p {
-  color: #17202a;
+  color: var(--note-ink);
 }
 
 body.custom-background .note-card__edit-area,
@@ -267,6 +267,23 @@ body.custom-background .note-card__share .calculator-select__option {
 }
 
 body.custom-background .note-card__share .calculator-select__option:hover {
+  background: var(--brand-teal);
+  color: #ffffff !important;
+}
+
+body.custom-background .note-user-results {
+  background: #ffffff;
+  border-color: rgba(23, 32, 42, .22);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .28);
+}
+
+body.custom-background .note-user-option {
+  color: #17202a;
+  background: #ffffff;
+}
+
+body.custom-background .note-user-option:hover,
+body.custom-background .note-user-option:focus-visible {
   background: var(--brand-teal);
   color: #ffffff;
 }
