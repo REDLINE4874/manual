@@ -53,6 +53,15 @@ body.site-auth-required .app { display: none; }
   object-position: left center;
 }
 
+html[data-theme="dark"] .site-auth-logo,
+body[data-theme="dark"] .site-auth-logo,
+body.dark-mode .site-auth-logo,
+body.dark .site-auth-logo,
+html.dark .site-auth-logo,
+body.dark-theme .site-auth-logo {
+  filter: invert(1) brightness(1.8);
+}
+
 .site-auth-kicker {
   color: var(--brand-teal);
   font: 700 10px/1.2 var(--font-body);
