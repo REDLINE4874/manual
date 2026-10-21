@@ -39,14 +39,13 @@ body.site-auth-required .app { display: none; }
 .site-auth-brand {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 .site-auth-logo {
   display: block;
-  width: min(100%, 205px);
   height: auto;
   max-height: 72px;
   object-fit: contain;
