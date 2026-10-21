@@ -16,6 +16,7 @@
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="src/js/supabase-config.js" defer></script>
+    <script src="src/js/site-auth.js" defer></script>
     <script src="src/js/cards/joy.js" defer></script>
     <script src="src/js/cards/clasica.js" defer></script>
     <script src="src/js/cards/teleton.js" defer></script>
@@ -35,7 +36,7 @@
     <script src="src/js/components/theme-toggle.js" defer></script>
     <script src="src/js/components/theme-background-picker.js" defer></script>
   </head>
-  <body>
+  <body class="site-auth-pending">
     <div class="overlay" id="overlay"></div>
 
     <div class="topbar">
@@ -59,6 +60,10 @@
           </div>
         </div>
         <div id="navContainer"><!-- generado por JS --></div>
+        <button class="nav-item sidebar-auth" id="authButton" type="button" title="Cerrar sesión">
+          <span class="sidebar-auth__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M10 17l5-5-5-5M15 12H3M21 3v18" /></svg></span>
+          <span class="nav-label">Iniciar sesión</span>
+        </button>
       </nav>
 
       <main class="main">
@@ -86,9 +91,6 @@
             <button class="utility-action" data-view="agendas" onclick="showView('agendas')" title="Agendas">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span>
               <span>Agendas</span>
-            </button>
-            <button class="utility-action auth-action" id="authButton" type="button" title="Iniciar sesión con Google">
-              <span>Iniciar sesión</span>
             </button>
             <div class="utility-links" id="utilityLinks">
               <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
@@ -339,13 +341,11 @@
           <div class="notes-auth" id="notesAuthState">
             <h2>Inicia sesi&#243;n para ver tus notas</h2>
             <p>Tus notas quedan separadas de las de los dem&#225;s usuarios.</p>
-            <button class="notes-button" id="googleSignInButton" type="button">Continuar con Google</button>
             <p class="notes-status" id="notesStatus" role="status"></p>
           </div>
           <div class="notes-app" id="notesApp" hidden>
             <div class="notes-app__toolbar">
               <span id="notesUserLabel"></span>
-              <button class="notes-button notes-button--secondary" id="signOutButton" type="button">Cerrar sesi&#243;n</button>
             </div>
             <form class="note-editor" id="noteForm">
               <input id="noteTitle" type="text" maxlength="120" placeholder="T&#237;tulo de la nota" aria-label="T&#237;tulo de la nota" />

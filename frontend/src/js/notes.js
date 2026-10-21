@@ -11,12 +11,9 @@ const notesAuthState = document.getElementById("notesAuthState");
 const notesApp = document.getElementById("notesApp");
 const notesStatus = document.getElementById("notesStatus");
 const noteSaveStatus = document.getElementById("noteSaveStatus");
-const googleSignInButton = document.getElementById("googleSignInButton");
-const signOutButton = document.getElementById("signOutButton");
 const noteForm = document.getElementById("noteForm");
 const notesList = document.getElementById("notesList");
 const notesUserLabel = document.getElementById("notesUserLabel");
-const authButton = document.getElementById("authButton");
 
 let notesClient = null;
 let currentNotesUser = null;
@@ -145,11 +142,8 @@ function renderNotesSession(session) {
   const signedIn = Boolean(currentNotesUser);
   if (notesAuthState) notesAuthState.hidden = signedIn;
   if (notesApp) notesApp.hidden = !signedIn;
-  if (authButton) {
-    authButton.textContent = signedIn ? "Mis notas" : "Iniciar sesión";
-    authButton.onclick = () => showView("notas");
-  }
   if (notesUserLabel && signedIn) notesUserLabel.textContent = currentNotesUser.email || "Sesión iniciada";
+  if (window.bindSiteAuthButton) window.bindSiteAuthButton(signedIn);
   if (signedIn) {
     loadNotes();
   }
@@ -349,11 +343,8 @@ async function updateNoteColor(noteId, color, button) {
 
 if (!notesReady) {
   setNotesStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
-  if (googleSignInButton) googleSignInButton.disabled = true;
 } else {
   notesClient = window.supabase.createClient(notesConfig.url, notesConfig.anonKey);
-  googleSignInButton?.addEventListener("click", signInWithGoogle);
-  signOutButton?.addEventListener("click", () => notesClient.auth.signOut());
   noteForm?.addEventListener("submit", saveNote);
   notesList?.addEventListener("input", (event) => {
     if (event.target.matches("[data-share-email]")) renderNoteUserResults(event.target);

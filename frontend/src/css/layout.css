@@ -179,6 +179,9 @@ body.iframe-scroll-active{overflow:hidden;}
   .note-card__share button{min-height:38px;}
 }
 .sidebar .nav-dropdown-group,.sidebar .nav-calc{display:none;}
+.sidebar-auth{margin-top:auto;}
+.sidebar-auth__icon{display:grid;place-items:center;flex:0 0 20px;width:20px;height:20px;}
+.sidebar-auth__icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8;}
 
 /* ---------- Sidebar ---------- */
 .sidebar{ width:var(--sidebar-w); flex-shrink:0; background:var(--sidebar-bg); color:var(--sidebar-text); padding:24px 18px 28px; position:sticky;
