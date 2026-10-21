@@ -56,7 +56,7 @@ function renderNotes(notes, sharePermissions = new Map()) {
       ${isOwner ? `
         <div class="note-card__share">
           <input type="email" data-share-email placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
-          <select data-share-permission aria-label="Permiso para compartir">
+          <select class="note-card__select" data-share-permission aria-label="Permiso para compartir">
             <option value="view">Solo lectura</option>
             <option value="edit">Puede editar</option>
           </select>
