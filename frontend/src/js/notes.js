@@ -21,6 +21,11 @@ const authButton = document.getElementById("authButton");
 let notesClient = null;
 let currentNotesUser = null;
 let noteUsers = [];
+const NOTE_COLORS = ["yellow", "blue", "green", "pink", "purple"];
+
+function normalizeNoteColor(color) {
+  return NOTE_COLORS.includes(color) ? color : "yellow";
+}
 
 function setNotesStatus(message, isError = false) {
   [notesStatus, noteSaveStatus].forEach((element) => {
@@ -49,8 +54,9 @@ function renderNotes(notes, sharePermissions = new Map()) {
   notesList.innerHTML = notes.map((note) => {
     const isOwner = note.user_id === currentNotesUser?.id;
     const canEdit = isOwner || sharePermissions.get(note.id) === "edit";
+    const noteColor = isOwner ? normalizeNoteColor(note.color) : "shared";
     return `
-    <article class="note-card" data-note-id="${escapeNoteHtml(note.id)}">
+    <article class="note-card note-card--${noteColor}" data-note-id="${escapeNoteHtml(note.id)}">
       <h2>${escapeNoteHtml(note.title || "Sin título")}</h2>
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
@@ -59,6 +65,13 @@ function renderNotes(notes, sharePermissions = new Map()) {
           ${isOwner ? `<button class="note-card__delete" type="button" data-delete-note="${escapeNoteHtml(note.id)}">Eliminar</button>` : ""}
         </div>
         ${isOwner ? `
+          <div class="note-card__colors" aria-label="Color de la nota">
+            <span>Color</span>
+            ${NOTE_COLORS.map((color) => `
+              <button type="button" class="note-card__color note-card__color--${color}${noteColor === color ? " is-selected" : ""}"
+                data-note-color="${color}" aria-label="Color ${color}" aria-pressed="${noteColor === color}"></button>
+            `).join("")}
+          </div>
           <div class="note-card__share">
             <div class="note-user-picker">
               <input type="email" data-share-email autocomplete="off" placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
@@ -83,7 +96,7 @@ function renderNotes(notes, sharePermissions = new Map()) {
 async function loadNotes() {
   const { data, error } = await notesClient
     .from("notes")
-    .select("id, user_id, title, content, updated_at")
+    .select("id, user_id, title, content, color, updated_at")
     .order("updated_at", { ascending: false });
   if (error) {
     setNotesStatus(`No se pudieron cargar las notas: ${error.message}`, true);
@@ -303,6 +316,37 @@ async function updateNoteContent(noteId, content, button) {
   await loadNotes();
 }
 
+async function updateNoteColor(noteId, color, button) {
+  const nextColor = normalizeNoteColor(color);
+  const card = button?.closest("[data-note-id]");
+  const previousColor = NOTE_COLORS.find((item) => card?.classList.contains(`note-card--${item}`)) || "yellow";
+  if (!card || nextColor === previousColor) return;
+
+  card.classList.remove(`note-card--${previousColor}`);
+  card.classList.add(`note-card--${nextColor}`);
+  card.querySelectorAll("[data-note-color]").forEach((colorButton) => {
+    const selected = colorButton.dataset.noteColor === nextColor;
+    colorButton.classList.toggle("is-selected", selected);
+    colorButton.setAttribute("aria-pressed", String(selected));
+  });
+  const { error } = await notesClient
+    .from("notes")
+    .update({ color: nextColor })
+    .eq("id", noteId);
+  if (error) {
+    card.classList.remove(`note-card--${nextColor}`);
+    card.classList.add(`note-card--${previousColor}`);
+    card.querySelectorAll("[data-note-color]").forEach((colorButton) => {
+      const selected = colorButton.dataset.noteColor === previousColor;
+      colorButton.classList.toggle("is-selected", selected);
+      colorButton.setAttribute("aria-pressed", String(selected));
+    });
+    setNotesStatus(`No se pudo cambiar el color: ${error.message}`, true);
+    return;
+  }
+  setNotesStatus("Color de la nota actualizado.");
+}
+
 if (!notesReady) {
   setNotesStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
   if (googleSignInButton) googleSignInButton.disabled = true;
@@ -331,6 +375,11 @@ if (!notesReady) {
       if (input) input.value = userOption.dataset.noteUser;
       const results = picker?.querySelector("[data-note-user-results]");
       if (results) results.hidden = true;
+      return;
+    }
+    const colorButton = event.target.closest("[data-note-color]");
+    if (colorButton) {
+      updateNoteColor(colorButton.closest("[data-note-id]")?.dataset.noteId, colorButton.dataset.noteColor, colorButton);
       return;
     }
     const deleteButton = event.target.closest("[data-delete-note]");

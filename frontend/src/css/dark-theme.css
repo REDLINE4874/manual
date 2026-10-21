@@ -84,6 +84,69 @@ body.dark-mode .modal-box {
     inset 0 1px 0 var(--card-shadow-inset);
 }
 
+/* Controles de compartir notas: superficie clara para conservar contraste en modo oscuro */
+html[data-theme="dark"] .note-card__share .calculator-select__trigger,
+body[data-theme="dark"] .note-card__share .calculator-select__trigger,
+body.dark-mode .note-card__share .calculator-select__trigger,
+body.dark .note-card__share .calculator-select__trigger,
+body.dark-theme .note-card__share .calculator-select__trigger,
+html[data-theme="dark"] .note-card__share input,
+body[data-theme="dark"] .note-card__share input,
+body.dark-mode .note-card__share input,
+body.dark .note-card__share input,
+body.dark-theme .note-card__share input {
+  background: #f7fbfc;
+  color: #17202a;
+  border-color: rgba(23, 32, 42, .28);
+}
+
+html[data-theme="dark"] .note-card__share input::placeholder,
+body[data-theme="dark"] .note-card__share input::placeholder,
+body.dark-mode .note-card__share input::placeholder,
+body.dark .note-card__share input::placeholder,
+body.dark-theme .note-card__share input::placeholder {
+  color: #52656d;
+  opacity: 1;
+}
+
+html[data-theme="dark"] .note-card__share .calculator-select__menu,
+body[data-theme="dark"] .note-card__share .calculator-select__menu,
+body.dark-mode .note-card__share .calculator-select__menu,
+body.dark .note-card__share .calculator-select__menu,
+body.dark-theme .note-card__share .calculator-select__menu,
+html[data-theme="dark"] .note-user-results,
+body[data-theme="dark"] .note-user-results,
+body.dark-mode .note-user-results,
+body.dark .note-user-results,
+body.dark-theme .note-user-results {
+  background: #ffffff;
+  border-color: rgba(23, 32, 42, .28);
+  box-shadow: 0 -12px 26px rgba(0, 0, 0, .35);
+}
+
+html[data-theme="dark"] .note-card__share .calculator-select__option,
+body[data-theme="dark"] .note-card__share .calculator-select__option,
+body.dark-mode .note-card__share .calculator-select__option,
+body.dark .note-card__share .calculator-select__option,
+body.dark-theme .note-card__share .calculator-select__option,
+html[data-theme="dark"] .note-user-option,
+body[data-theme="dark"] .note-user-option,
+body.dark-mode .note-user-option,
+body.dark .note-user-option,
+body.dark-theme .note-user-option {
+  background: #ffffff;
+  color: #17202a;
+}
+
+html[data-theme="dark"] .note-card__share .calculator-select__option[aria-selected="true"],
+body[data-theme="dark"] .note-card__share .calculator-select__option[aria-selected="true"],
+body.dark-mode .note-card__share .calculator-select__option[aria-selected="true"],
+body.dark .note-card__share .calculator-select__option[aria-selected="true"],
+body.dark-theme .note-card__share .calculator-select__option[aria-selected="true"] {
+  background: #e8f1f4;
+  color: #006b78;
+}
+
 /* Modal en modo oscuro: iconos y encabezados en blanco */
 html[data-theme="dark"] .modal-script .section-header h2,
 body[data-theme="dark"] .modal-script .section-header h2,
@@ -228,4 +291,3 @@ body.dark-theme .modal-script .explora-destination-group {
   background: rgba(255,255,255,0.02);
   border-color: rgba(255,255,255,0.12);
 }
-
