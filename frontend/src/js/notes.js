@@ -276,6 +276,9 @@ async function shareNote(noteId, email, permission, button) {
   const shareInput = notesList
     ?.querySelector(`[data-note-id="${noteId}"] [data-share-email]`);
   if (shareInput) shareInput.value = "";
+  const shareResults = shareInput?.closest(".note-user-picker")
+    ?.querySelector("[data-note-user-results]");
+  if (shareResults) shareResults.hidden = true;
 }
 
 async function updateNoteContent(noteId, content, button) {
@@ -313,6 +316,12 @@ if (!notesReady) {
   });
   notesList?.addEventListener("focusin", (event) => {
     if (event.target.matches("[data-share-email]")) renderNoteUserResults(event.target);
+  });
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".note-user-picker")) return;
+    notesList?.querySelectorAll("[data-note-user-results]").forEach((results) => {
+      results.hidden = true;
+    });
   });
   notesList?.addEventListener("click", (event) => {
     const userOption = event.target.closest("[data-note-user]");

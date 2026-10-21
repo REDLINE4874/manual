@@ -249,7 +249,7 @@ body.custom-background .note-card__share select {
 
 body.custom-background .note-card__share .calculator-select__trigger {
   background: rgba(255, 255, 255, .62);
-  color: #17202a;
+  color: #17202a !important;
   border-color: rgba(23, 32, 42, .22);
 }
 
@@ -261,8 +261,8 @@ body.custom-background .note-card__share .calculator-select__menu {
 }
 
 body.custom-background .note-card__share .calculator-select__option {
-  color: #17202a;
-  background: #ffffff;
+  color: #17202a !important;
+  background: #ffffff !important;
   font-weight: 600;
 }
 
@@ -289,8 +289,8 @@ body.custom-background .note-user-option:focus-visible {
 }
 
 body.custom-background .note-card__share .calculator-select__option[aria-selected="true"] {
-  background: #e8f1f4;
-  color: var(--brand-teal);
+  background: #e8f1f4 !important;
+  color: #006b78 !important;
 }
 
 body.custom-background .note-card__share {
