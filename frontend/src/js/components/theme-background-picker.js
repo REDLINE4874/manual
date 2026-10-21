@@ -399,6 +399,10 @@ class ThemeBackgroundPicker extends HTMLElement {
     const isDarkSurface = this._luminance(surface) < .52;
     const accentText = isDarkSurface ? "#ffffff" : "#003848";
     const goldText = isDarkSurface ? "#f6d98b" : "#75570d";
+    const notesSurface = isDarkSurface ? this._mix(color, "#000000", .22) : this._mix(color, "#ffffff", .14);
+    const notesEditorSurface = isDarkSurface ? this._mix(color, "#000000", .12) : this._mix(color, "#ffffff", .22);
+    const notesText = isDarkSurface ? "#f5f7fa" : "#101828";
+    const notesMuted = isDarkSurface ? "#cbd5e1" : "#3f4652";
 
     root.style.setProperty("--page-background", color);
     root.style.setProperty("--custom-navbar-background", color);
@@ -414,6 +418,10 @@ class ThemeBackgroundPicker extends HTMLElement {
     root.style.setProperty("--input-bg", inputSurface);
     root.style.setProperty("--input-border", isDarkSurface ? "rgba(255, 255, 255, .26)" : "rgba(15, 23, 42, .22)");
     root.style.setProperty("--input-text", isDarkSurface ? "#f5f7fa" : "#101828");
+    root.style.setProperty("--notes-surface", notesSurface);
+    root.style.setProperty("--notes-editor-surface", notesEditorSurface);
+    root.style.setProperty("--notes-text", notesText);
+    root.style.setProperty("--notes-muted", notesMuted);
     root.style.setProperty("--shadow", isDarkSurface ? "0 16px 36px rgba(0, 0, 0, .42)" : "0 3px 14px rgba(15, 23, 42, .18)");
     document.body.classList.add("custom-background");
     document.body.classList.toggle("custom-background-dark", isDarkSurface);
@@ -424,7 +432,7 @@ class ThemeBackgroundPicker extends HTMLElement {
 
   _clearCustomBackground() {
     const root = document.documentElement;
-    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-accent-text", "--custom-gold-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--shadow"].forEach((property) => root.style.removeProperty(property));
+    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-accent-text", "--custom-gold-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--notes-surface", "--notes-editor-surface", "--notes-text", "--notes-muted", "--shadow"].forEach((property) => root.style.removeProperty(property));
     document.body.classList.remove("custom-background", "custom-background-dark");
   }
 }

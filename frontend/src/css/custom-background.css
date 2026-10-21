@@ -189,11 +189,18 @@ body.custom-background .main > .view.notes-view {
   background: var(--page-background);
   border-color: transparent;
   box-shadow: none;
+  color: var(--notes-text, var(--text));
+}
+
+body.custom-background .notes-view__hero h1,
+body.custom-background .notes-view__hero p,
+body.custom-background .notes-view > .back-link {
+  color: var(--notes-text, var(--text));
 }
 
 body.custom-background .notes-auth,
 body.custom-background .notes-app {
-  background: color-mix(in srgb, var(--page-background) 86%, #ffffff);
+  background: var(--notes-surface, color-mix(in srgb, var(--page-background) 86%, #ffffff));
   border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
   color: var(--text);
   box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
@@ -207,7 +214,7 @@ body.custom-background .notes-status {
 }
 
 body.custom-background .note-editor {
-  background: color-mix(in srgb, var(--page-background) 78%, #ffffff);
+  background: var(--notes-editor-surface, color-mix(in srgb, var(--page-background) 78%, #ffffff));
   border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
   box-shadow: 0 3px 12px rgba(0, 0, 0, .10);
 }
@@ -215,16 +222,21 @@ body.custom-background .note-editor {
 body.custom-background .note-editor input,
 body.custom-background .note-editor textarea {
   background: transparent;
-  color: var(--text);
+  color: var(--notes-text, var(--text));
   font-weight: 600;
   border-color: transparent;
 }
 
 body.custom-background .note-editor input::placeholder,
 body.custom-background .note-editor textarea::placeholder {
-  color: var(--text-muted);
+  color: var(--notes-muted, var(--text-muted));
   opacity: 1;
   font-weight: 600;
+}
+
+body.custom-background .note-editor input:focus,
+body.custom-background .note-editor textarea:focus {
+  background: color-mix(in srgb, var(--notes-editor-surface, #ffffff) 88%, var(--custom-accent-text));
 }
 
 body.custom-background .note-card {
