@@ -215,14 +215,16 @@ body.custom-background .note-editor {
 body.custom-background .note-editor input,
 body.custom-background .note-editor textarea {
   background: transparent;
-  color: #17202a;
+  color: var(--text);
+  font-weight: 600;
   border-color: transparent;
 }
 
 body.custom-background .note-editor input::placeholder,
 body.custom-background .note-editor textarea::placeholder {
-  color: #586575;
+  color: var(--text-muted);
   opacity: 1;
+  font-weight: 600;
 }
 
 body.custom-background .note-card {
