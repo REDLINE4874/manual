@@ -21,7 +21,7 @@ const authButton = document.getElementById("authButton");
 let notesClient = null;
 let currentNotesUser = null;
 let noteUsers = [];
-const NOTE_COLORS = ["yellow", "blue", "green", "pink", "purple"];
+const NOTE_COLORS = ["yellow", "blue", "green", "pink", "purple", "coral"];
 
 function normalizeNoteColor(color) {
   return NOTE_COLORS.includes(color) ? color : "yellow";

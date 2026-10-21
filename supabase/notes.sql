@@ -3,7 +3,7 @@ create table if not exists public.notes (
   user_id uuid not null references auth.users(id) on delete cascade,
   title text not null default '',
   content text not null default '',
-  color text not null default 'yellow' check (color in ('yellow', 'blue', 'green', 'pink', 'purple')),
+  color text not null default 'yellow' check (color in ('yellow', 'blue', 'green', 'pink', 'purple', 'coral')),
   updated_at timestamptz not null default now(),
   created_at timestamptz not null default now()
 );
@@ -11,7 +11,7 @@ create table if not exists public.notes (
 alter table public.notes add column if not exists color text not null default 'yellow';
 alter table public.notes drop constraint if exists notes_color_check;
 alter table public.notes add constraint notes_color_check
-  check (color in ('yellow', 'blue', 'green', 'pink', 'purple'));
+  check (color in ('yellow', 'blue', 'green', 'pink', 'purple', 'coral'));
 
 alter table public.notes enable row level security;
 

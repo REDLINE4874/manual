@@ -92,7 +92,7 @@ body.iframe-scroll-active{overflow:hidden;}
 .notes-view__hero{margin-bottom:24px;}
 .notes-view__hero h1{letter-spacing:-.8px;}
 .notes-view__hero p{max-width:60ch;}
-.notes-auth,.notes-app{box-sizing:border-box;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:0 4px 16px rgba(18,35,44,.07);}
+.notes-auth,.notes-app{box-sizing:border-box;margin-inline:auto;padding:clamp(18px,3vw,28px);border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:0 4px 16px rgba(18,35,44,.07);}
 .notes-auth{max-width:680px;}
 .notes-auth h2{margin:0 0 8px;color:var(--ink);font:700 22px/1.2 var(--font-display);}
 .notes-auth p{margin:0 0 18px;color:var(--ink-soft);line-height:1.55;}
@@ -112,7 +112,7 @@ body.iframe-scroll-active{overflow:hidden;}
 .note-editor__actions .notes-status{flex:1 1 180px;}
 .notes-status{min-height:18px;margin:0;color:var(--brand-teal);font-size:12px;line-height:1.45;}
 .notes-status.is-error{color:var(--brand-red);}
-.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));align-items:start;gap:18px;margin-top:28px;}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),290px));justify-content:center;align-items:start;gap:18px;width:min(100%,980px);margin:28px auto 0;}
 .note-card{--note-background:#fff3a6;--note-ink:#3c3420;position:relative;display:flex;flex-direction:column;min-width:0;min-height:170px;box-sizing:border-box;overflow:visible;padding:24px 20px 16px;border:0;border-radius:3px 3px 13px 3px;background:var(--note-background);color:var(--note-ink);box-shadow:2px 4px 5px rgba(39,31,12,.12),6px 12px 20px rgba(39,31,12,.12);transform:rotate(-.6deg);transition:box-shadow .2s ease,transform .2s ease;}
 .note-card:nth-of-type(4n+2){--note-background:#c9f1eb;--note-ink:#173d3b;transform:rotate(.55deg);}
 .note-card:nth-of-type(4n+3){--note-background:#ffd7b5;--note-ink:#4a3021;transform:rotate(-.35deg);}
@@ -122,6 +122,7 @@ body.iframe-scroll-active{overflow:hidden;}
 .note-card.note-card--green{--note-background:#c9f1eb;--note-ink:#173d3b;}
 .note-card.note-card--pink{--note-background:#ffd7b5;--note-ink:#4a3021;}
 .note-card.note-card--purple{--note-background:#e6d9ff;--note-ink:#3b2d52;}
+.note-card.note-card--coral{--note-background:#ffd1c7;--note-ink:#5a2f2a;}
 .note-card.note-card--shared{--note-background:#e4e9ed;--note-ink:#263238;}
 .note-card:has(.calculator-select.is-open){z-index:30;}
 .note-card::before{content:"";position:absolute;right:0;bottom:0;width:22px;height:22px;border-radius:0 0 13px 0;background:linear-gradient(135deg,transparent 49%,rgba(91,72,19,.15) 50%,rgba(255,255,255,.28) 100%);pointer-events:none;}
@@ -136,7 +137,7 @@ body.iframe-scroll-active{overflow:hidden;}
 .note-card__color{width:18px;height:18px;padding:0;border:2px solid rgba(255,255,255,.88);border-radius:50%;box-shadow:0 0 0 1px rgba(23,32,42,.2);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease;}
 .note-card__color:hover{transform:scale(1.14);}
 .note-card__color.is-selected{box-shadow:0 0 0 2px var(--note-ink),0 0 0 4px rgba(255,255,255,.78);}
-.note-card__color--yellow{background:#f5d94c;}.note-card__color--blue{background:#7db5ed;}.note-card__color--green{background:#65c9b7;}.note-card__color--pink{background:#f19a72;}.note-card__color--purple{background:#a886d8;}
+.note-card__color--yellow{background:#f5d94c;}.note-card__color--blue{background:#7db5ed;}.note-card__color--green{background:#65c9b7;}.note-card__color--pink{background:#f19a72;}.note-card__color--purple{background:#a886d8;}.note-card__color--coral{background:#ef8f7a;}
 .note-card__edit-area{display:block;width:100%;min-height:110px;box-sizing:border-box;margin:0 0 4px;border:1px solid var(--line);border-radius:8px;padding:9px;background:var(--surface-soft);color:var(--ink);font:500 13px/1.55 var(--font-body);resize:vertical;}
 .note-card__share{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:9px;margin-top:13px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--note-ink) 22%,transparent);align-items:stretch;}
 .note-user-picker{position:relative;z-index:30;grid-column:1 / -1;min-width:0;}
