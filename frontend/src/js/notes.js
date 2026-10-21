@@ -144,11 +144,16 @@ async function signInWithGoogle() {
 
 async function saveNote(event) {
   event.preventDefault();
+  const submitButton = noteForm?.querySelector("button[type=submit]");
   const title = document.getElementById("noteTitle").value.trim();
   const content = document.getElementById("noteContent").value.trim();
   if (!content) {
     setNotesStatus("Escribe algo antes de guardar.", true);
     return;
+  }
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Guardando...";
   }
   const { error } = await notesClient.from("notes").insert({
     user_id: currentNotesUser.id,
@@ -156,24 +161,46 @@ async function saveNote(event) {
     content,
   });
   if (error) {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Guardar nota";
+    }
     setNotesStatus(error.message, true);
     return;
   }
   noteForm.reset();
   setNotesStatus("Nota guardada.");
-  await loadNotes();
-}
-
-async function deleteNote(noteId) {
-  const { error } = await notesClient.from("notes").delete().eq("id", noteId);
-  if (error) {
-    setNotesStatus(error.message, true);
-    return;
+  if (submitButton) {
+    submitButton.disabled = false;
+    submitButton.textContent = "Guardar nota";
   }
   await loadNotes();
 }
 
-async function shareNote(noteId, email, permission) {
+async function deleteNote(noteId, button) {
+  if (!window.confirm("¿Quieres eliminar esta nota? Esta acción no se puede deshacer.")) {
+    setNotesStatus("Eliminación cancelada.");
+    return;
+  }
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Eliminando...";
+  }
+  setNotesStatus("Eliminando nota...");
+  const { error } = await notesClient.from("notes").delete().eq("id", noteId);
+  if (error) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Eliminar";
+    }
+    setNotesStatus(error.message, true);
+    return;
+  }
+  setNotesStatus("Nota eliminada correctamente.");
+  await loadNotes();
+}
+
+async function shareNote(noteId, email, permission, button) {
   const recipientEmail = email.trim().toLowerCase();
   if (!recipientEmail || !recipientEmail.includes("@")) {
     setNotesStatus("Escribe un correo válido para compartir la nota.", true);
@@ -183,16 +210,28 @@ async function shareNote(noteId, email, permission) {
     setNotesStatus("No necesitas compartir la nota contigo mismo.", true);
     return;
   }
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Compartiendo...";
+  }
   setNotesStatus("Verificando la cuenta...");
   const { data: userExists, error: lookupError } = await notesClient.rpc(
     "user_exists_by_email",
     { target_email: recipientEmail },
   );
   if (lookupError) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Compartir";
+    }
     setNotesStatus(`No se pudo verificar el usuario: ${lookupError.message}`, true);
     return;
   }
   if (!userExists) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Compartir";
+    }
     setNotesStatus(`No encontramos una cuenta registrada con ${recipientEmail}.`, true);
     return;
   }
@@ -203,21 +242,38 @@ async function shareNote(noteId, email, permission) {
     permission,
   }, { onConflict: "note_id,recipient_email" });
   if (error) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Compartir";
+    }
     setNotesStatus(error.message, true);
     return;
   }
   setNotesStatus(`Nota compartida con ${recipientEmail}.`);
+  if (button) {
+    button.disabled = false;
+    button.textContent = "Compartir";
+  }
   const shareInput = notesList
     ?.querySelector(`[data-note-id="${noteId}"] [data-share-email]`);
   if (shareInput) shareInput.value = "";
 }
 
-async function updateNoteContent(noteId, content) {
+async function updateNoteContent(noteId, content, button) {
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Guardando...";
+  }
+  setNotesStatus("Guardando cambios...");
   const { error } = await notesClient
     .from("notes")
     .update({ content: content.trim(), updated_at: new Date().toISOString() })
     .eq("id", noteId);
   if (error) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Guardar";
+    }
     setNotesStatus(error.message, true);
     return;
   }
@@ -235,13 +291,13 @@ if (!notesReady) {
   noteForm?.addEventListener("submit", saveNote);
   notesList?.addEventListener("click", (event) => {
     const deleteButton = event.target.closest("[data-delete-note]");
-    if (deleteButton) deleteNote(deleteButton.dataset.deleteNote);
+    if (deleteButton) deleteNote(deleteButton.dataset.deleteNote, deleteButton);
     const shareButton = event.target.closest("[data-share-note]");
     if (shareButton) {
       const card = shareButton.closest("[data-note-id]");
       const email = card?.querySelector("[data-share-email]")?.value || "";
       const permission = card?.querySelector("[data-share-permission]")?.value || "view";
-      shareNote(shareButton.dataset.shareNote, email, permission);
+      shareNote(shareButton.dataset.shareNote, email, permission, shareButton);
     }
     const editButton = event.target.closest("[data-edit-note]");
     if (editButton) {
@@ -254,6 +310,12 @@ if (!notesReady) {
       content.hidden = true;
       content.after(textarea);
       editButton.textContent = "Guardar";
+      const cancelButton = document.createElement("button");
+      cancelButton.type = "button";
+      cancelButton.className = "note-card__edit-cancel";
+      cancelButton.dataset.cancelEdit = "true";
+      cancelButton.textContent = "Cancelar";
+      textarea.after(cancelButton);
       editButton.dataset.saveNote = editButton.dataset.editNote;
       delete editButton.dataset.editNote;
       return;
@@ -262,7 +324,22 @@ if (!notesReady) {
     if (saveButton) {
       const card = saveButton.closest("[data-note-id]");
       const textarea = card?.querySelector(".note-card__edit-area");
-      if (textarea?.value.trim()) updateNoteContent(saveButton.dataset.saveNote, textarea.value);
+      if (textarea?.value.trim()) updateNoteContent(saveButton.dataset.saveNote, textarea.value, saveButton);
+    }
+    const cancelButton = event.target.closest("[data-cancel-edit]");
+    if (cancelButton) {
+      const card = cancelButton.closest("[data-note-id]");
+      const content = card?.querySelector("[data-note-content]");
+      const editButton = card?.querySelector("[data-save-note]");
+      card?.querySelector(".note-card__edit-area")?.remove();
+      cancelButton.remove();
+      if (content) content.hidden = false;
+      if (editButton) {
+        editButton.textContent = "Editar";
+        editButton.dataset.editNote = editButton.dataset.saveNote;
+        delete editButton.dataset.saveNote;
+      }
+      setNotesStatus("Edición cancelada.");
     }
   });
   notesClient.auth.onAuthStateChange((_event, session) => renderNotesSession(session));
