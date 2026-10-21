@@ -9,6 +9,23 @@ create table if not exists public.note_shares (
 
 alter table public.note_shares enable row level security;
 
+create or replace function public.user_owns_note(target_note_id uuid)
+returns boolean
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select exists (
+    select 1
+    from public.notes
+    where public.notes.id = target_note_id
+      and public.notes.user_id = auth.uid()
+  );
+$$;
+
+revoke all on function public.user_owns_note(uuid) from public;
+grant execute on function public.user_owns_note(uuid) to authenticated;
+
 drop policy if exists "Owners can view shares of their notes" on public.note_shares;
 drop policy if exists "Owners can create shares for their notes" on public.note_shares;
 drop policy if exists "Owners can update shares of their notes" on public.note_shares;
@@ -19,40 +36,20 @@ drop policy if exists "Users can edit notes shared with them" on public.notes;
 
 create policy "Owners can view shares of their notes"
 on public.note_shares for select
-using (exists (
-  select 1 from public.notes
-  where public.notes.id = note_shares.note_id
-    and public.notes.user_id = auth.uid()
-));
+using (public.user_owns_note(note_id));
 
 create policy "Owners can create shares for their notes"
 on public.note_shares for insert
-with check (exists (
-  select 1 from public.notes
-  where public.notes.id = note_shares.note_id
-    and public.notes.user_id = auth.uid()
-));
+with check (public.user_owns_note(note_id));
 
 create policy "Owners can update shares of their notes"
 on public.note_shares for update
-using (exists (
-  select 1 from public.notes
-  where public.notes.id = note_shares.note_id
-    and public.notes.user_id = auth.uid()
-))
-with check (exists (
-  select 1 from public.notes
-  where public.notes.id = note_shares.note_id
-    and public.notes.user_id = auth.uid()
-));
+using (public.user_owns_note(note_id))
+with check (public.user_owns_note(note_id));
 
 create policy "Owners can delete shares of their notes"
 on public.note_shares for delete
-using (exists (
-  select 1 from public.notes
-  where public.notes.id = note_shares.note_id
-    and public.notes.user_id = auth.uid()
-));
+using (public.user_owns_note(note_id));
 
 create policy "Recipients can view shares sent to them"
 on public.note_shares for select
