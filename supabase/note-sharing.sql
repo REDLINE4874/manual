@@ -58,6 +58,30 @@ $$;
 revoke all on function public.list_note_users() from public;
 grant execute on function public.list_note_users() to authenticated;
 
+create or replace function public.get_note_owner_emails(target_note_ids uuid[])
+returns table(note_id uuid, owner_email text)
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select notes.id, lower(users.email)::text
+  from public.notes
+  join auth.users as users on users.id = notes.user_id
+  where notes.id = any(target_note_ids)
+    and (
+      notes.user_id = auth.uid()
+      or exists (
+        select 1
+        from public.note_shares
+        where public.note_shares.note_id = notes.id
+          and lower(public.note_shares.recipient_email) = lower(auth.jwt() ->> 'email')
+      )
+    );
+$$;
+
+revoke all on function public.get_note_owner_emails(uuid[]) from public;
+grant execute on function public.get_note_owner_emails(uuid[]) to authenticated;
+
 drop policy if exists "Owners can view shares of their notes" on public.note_shares;
 drop policy if exists "Owners can create shares for their notes" on public.note_shares;
 drop policy if exists "Owners can update shares of their notes" on public.note_shares;

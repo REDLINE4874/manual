@@ -15,12 +15,12 @@ siteAuthScreen.innerHTML = `
   <div class="site-auth-card">
     <div class="site-auth-brand">
       <img class="site-auth-logo" src="assets/icons/talent.svg" alt="Talent" />
-      <span class="site-auth-kicker">Manual de Tarjetas</span>
+     
     </div>
-    <h1 id="siteAuthTitle">Acceso al manual</h1>
+    <h1 id="siteAuthTitle">Iniciar sesion</h1>
 
     <div id="siteAuthLoginPanel">
-      <p>Inicia sesion con el correo y contrasena que te proporciono el administrador.</p>
+      
       <form class="site-auth-form" id="siteAuthLoginForm">
         <label>Correo electronico
           <input id="siteAuthLoginEmail" type="email" autocomplete="email" required />
@@ -76,6 +76,7 @@ const siteAuthConfirmPassword = document.getElementById("siteAuthConfirmPassword
 const siteAuthForgot = document.getElementById("siteAuthForgot");
 const siteAuthRequestBack = document.getElementById("siteAuthRequestBack");
 const siteAuthStatus = document.getElementById("siteAuthStatus");
+const siteAuthTitle = document.getElementById("siteAuthTitle");
 let siteAuthRecovery = false;
 
 function setSiteAuthStatus(message, isError = false) {
@@ -87,6 +88,11 @@ function showSiteAuthPanel(panel) {
   siteAuthLoginPanel.hidden = panel !== "login";
   siteAuthRequestPanel.hidden = panel !== "request";
   siteAuthUpdatePanel.hidden = panel !== "update";
+  siteAuthTitle.textContent = panel === "update"
+    ? "Cambiar contrasena"
+    : panel === "request"
+      ? "Recuperar contrasena"
+      : "Iniciar sesion";
   setSiteAuthStatus("");
 
   if (panel === "login") siteAuthLoginEmail.focus();

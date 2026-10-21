@@ -71,7 +71,7 @@ function escapeNoteHtml(value) {
   })[character]);
 }
 
-function renderNotes(notes, sharePermissions = new Map()) {
+function renderNotes(notes, sharePermissions = new Map(), shareOwners = new Map()) {
   if (!notesList) return;
   if (!notes.length) {
     notesList.innerHTML = '<p class="notes-empty">Todavía no tienes notas guardadas.</p>';
@@ -86,7 +86,7 @@ function renderNotes(notes, sharePermissions = new Map()) {
       <h2>${escapeNoteHtml(note.title || "Sin título")}</h2>
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
-        ${isOwner ? NOTE_TOOL_MARKUP : canEdit ? "<div class=\"note-card__toolbar\"><span>Compartida contigo</span></div>" : ""}
+        ${isOwner ? NOTE_TOOL_MARKUP : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span></div>`}
       </div>
     </article>
   `;
@@ -113,7 +113,17 @@ async function loadNotes() {
     .select("note_id, permission")
     .eq("recipient_email", currentNotesUser.email.toLowerCase());
   const sharePermissions = new Map((shares || []).map((share) => [share.note_id, share.permission]));
-  renderNotes(data || [], sharePermissions);
+  const sharedNoteIds = (data || [])
+    .filter((note) => note.user_id !== currentNotesUser?.id)
+    .map((note) => note.id);
+  const { data: owners, error: ownersError } = sharedNoteIds.length
+    ? await notesClient.rpc("get_note_owner_emails", { target_note_ids: sharedNoteIds })
+    : { data: [], error: null };
+  if (ownersError) {
+    setNotesStatus(`No se pudo identificar quién compartió una nota: ${ownersError.message}`, true);
+  }
+  const shareOwners = new Map((owners || []).map((owner) => [owner.note_id, owner.owner_email]));
+  renderNotes(data || [], sharePermissions, shareOwners);
   loadNoteUsers();
 }
 
