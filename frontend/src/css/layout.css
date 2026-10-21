@@ -80,6 +80,8 @@
 body.iframe-scroll-active{overflow:hidden;}
 .internal-tabs{display:flex;align-items:center;gap:6px;width:max-content;max-width:calc(100% - 40px);margin:12px 20px 0;padding:6px;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 16px rgba(18,35,44,.06);}
 .internal-tab{border:1px solid transparent;border-radius:11px;padding:9px 16px;background:transparent;color:var(--ink-soft);font:600 12px var(--font-body);cursor:grab;transition:background .2s ease,color .2s ease,opacity .2s ease;}
+.internal-tab--notes{display:inline-flex;align-items:center;gap:7px;}
+.internal-tab__icon{width:16px;height:16px;flex:0 0 16px;}
 .internal-tab:hover,.internal-tab.is-active{background:var(--sidebar-hover);color:var(--sidebar-text);}
 .internal-tab:hover{background:var(--surface-soft);color:var(--ink);}
 .internal-tab.is-active{background:var(--brand-teal);color:#fff;box-shadow:0 3px 9px color-mix(in srgb,var(--brand-teal) 22%,transparent);}
