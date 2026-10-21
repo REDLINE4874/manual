@@ -183,3 +183,86 @@ body.custom-background textarea {
 
 body.custom-background .header-logo { filter: brightness(0) contrast(1) saturate(0) invert(0); }
 body.custom-background-dark .header-logo { filter: brightness(0) invert(1); }
+
+/* ---------- Notas: superficie legible sobre cualquier fondo personalizado ---------- */
+body.custom-background .main > .view.notes-view {
+  background: var(--page-background);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+body.custom-background .notes-auth,
+body.custom-background .notes-app {
+  background: color-mix(in srgb, var(--page-background) 86%, #ffffff);
+  border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+}
+
+body.custom-background .notes-auth h2,
+body.custom-background .notes-auth p,
+body.custom-background .notes-app__toolbar,
+body.custom-background .notes-status {
+  color: var(--text);
+}
+
+body.custom-background .note-editor {
+  background: color-mix(in srgb, var(--page-background) 78%, #ffffff);
+  border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .10);
+}
+
+body.custom-background .note-editor input,
+body.custom-background .note-editor textarea {
+  background: transparent;
+  color: #17202a;
+  border-color: transparent;
+}
+
+body.custom-background .note-editor input::placeholder,
+body.custom-background .note-editor textarea::placeholder {
+  color: #586575;
+  opacity: 1;
+}
+
+body.custom-background .note-card {
+  background: color-mix(in srgb, var(--page-background) 18%, #ffffff);
+  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, transparent);
+  color: #17202a;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .14);
+}
+
+body.custom-background .note-card h2,
+body.custom-background .note-card p {
+  color: #17202a;
+}
+
+body.custom-background .note-card__edit-area,
+body.custom-background .note-card__share input,
+body.custom-background .note-card__share select {
+  background: rgba(255, 255, 255, .62);
+  color: #17202a;
+  border-color: rgba(23, 32, 42, .22);
+}
+
+body.custom-background .note-card__share {
+  border-top-color: rgba(23, 32, 42, .18);
+}
+
+body.custom-background .note-card__share button,
+body.custom-background .note-card__edit {
+  color: var(--custom-accent-text);
+  border-color: color-mix(in srgb, var(--custom-accent-text) 55%, transparent);
+}
+
+body.custom-background .note-card__delete {
+  color: #b4234d;
+}
+
+body.custom-background .note-card::before {
+  background: color-mix(in srgb, var(--custom-accent-text) 58%, transparent);
+}
+
+body.custom-background .note-card__share select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m2.25 4.5 3.75 3.75L9.75 4.5' fill='none' stroke='%2317202a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.4'/%3E%3C/svg%3E");
+}
