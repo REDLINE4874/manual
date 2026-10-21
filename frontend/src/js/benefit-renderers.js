@@ -105,7 +105,7 @@ function renderExploraBenefitsTable(data) {
       .join("");
 
     return `
-      <div class="extra-block explora-table-block" style="margin-top:22px;">
+      <div class="extra-block explora-table-block">
         <div class="explora-destinations-grid">
           <div class="explora-destination-group">
             <h2>Destinos a EEUU</h2>
@@ -132,7 +132,7 @@ function renderExploraBenefitsTable(data) {
 
   if (rows.length) {
     return `
-      <div class="extra-block explora-table-block" style="margin-top:22px;">
+      <div class="extra-block explora-table-block">
         <h2>Destinos y certificado 2x1 (beneficios de viaje)</h2>
         <div class="explora-table-wrap">
           <table class="explora-benefits-table">

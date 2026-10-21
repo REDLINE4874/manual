@@ -42,8 +42,8 @@ function renderNav() {
       <div class="nav-group-label">${seg.label}</div>`;
     CARDS.filter((c) => c.segment === seg.id).forEach((c) => {
       const shortName = c.name.replace(" Banamex", "");
-      html += `<button class="nav-item" data-card="${c.id}" onclick="openCard('${c.id}')" title="${shortName}">
-        <span class="dot" style="background:${c.color}"></span><span class="nav-label">${shortName}</span>
+      html += `<button class="nav-item" data-card="${c.id}" data-tooltip="${shortName}" onclick="openCard('${c.id}')">
+        <img class="nav-card-image" src="${c.image}" alt="" aria-hidden="true"><span class="nav-label">${shortName}</span>
       </button>`;
     });
     html += `</div>`;
@@ -72,6 +72,65 @@ function renderNav() {
   </div>`;
 
   nav.innerHTML = html;
+
+  const cardPreview = document.getElementById("navCardPreview") || document.createElement("div");
+  cardPreview.id = "navCardPreview";
+  cardPreview.className = "nav-card-preview";
+  cardPreview.setAttribute("aria-hidden", "true");
+  if (!cardPreview.querySelector("img")) {
+    const previewImage = document.createElement("img");
+    previewImage.className = "nav-card-preview__image";
+    previewImage.alt = "";
+    const previewLabel = document.createElement("span");
+    previewLabel.className = "nav-card-preview__label";
+    cardPreview.append(previewImage, previewLabel);
+  }
+  if (!cardPreview.isConnected) document.body.appendChild(cardPreview);
+
+  const hideCardPreview = () => cardPreview.classList.remove("is-visible");
+  const showCardPreview = (image) => {
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar.classList.contains("collapsed") || window.innerWidth <= 900) {
+      hideCardPreview();
+      return;
+    }
+
+    const bounds = image.getBoundingClientRect();
+    const previewWidth = 140;
+    const previewHeight = cardPreview.offsetHeight || 126;
+    const gap = 12;
+    const left = bounds.right + previewWidth + gap <= window.innerWidth
+      ? bounds.right + gap
+      : Math.max(8, bounds.left - previewWidth - gap);
+    const top = Math.min(
+      Math.max(8, bounds.top + (bounds.height - previewHeight) / 2),
+      window.innerHeight - previewHeight - 8,
+    );
+
+    cardPreview.querySelector(".nav-card-preview__image").src = image.currentSrc || image.src;
+    cardPreview.querySelector(".nav-card-preview__label").textContent =
+      image.closest(".nav-item")?.querySelector(".nav-label")?.textContent.trim() || "Tarjeta";
+    cardPreview.style.left = `${left}px`;
+    cardPreview.style.top = `${top}px`;
+    cardPreview.classList.add("is-visible");
+  };
+
+  nav.addEventListener("pointerover", (event) => {
+    if (event.pointerType !== "mouse") return;
+    const image = event.target.closest(".nav-card-image");
+    if (image && !image.contains(event.relatedTarget)) showCardPreview(image);
+  });
+  nav.addEventListener("pointerout", (event) => {
+    if (event.target.closest(".nav-card-image")) hideCardPreview();
+  });
+  nav.addEventListener("focusin", (event) => {
+    const image = event.target.closest(".nav-item[data-card]")?.querySelector(".nav-card-image");
+    if (image) showCardPreview(image);
+  });
+  nav.addEventListener("focusout", hideCardPreview);
+  window.addEventListener("scroll", hideCardPreview, true);
+  window.addEventListener("resize", hideCardPreview);
+  document.getElementById("sidebarToggle")?.addEventListener("click", hideCardPreview);
 
   const dropdownTrigger = nav.querySelector(".nav-dropdown-trigger");
   if (dropdownTrigger) {
@@ -380,8 +439,9 @@ function showView(name) {
   document
     .querySelectorAll(".nav-item, .utility-action")
     .forEach((b) => b.classList.remove("active"));
-  const navBtn = document.querySelector(`[data-view="${name}"]`);
-  if (navBtn) navBtn.classList.add("active");
+  document.querySelectorAll(`.nav-item[data-view="${name}"], .utility-action[data-view="${name}"]`).forEach((button) => {
+    button.classList.add("active");
+  });
   document.querySelectorAll(".internal-tab").forEach((tab) => {
     const active = tab.dataset.view === name;
     tab.classList.toggle("is-active", active);

@@ -33,11 +33,34 @@
   .sidebar::before{top:62px;}
   .sidebar{padding-top:24px;}
   .sidebar{
-    position:fixed; left:0; top:0; height:100%; z-index:41;
+    position:fixed; left:0; top:0; height:100%; margin:0; z-index:41;
     transform:translateX(-102%);
     transition:transform .25s ease;
     box-shadow:0 0 40px rgba(0,0,0,.30);
   }
+  /* En el cajón móvil, ignorar el estado contraído guardado para escritorio. */
+  .sidebar.collapsed{
+    width:min(var(--sidebar-w),calc(100vw - 40px));
+    padding-left:18px;
+    padding-right:18px;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .sidebar.collapsed .brand-block{justify-content:flex-start;}
+  .sidebar.collapsed .brand-block .t1,
+  .sidebar.collapsed .brand-block .t2,
+  .sidebar.collapsed .nav-group-label,
+  .sidebar.collapsed .nav-item .nav-label{display:block;}
+  .sidebar.collapsed .nav-item{
+    justify-content:flex-start;
+    width:100%;
+    min-height:42px;
+    margin-left:0;
+    margin-right:0;
+    padding:9px 11px;
+  }
+  .sidebar.collapsed .nav-item .ext-arrow{display:block;}
+  .sidebar.collapsed .nav-item:hover{padding-left:11px;transform:translateX(2px);}
   .sidebar.open{ transform:translateX(0); }
   .topbar{ display:flex; }
   .main{ padding:0; }

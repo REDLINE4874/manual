@@ -87,8 +87,8 @@ footer.page-footer{
 .modal-box{width:min(800px, calc(100vw - 24px)); max-height:85vh; overflow:auto; background:var(--paper);border-radius:20px; padding:35px; 
   position:relative; animation:modalIn .25s; box-sizing:border-box;}
 .modal-box--venta{width:min(680px, calc(100vw - 24px));max-height:75vh;padding:35px 40px;}
-.modal-box--redencion{width:min(1080px, calc(100vw - 24px));max-height:88vh;padding:30px;}
-.modal-box--destinos{width:min(1080px, calc(100vw - 24px));max-height:90vh;padding:28px;}
+.modal-box--redencion{width:min(960px, calc(100vw - 24px));max-height:84vh;padding:24px;}
+.modal-box--destinos{width:min(960px, calc(100vw - 24px));max-height:84vh;padding:24px;}
 .modal-close{position:absolute; right:20px;top:20px; border:none; background:none; font-size:30px; cursor:pointer;}
 .modal-script{margin-top:20px; white-space:normal; line-height:1.7; color:var(--ink); width:100%; max-width:100%; box-sizing:border-box; overflow-wrap:anywhere; word-break:break-word;}
 .modal-script--venta{font-size:15.5px;line-height:1.75;}
@@ -101,6 +101,20 @@ footer.page-footer{
   border:1px solid var(--line);
   box-shadow:none;
 }
+.modal-script--redencion .redencion-container { padding:18px; }
+.modal-script--redencion .section-header { gap:10px; margin-bottom:18px; }
+.modal-script--redencion .redencion-grid { gap:14px; }
+.modal-script--redencion .redencion-card { padding:20px 14px 18px; }
+.modal-script--destinos .explora-destination-group { padding:18px 20px 16px; }
+.modal-script--destinos .explora-destination-list { gap:10px 16px; }
+.modal-script--destinos .explora-destination-list li { font-size:.94rem; }
+.modal-script--destinos .explora-certificate-title { margin:20px 20px 16px; font-size:clamp(1.35rem, 1.5vw, 1.8rem); }
+.modal-script--destinos .explora-certificate-grid { gap:14px; padding:0 20px 20px; }
+.modal-script--destinos .explora-certificate-card { gap:14px; min-height:150px; padding:16px; }
+.modal-script--destinos .explora-certificate-icon { width:76px; height:76px; border-radius:16px; }
+.modal-script--destinos .explora-certificate-icon svg { width:50px; height:50px; }
+.modal-script--destinos .explora-certificate-copy h3 { font-size:clamp(1.05rem, 1.2vw, 1.5rem); }
+.modal-script--destinos .explora-certificate-copy p { font-size:.94rem; }
 .modal-script .explora-table-block {
   padding:0;
 }
