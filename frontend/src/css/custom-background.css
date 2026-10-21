@@ -245,6 +245,21 @@ body.custom-background .note-card__share select {
   border-color: rgba(23, 32, 42, .22);
 }
 
+body.custom-background .note-card__share .calculator-select__trigger {
+  background: rgba(255, 255, 255, .62);
+  color: #17202a;
+  border-color: rgba(23, 32, 42, .22);
+}
+
+body.custom-background .note-card__share .calculator-select__menu {
+  background: color-mix(in srgb, var(--page-background) 12%, #ffffff);
+  border-color: rgba(23, 32, 42, .22);
+}
+
+body.custom-background .note-card__share .calculator-select__option {
+  color: #17202a;
+}
+
 body.custom-background .note-card__share {
   border-top-color: rgba(23, 32, 42, .18);
 }

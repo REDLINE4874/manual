@@ -67,6 +67,9 @@ function renderNotes(notes, sharePermissions = new Map()) {
     </article>
   `;
   }).join("");
+  notesList.querySelectorAll("select.note-card__select").forEach((select) => {
+    if (typeof enhanceCustomSelect === "function") enhanceCustomSelect(select);
+  });
 }
 
 async function loadNotes() {
