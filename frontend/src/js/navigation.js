@@ -43,7 +43,7 @@ function renderNav() {
     CARDS.filter((c) => c.segment === seg.id).forEach((c) => {
       const shortName = c.name.replace(" Banamex", "");
       html += `<button class="nav-item" data-card="${c.id}" data-tooltip="${shortName}" onclick="openCard('${c.id}')">
-        <img class="nav-card-image" src="${c.image}" alt="" aria-hidden="true"><span class="nav-label">${shortName}</span>
+        <span class="nav-card-image" data-preview-image="${c.image}" style="--card-color:${c.color}" aria-hidden="true"></span><span class="nav-label">${shortName}</span>
       </button>`;
     });
     html += `</div>`;
@@ -107,7 +107,7 @@ function renderNav() {
       window.innerHeight - previewHeight - 8,
     );
 
-    cardPreview.querySelector(".nav-card-preview__image").src = image.currentSrc || image.src;
+    cardPreview.querySelector(".nav-card-preview__image").src = image.dataset.previewImage || image.currentSrc || image.src;
     cardPreview.querySelector(".nav-card-preview__label").textContent =
       image.closest(".nav-item")?.querySelector(".nav-label")?.textContent.trim() || "Tarjeta";
     cardPreview.style.left = `${left}px`;
