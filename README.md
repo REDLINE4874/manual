@@ -66,6 +66,10 @@ Configuration > Redirect URLs. En Google conserva como URI de redirección la
 URL de callback de Supabase:
 `https://dpntowblygwkjybemoqk.supabase.co/auth/v1/callback`.
 
+Para habilitar la validación de usuarios al compartir notas, ejecuta también
+el contenido actualizado de `supabase/note-sharing.sql` en el SQL Editor de
+Supabase.
+
 ### Backend
 
 No hay backend en este proyecto: no existe servidor, API ni base de datos.

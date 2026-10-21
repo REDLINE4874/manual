@@ -55,7 +55,7 @@ function renderNotes(notes, sharePermissions = new Map()) {
       ${canEdit ? `<button class="note-card__edit" type="button" data-edit-note="${escapeNoteHtml(note.id)}">Editar</button>` : ""}
       ${isOwner ? `
         <div class="note-card__share">
-          <input type="email" data-share-email placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
+          <input type="email" data-share-email list="notesUserDirectory" placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
           <select class="note-card__select custom-select" data-share-permission aria-label="Permiso para compartir">
             <option value="view">Solo lectura</option>
             <option value="edit">Puede editar</option>
@@ -67,6 +67,10 @@ function renderNotes(notes, sharePermissions = new Map()) {
     </article>
   `;
   }).join("");
+  notesList.insertAdjacentHTML(
+    "beforeend",
+    '<datalist id="notesUserDirectory"></datalist>',
+  );
   notesList.querySelectorAll("select.note-card__select").forEach((select) => {
     if (typeof enhanceCustomSelect === "function") enhanceCustomSelect(select);
   });
@@ -87,6 +91,21 @@ async function loadNotes() {
     .eq("recipient_email", currentNotesUser.email.toLowerCase());
   const sharePermissions = new Map((shares || []).map((share) => [share.note_id, share.permission]));
   renderNotes(data || [], sharePermissions);
+  loadNoteUsers();
+}
+
+async function loadNoteUsers() {
+  const { data, error } = await notesClient.rpc("list_note_users");
+  if (error) {
+    setNotesStatus(`No se pudieron cargar los usuarios: ${error.message}`, true);
+    return;
+  }
+  const directory = notesList?.querySelector("#notesUserDirectory");
+  if (!directory) return;
+  directory.innerHTML = (data || [])
+    .filter(({ email }) => email)
+    .map(({ email }) => `<option value="${escapeNoteHtml(email)}"></option>`)
+    .join("");
 }
 
 function renderNotesSession(session) {
@@ -99,7 +118,9 @@ function renderNotesSession(session) {
     authButton.onclick = () => showView("notas");
   }
   if (notesUserLabel && signedIn) notesUserLabel.textContent = currentNotesUser.email || "Sesión iniciada";
-  if (signedIn) loadNotes();
+  if (signedIn) {
+    loadNotes();
+  }
 }
 
 async function signInWithGoogle() {
@@ -162,6 +183,20 @@ async function shareNote(noteId, email, permission) {
     setNotesStatus("No necesitas compartir la nota contigo mismo.", true);
     return;
   }
+  setNotesStatus("Verificando la cuenta...");
+  const { data: userExists, error: lookupError } = await notesClient.rpc(
+    "user_exists_by_email",
+    { target_email: recipientEmail },
+  );
+  if (lookupError) {
+    setNotesStatus(`No se pudo verificar el usuario: ${lookupError.message}`, true);
+    return;
+  }
+  if (!userExists) {
+    setNotesStatus(`No encontramos una cuenta registrada con ${recipientEmail}.`, true);
+    return;
+  }
+
   const { error } = await notesClient.from("note_shares").upsert({
     note_id: noteId,
     recipient_email: recipientEmail,
@@ -172,6 +207,9 @@ async function shareNote(noteId, email, permission) {
     return;
   }
   setNotesStatus(`Nota compartida con ${recipientEmail}.`);
+  const shareInput = notesList
+    ?.querySelector(`[data-note-id="${noteId}"] [data-share-email]`);
+  if (shareInput) shareInput.value = "";
 }
 
 async function updateNoteContent(noteId, content) {
