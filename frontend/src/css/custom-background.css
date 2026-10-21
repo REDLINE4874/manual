@@ -274,7 +274,7 @@ body.custom-background .note-card__share .calculator-select__option:hover {
 body.custom-background .note-user-results {
   background: #ffffff;
   border-color: rgba(23, 32, 42, .22);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .28);
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, .28);
 }
 
 body.custom-background .note-user-option {
