@@ -103,10 +103,20 @@ function renderNotesSession(session) {
 }
 
 async function signInWithGoogle() {
+  if (window.location.protocol === "file:") {
+    setNotesStatus(
+      "Para iniciar sesión, abre el manual mediante un servidor local (http://localhost), no como archivo local.",
+      true,
+    );
+    return;
+  }
+
   setNotesStatus("Abriendo Google...");
   const { error } = await notesClient.auth.signInWithOAuth({
     provider: "google",
-    options: { redirectTo: window.location.href.split("#")[0] },
+    options: {
+      redirectTo: `${window.location.origin}${window.location.pathname}`,
+    },
   });
   if (error) setNotesStatus(error.message, true);
 }
@@ -218,5 +228,11 @@ if (!notesReady) {
     }
   });
   notesClient.auth.onAuthStateChange((_event, session) => renderNotesSession(session));
-  notesClient.auth.getSession().then(({ data }) => renderNotesSession(data.session));
+  notesClient.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      setNotesStatus(`No se pudo recuperar la sesión: ${error.message}`, true);
+      return;
+    }
+    renderNotesSession(data.session);
+  });
 }

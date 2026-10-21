@@ -48,6 +48,24 @@ orden necesario: estilos base, estructura, detalles de tarjetas, tema oscuro,
 calculadora y modales, y ajustes responsivos. Para agregar o reorganizar estilos,
 edita el módulo correspondiente y conserva el orden de importación.
 
+### Inicio de sesión local
+
+Para probar las notas y el inicio de sesión con Google, sirve `frontend/` con
+un servidor local. Desde la raíz del proyecto ejecuta:
+
+```powershell
+py -m http.server 5500 --directory frontend
+```
+
+Después abre `http://localhost:5500/`. No abras `frontend/index.html` como
+`file://`, porque Supabase no puede completar correctamente el retorno OAuth en
+ese modo.
+
+En Supabase agrega `http://localhost:5500/**` en Authentication > URL
+Configuration > Redirect URLs. En Google conserva como URI de redirección la
+URL de callback de Supabase:
+`https://dpntowblygwkjybemoqk.supabase.co/auth/v1/callback`.
+
 ### Backend
 
 No hay backend en este proyecto: no existe servidor, API ni base de datos.
