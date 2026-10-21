@@ -84,6 +84,28 @@ body.iframe-scroll-active{overflow:hidden;}
 .internal-tab.is-active:hover{background:var(--brand-teal);color:#fff;}
 .internal-tab.is-dragging{opacity:.45;}
 .internal-tab.is-over{outline:2px dashed var(--brand-teal);outline-offset:-3px;}
+.notes-view__hero{margin-bottom:24px;}
+.notes-auth,.notes-app{padding:26px;border:1px solid var(--sidebar-border);border-radius:16px;background:var(--surface,#fff);box-shadow:var(--shadow);}
+.notes-auth h2{margin:0 0 8px;color:var(--ink);font:700 22px var(--font-display);}
+.notes-auth p{margin:0 0 18px;color:var(--ink-soft);}
+.notes-button{border:1px solid var(--brand-teal);border-radius:10px;padding:10px 15px;background:var(--brand-teal);color:#fff;font:700 12px var(--font-body);cursor:pointer;}
+.notes-button:hover{background:var(--brand-teal-hover);border-color:var(--brand-teal-hover);}
+.notes-button:disabled{opacity:.55;cursor:not-allowed;}
+.notes-button--secondary{background:transparent;color:var(--brand-teal);}
+.notes-app__toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;color:var(--ink-soft);font-size:13px;}
+.note-editor{display:grid;gap:10px;padding-bottom:24px;border-bottom:1px solid var(--line);}
+.note-editor input,.note-editor textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:11px 12px;background:var(--surface-soft);color:var(--ink);font:500 13px var(--font-body);}
+.note-editor textarea{min-height:120px;resize:vertical;}
+.note-editor__actions{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.notes-status{min-height:18px;margin:10px 0 0;color:var(--brand-teal);font-size:12px;}
+.notes-status.is-error{color:var(--brand-red);}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:24px;}
+.note-card{position:relative;min-height:130px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff4b8;box-shadow:0 5px 14px rgba(50,45,20,.1);}
+.note-card h2{margin:0 0 10px;color:#4d431e;font:700 16px var(--font-display);}
+.note-card p{margin:0 0 28px;color:#5f5428;font:500 13px/1.55 var(--font-body);white-space:normal;overflow-wrap:anywhere;}
+.note-card__delete{position:absolute;right:12px;bottom:10px;border:0;background:transparent;color:#7c6b28;font:600 11px var(--font-body);cursor:pointer;}
+.note-card__delete:hover{text-decoration:underline;}
+.notes-empty{color:var(--ink-soft);font-size:13px;}
 .sidebar .nav-dropdown-group,.sidebar .nav-calc{display:none;}
 
 /* ---------- Sidebar ---------- */

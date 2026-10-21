@@ -14,6 +14,8 @@
     <!-- CSS -->
     <link rel="stylesheet" href="src/css/styles.css" />
     <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="src/js/supabase-config.js" defer></script>
     <script src="src/js/cards/joy.js" defer></script>
     <script src="src/js/cards/clasica.js" defer></script>
     <script src="src/js/cards/teleton.js" defer></script>
@@ -29,6 +31,7 @@
     <script src="src/js/sidebar.js" defer></script>
     <script src="src/js/modals.js" defer></script>
     <script src="src/js/script.js" defer></script>
+    <script src="src/js/notes.js" defer></script>
     <script src="src/js/components/theme-toggle.js" defer></script>
     <script src="src/js/components/theme-background-picker.js" defer></script>
   </head>
@@ -83,6 +86,13 @@
             <button class="utility-action" data-view="agendas" onclick="showView('agendas')" title="Agendas">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span>
               <span>Agendas</span>
+            </button>
+            <button class="utility-action" data-view="notas" onclick="showView('notas')" title="Notas privadas">
+              <span class="utility-action__icon">✎</span>
+              <span>Notas</span>
+            </button>
+            <button class="utility-action auth-action" id="authButton" type="button" title="Iniciar sesión con Google">
+              <span>Iniciar sesión</span>
             </button>
             <div class="utility-links" id="utilityLinks">
               <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
@@ -311,6 +321,38 @@
           </div>
           <div class="digitos-grid" id="digitosContainer">
             <!-- generado por JS -->
+          </div>
+        </section>
+
+        <section class="view notes-view" id="view-notas">
+          <button class="back-link" onclick="showView('home')">&#8592; Volver al men&#250;</button>
+          <div class="hero notes-view__hero">
+            <div>
+              <span class="eyebrow">Privadas por usuario</span>
+              <h1>Mis notas</h1>
+              <p>Guarda recordatorios personales sincronizados con tu cuenta.</p>
+            </div>
+          </div>
+          <div class="notes-auth" id="notesAuthState">
+            <h2>Inicia sesi&#243;n para ver tus notas</h2>
+            <p>Tus notas quedan separadas de las de los dem&#225;s usuarios.</p>
+            <button class="notes-button" id="googleSignInButton" type="button">Continuar con Google</button>
+            <p class="notes-status" id="notesStatus" role="status"></p>
+          </div>
+          <div class="notes-app" id="notesApp" hidden>
+            <div class="notes-app__toolbar">
+              <span id="notesUserLabel"></span>
+              <button class="notes-button notes-button--secondary" id="signOutButton" type="button">Cerrar sesi&#243;n</button>
+            </div>
+            <form class="note-editor" id="noteForm">
+              <input id="noteTitle" type="text" maxlength="120" placeholder="T&#237;tulo de la nota" aria-label="T&#237;tulo de la nota" />
+              <textarea id="noteContent" maxlength="5000" placeholder="Escribe una nota..." aria-label="Contenido de la nota"></textarea>
+              <div class="note-editor__actions">
+                <span class="notes-status" id="noteSaveStatus" role="status"></span>
+                <button class="notes-button" type="submit">Guardar nota</button>
+              </div>
+            </form>
+            <div class="notes-grid" id="notesList"></div>
           </div>
         </section>
 
