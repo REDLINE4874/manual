@@ -13,6 +13,10 @@ siteAuthScreen.id = "siteAuthScreen";
 siteAuthScreen.setAttribute("aria-labelledby", "siteAuthTitle");
 siteAuthScreen.innerHTML = `
   <div class="site-auth-card">
+    <div class="site-auth-brand">
+      <img class="site-auth-logo" src="assets/icons/talent.svg" alt="Talent" />
+      <span class="site-auth-kicker">Manual de Tarjetas</span>
+    </div>
     <h1 id="siteAuthTitle">Acceso al manual</h1>
 
     <div id="siteAuthLoginPanel">
