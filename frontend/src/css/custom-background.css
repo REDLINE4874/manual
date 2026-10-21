@@ -254,12 +254,26 @@ body.custom-background .note-card__share .calculator-select__trigger {
 }
 
 body.custom-background .note-card__share .calculator-select__menu {
-  background: color-mix(in srgb, var(--page-background) 12%, #ffffff);
+  background: #ffffff;
   border-color: rgba(23, 32, 42, .22);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .28);
+  z-index: 60;
 }
 
 body.custom-background .note-card__share .calculator-select__option {
   color: #17202a;
+  background: #ffffff;
+  font-weight: 600;
+}
+
+body.custom-background .note-card__share .calculator-select__option:hover {
+  background: var(--brand-teal);
+  color: #ffffff;
+}
+
+body.custom-background .note-card__share .calculator-select__option[aria-selected="true"] {
+  background: #e8f1f4;
+  color: var(--brand-teal);
 }
 
 body.custom-background .note-card__share {
@@ -268,8 +282,15 @@ body.custom-background .note-card__share {
 
 body.custom-background .note-card__share button,
 body.custom-background .note-card__edit {
-  color: var(--custom-accent-text);
-  border-color: color-mix(in srgb, var(--custom-accent-text) 55%, transparent);
+  background: var(--brand-teal);
+  color: #fff;
+  border-color: var(--brand-teal);
+}
+
+body.custom-background .note-card__share button:hover,
+body.custom-background .note-card__edit:hover {
+  background: var(--brand-teal-hover);
+  border-color: var(--brand-teal-hover);
 }
 
 body.custom-background .note-card__delete {
