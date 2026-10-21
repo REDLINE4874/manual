@@ -14,16 +14,21 @@ siteAuthScreen.setAttribute("aria-labelledby", "siteAuthTitle");
 siteAuthScreen.innerHTML = `
   <div class="site-auth-card">
     <h1 id="siteAuthTitle">Acceso al manual</h1>
-    <p>Inicia sesion con el correo y contrasena que te proporciono el administrador.</p>
+    <p id="siteAuthDescription">Inicia sesion con el correo y contrasena que te proporciono el administrador.</p>
     <form class="site-auth-form" id="siteAuthForm">
       <label>Correo electronico
         <input id="siteAuthEmail" type="email" autocomplete="email" required />
       </label>
-      <label>Contrasena
+      <label id="siteAuthPasswordLabel">Contrasena
         <input id="siteAuthPassword" type="password" autocomplete="current-password" required />
+      </label>
+      <label id="siteAuthConfirmLabel" hidden>Confirmar contrasena
+        <input id="siteAuthConfirm" type="password" autocomplete="new-password" />
       </label>
       <button class="site-auth-submit" id="siteAuthSubmit" type="submit">Iniciar sesion</button>
     </form>
+    <button class="site-auth-link" id="siteAuthForgot" type="button">Olvide mi contrasena</button>
+    <button class="site-auth-link" id="siteAuthBack" type="button" hidden>Volver al inicio de sesion</button>
     <p class="site-auth-status" id="siteAuthStatus" role="status"></p>
   </div>
 `;
@@ -32,12 +37,40 @@ document.body.prepend(siteAuthScreen);
 const siteAuthForm = document.getElementById("siteAuthForm");
 const siteAuthEmail = document.getElementById("siteAuthEmail");
 const siteAuthPassword = document.getElementById("siteAuthPassword");
+const siteAuthConfirm = document.getElementById("siteAuthConfirm");
+const siteAuthPasswordLabel = document.getElementById("siteAuthPasswordLabel");
+const siteAuthConfirmLabel = document.getElementById("siteAuthConfirmLabel");
 const siteAuthSubmit = document.getElementById("siteAuthSubmit");
+const siteAuthForgot = document.getElementById("siteAuthForgot");
+const siteAuthBack = document.getElementById("siteAuthBack");
+const siteAuthDescription = document.getElementById("siteAuthDescription");
 const siteAuthStatus = document.getElementById("siteAuthStatus");
+let siteAuthMode = "login";
 
 function setSiteAuthStatus(message, isError = false) {
   siteAuthStatus.textContent = message;
   siteAuthStatus.classList.toggle("is-error", isError);
+}
+
+function setSiteAuthMode(mode) {
+  siteAuthMode = mode;
+  const isRequest = mode === "request";
+  const isUpdate = mode === "update";
+  siteAuthScreen.hidden = false;
+  siteAuthPasswordLabel.hidden = isRequest;
+  siteAuthConfirmLabel.hidden = !isUpdate;
+  siteAuthPassword.required = !isRequest;
+  siteAuthConfirm.required = isUpdate;
+  siteAuthForgot.hidden = mode !== "login";
+  siteAuthBack.hidden = mode === "login";
+  siteAuthSubmit.textContent = isRequest ? "Enviar enlace" : isUpdate ? "Guardar contrasena" : "Iniciar sesion";
+  siteAuthDescription.textContent = isRequest
+    ? "Escribe tu correo y te enviaremos un enlace para cambiar la contrasena."
+    : isUpdate
+      ? "Escribe y confirma tu nueva contrasena."
+      : "Inicia sesion con el correo y contrasena que te proporciono el administrador.";
+  siteAuthPassword.autocomplete = isUpdate ? "new-password" : "current-password";
+  setSiteAuthStatus("");
 }
 
 window.bindSiteAuthButton = (signedIn) => {
@@ -52,9 +85,10 @@ window.bindSiteAuthButton = (signedIn) => {
 
 function updateSiteAuthSession(session) {
   const signedIn = Boolean(session?.user);
+  const isRecovery = siteAuthMode === "update";
   document.body.classList.remove("site-auth-pending");
-  document.body.classList.toggle("site-auth-required", !signedIn);
-  siteAuthScreen.hidden = signedIn;
+  document.body.classList.toggle("site-auth-required", !signedIn || isRecovery);
+  siteAuthScreen.hidden = signedIn && !isRecovery;
   window.bindSiteAuthButton(signedIn);
   if (!signedIn) siteAuthEmail.focus();
 }
@@ -66,13 +100,37 @@ async function submitSiteAuth(event) {
     return;
   }
   siteAuthSubmit.disabled = true;
-  setSiteAuthStatus("Iniciando sesion...");
-  const { error } = await window.SUPABASE_AUTH_CLIENT.auth.signInWithPassword({
-    email: siteAuthEmail.value.trim(),
-    password: siteAuthPassword.value,
-  });
+  setSiteAuthStatus(siteAuthMode === "request" ? "Enviando enlace..." : "Procesando...");
+  let error = null;
+  if (siteAuthMode === "request") {
+    ({ error } = await window.SUPABASE_AUTH_CLIENT.auth.resetPasswordForEmail(siteAuthEmail.value.trim(), {
+      redirectTo: window.location.href.split("#")[0],
+    }));
+  } else if (siteAuthMode === "update") {
+    if (siteAuthPassword.value !== siteAuthConfirm.value) {
+      error = { message: "Las contrasenas no coinciden." };
+    } else {
+      ({ error } = await window.SUPABASE_AUTH_CLIENT.auth.updateUser({ password: siteAuthPassword.value }));
+    }
+  } else {
+    ({ error } = await window.SUPABASE_AUTH_CLIENT.auth.signInWithPassword({
+      email: siteAuthEmail.value.trim(),
+      password: siteAuthPassword.value,
+    }));
+  }
   siteAuthSubmit.disabled = false;
-  if (error) setSiteAuthStatus("Correo o contrasena incorrectos.", true);
+  if (error) {
+    setSiteAuthStatus(siteAuthMode === "login" ? "Correo o contrasena incorrectos." : error.message, true);
+    return;
+  }
+  if (siteAuthMode === "request") {
+    setSiteAuthStatus("Revisa tu correo y abre el enlace para cambiar tu contrasena.");
+    siteAuthForm.reset();
+  } else if (siteAuthMode === "update") {
+    setSiteAuthMode("login");
+    setSiteAuthStatus("Contrasena actualizada. Ya puedes continuar.");
+    updateSiteAuthSession({ user: true });
+  }
 }
 
 if (!siteAuthReady) {
@@ -82,7 +140,12 @@ if (!siteAuthReady) {
 } else {
   window.SUPABASE_AUTH_CLIENT = window.supabase.createClient(siteAuthConfig.url, siteAuthConfig.anonKey);
   siteAuthForm.addEventListener("submit", submitSiteAuth);
-  window.SUPABASE_AUTH_CLIENT.auth.onAuthStateChange((_event, session) => updateSiteAuthSession(session));
+  siteAuthForgot.addEventListener("click", () => setSiteAuthMode("request"));
+  siteAuthBack.addEventListener("click", () => setSiteAuthMode("login"));
+  window.SUPABASE_AUTH_CLIENT.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") setSiteAuthMode("update");
+    updateSiteAuthSession(session);
+  });
   window.SUPABASE_AUTH_CLIENT.auth.getSession().then(({ data, error }) => {
     if (error) setSiteAuthStatus("No se pudo recuperar la sesion.", true);
     updateSiteAuthSession(data?.session);

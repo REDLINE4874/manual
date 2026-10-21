@@ -18,10 +18,26 @@ const notesUserLabel = document.getElementById("notesUserLabel");
 let notesClient = null;
 let currentNotesUser = null;
 let noteUsers = [];
+let notesFeedbackTimer = null;
 const NOTE_COLORS = ["yellow", "blue", "green", "pink", "purple", "coral"];
 
 function normalizeNoteColor(color) {
   return NOTE_COLORS.includes(color) ? color : "yellow";
+}
+
+function readNoteFormat(noteId) {
+  try {
+    return JSON.parse(localStorage.getItem(`note-format-${noteId}`) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function applyNoteFormatStyles(element, format) {
+  if (!element) return;
+  element.style.fontWeight = format.bold ? "700" : "400";
+  element.style.fontStyle = format.italic ? "italic" : "normal";
+  element.style.textDecoration = format.underline ? "underline" : "none";
 }
 
 function setNotesStatus(message, isError = false) {
@@ -30,6 +46,19 @@ function setNotesStatus(message, isError = false) {
     element.textContent = message;
     element.classList.toggle("is-error", isError);
   });
+
+  document.querySelector(".note-feedback")?.remove();
+  window.clearTimeout(notesFeedbackTimer);
+  if (!message) return;
+
+  const feedback = document.createElement("div");
+  feedback.className = `note-feedback${isError ? " is-error" : ""}`;
+  feedback.setAttribute("role", isError ? "alert" : "status");
+  feedback.textContent = message;
+  document.body.append(feedback);
+  notesFeedbackTimer = window.setTimeout(() => {
+    feedback.remove();
+  }, isError ? 4800 : 2800);
 }
 
 function escapeNoteHtml(value) {
@@ -57,34 +86,14 @@ function renderNotes(notes, sharePermissions = new Map()) {
       <h2>${escapeNoteHtml(note.title || "Sin título")}</h2>
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
-        <div class="note-card__buttons">
-          ${canEdit ? `<button class="note-card__edit" type="button" data-edit-note="${escapeNoteHtml(note.id)}">Editar</button>` : ""}
-          ${isOwner ? `<button class="note-card__delete" type="button" data-delete-note="${escapeNoteHtml(note.id)}">Eliminar</button>` : ""}
-        </div>
-        ${isOwner ? `
-          <div class="note-card__colors" aria-label="Color de la nota">
-            <span>Color</span>
-            ${NOTE_COLORS.map((color) => `
-              <button type="button" class="note-card__color note-card__color--${color}${noteColor === color ? " is-selected" : ""}"
-                data-note-color="${color}" aria-label="Color ${color}" aria-pressed="${noteColor === color}"></button>
-            `).join("")}
-          </div>
-          <div class="note-card__share">
-            <div class="note-user-picker">
-              <input type="email" data-share-email autocomplete="off" placeholder="correo@ejemplo.com" aria-label="Correo de la persona con quien compartir" />
-              <div class="note-user-results" data-note-user-results role="listbox" hidden></div>
-            </div>
-            <select class="note-card__select custom-select" data-share-permission aria-label="Permiso para compartir">
-              <option value="view">Solo lectura</option>
-              <option value="edit">Puede editar</option>
-            </select>
-            <button type="button" data-share-note="${escapeNoteHtml(note.id)}">Compartir</button>
-          </div>
-        ` : ""}
+        ${isOwner ? NOTE_TOOL_MARKUP : canEdit ? "<div class=\"note-card__toolbar\"><span>Compartida contigo</span></div>" : ""}
       </div>
     </article>
   `;
   }).join("");
+  notesList.querySelectorAll("[data-note-content]").forEach((content) => {
+    applyNoteFormatStyles(content, readNoteFormat(content.closest("[data-note-id]")?.dataset.noteId));
+  });
   notesList.querySelectorAll("select.note-card__select").forEach((select) => {
     if (typeof enhanceCustomSelect === "function") enhanceCustomSelect(select);
   });
@@ -106,6 +115,154 @@ async function loadNotes() {
   const sharePermissions = new Map((shares || []).map((share) => [share.note_id, share.permission]));
   renderNotes(data || [], sharePermissions);
   loadNoteUsers();
+}
+
+const NOTE_TOOL_PROMPTS = {
+  format: ["Formato", "Las opciones de formato de texto estarán disponibles próximamente."],
+  color: ["Color de fondo", "Elige el color de la nota desde los círculos de color después de guardarla."],
+  reminder: ["Recordatorio", "Los recordatorios se podrán agregar próximamente a esta nota."],
+  image: ["Agregar imagen", "La carga de imágenes estará disponible próximamente."],
+  more: ["Más opciones", "Aquí encontrarás acciones adicionales para organizar tus notas."],
+};
+
+const NOTE_TOOL_MARKUP = `
+  <div class="note-card__tools" aria-label="Opciones de la nota">
+    <button class="note-tool" type="button" data-note-tool="delete" aria-label="Eliminar" title="Eliminar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v6m4-6v6" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="format" aria-label="Formato" title="Formato"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M12 5v14M8 19h8" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="color" aria-label="Color de fondo" title="Color de fondo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z" /><circle cx="7.5" cy="10" r="1" /><circle cx="10" cy="6.5" r="1" /><circle cx="15" cy="6.5" r="1" /><circle cx="18" cy="10" r="1" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="share" aria-label="Compartir" title="Compartir"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3.5 20a5.5 5.5 0 0 1 11 0M17 8v6m-3-3h6" /></svg></button>
+  </div>
+`;
+
+function showNoteToolPrompt(tool) {
+  const promptData = NOTE_TOOL_PROMPTS[tool];
+  if (!promptData) return;
+  const prompt = document.createElement("div");
+  prompt.className = "note-prompt";
+  prompt.innerHTML = `
+    <div class="note-prompt__card" role="dialog" aria-modal="true" aria-labelledby="note-prompt-title">
+      <h2 id="note-prompt-title">${promptData[0]}</h2>
+      <p>${promptData[1]}</p>
+      <button class="note-prompt__close" type="button">Entendido</button>
+    </div>
+  `;
+  const close = () => prompt.remove();
+  prompt.querySelector(".note-prompt__close").addEventListener("click", close);
+  prompt.addEventListener("click", (event) => {
+    const userPicker = prompt.querySelector(".note-user-picker");
+    const userResults = prompt.querySelector("[data-note-user-results]");
+    if (userResults && userPicker && !event.target.closest(".note-user-picker")) userResults.hidden = true;
+    if (event.target === prompt) close();
+  });
+  document.body.append(prompt);
+  prompt.querySelector(".note-prompt__close").focus();
+}
+
+function showNoteToolPrompt(tool, noteId) {
+  const noteCard = notesList?.querySelector(`[data-note-id="${noteId}"]`);
+  const content = noteCard?.querySelector("[data-note-content]")?.textContent || "";
+  const titles = {
+    edit: "Editar nota",
+    delete: "Eliminar nota",
+    share: "Compartir nota",
+    color: "Color de fondo",
+    format: "Formato",
+    reminder: "Recordatorio",
+    image: "Agregar imagen",
+    more: "Mas opciones",
+  };
+  const prompt = document.createElement("div");
+  prompt.className = "note-prompt";
+  prompt.innerHTML = `<div class="note-prompt__card" role="dialog" aria-modal="true" aria-labelledby="note-prompt-title"><h2 id="note-prompt-title">${titles[tool] || "Opciones"}</h2><div class="note-prompt__body"></div><div class="note-prompt__actions"></div></div>`;
+  const body = prompt.querySelector(".note-prompt__body");
+  const actions = prompt.querySelector(".note-prompt__actions");
+  const close = () => prompt.remove();
+  const addButton = (label, className = "note-prompt__close") => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = label;
+    actions.append(button);
+    return button;
+  };
+
+  if (tool === "edit") {
+    const textarea = document.createElement("textarea");
+    textarea.className = "note-prompt__textarea";
+    textarea.value = content;
+    textarea.setAttribute("aria-label", "Contenido de la nota");
+    body.append(textarea);
+    const save = addButton("Guardar");
+    save.addEventListener("click", async () => { await updateNoteContent(noteId, textarea.value, save); close(); });
+  } else if (tool === "delete") {
+    body.innerHTML = "<p>Esta accion no se puede deshacer. ¿Quieres eliminar esta nota?</p>";
+    const cancel = addButton("Cancelar", "note-prompt__secondary");
+    const remove = addButton("Eliminar", "note-prompt__danger");
+    cancel.addEventListener("click", close);
+    remove.addEventListener("click", async () => { await deleteNote(noteId, remove, true); close(); });
+  } else if (tool === "share") {
+    body.innerHTML = '<label class="note-prompt__label">Usuario<div class="note-user-picker"><input class="note-prompt__input" data-share-email type="email" placeholder="Busca un usuario por correo" autocomplete="off" required /><div class="note-user-results" data-note-user-results hidden role="listbox"></div></div></label><label class="note-prompt__label">Permiso<select id="note-permission-' + noteId + '" class="note-prompt__select custom-select"><option value="view">Solo lectura</option><option value="edit">Puede editar</option></select></label>';
+    const email = body.querySelector("[data-share-email]");
+    const permission = body.querySelector(".note-prompt__select");
+    const userResults = body.querySelector("[data-note-user-results]");
+    if (typeof enhanceCustomSelect === "function") enhanceCustomSelect(permission);
+    email.addEventListener("input", () => renderNoteUserResults(email));
+    email.addEventListener("focus", () => renderNoteUserResults(email));
+    userResults.addEventListener("click", (event) => {
+      const userOption = event.target.closest("[data-note-user]");
+      if (!userOption) return;
+      email.value = userOption.dataset.noteUser;
+      userResults.hidden = true;
+    });
+    renderNoteUserResults(email);
+    loadNoteUsers().then(() => renderNoteUserResults(email));
+    const share = addButton("Compartir");
+    share.addEventListener("click", async () => {
+      if (!email.value.trim()) { email.focus(); return; }
+      await shareNote(noteId, email.value, permission.value, share);
+      close();
+    });
+  } else if (tool === "color") {
+    body.innerHTML = '<p>Selecciona un color para esta nota.</p><div class="note-prompt__colors"></div>';
+    const colors = body.querySelector(".note-prompt__colors");
+    NOTE_COLORS.forEach((color) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `note-card__color note-card__color--${color}`;
+      button.setAttribute("aria-label", `Color ${color}`);
+      colors.append(button);
+      button.addEventListener("click", async () => { await updateNoteColor(noteId, color, null, noteCard); close(); });
+    });
+  } else if (tool === "format") {
+    body.innerHTML = '<p>Selecciona el estilo que quieres aplicar al contenido.</p><div class="note-format-options"><button type="button" data-format-style="bold"><strong>Negrita</strong></button><button type="button" data-format-style="italic"><em>Cursiva</em></button><button type="button" data-format-style="underline"><u>Subrayado</u></button><button type="button" data-format-style="reset">Restablecer</button></div>';
+    const expandedCard = notesList?.querySelector(`.note-expanded-card[data-note-id="${noteId}"]`);
+    const contentInput = expandedCard?.querySelector(".note-expanded-content");
+    const formatKey = `note-format-${noteId}`;
+    let format = readNoteFormat(noteId);
+    const applyFormat = () => {
+      applyNoteFormatStyles(contentInput, format);
+    };
+    const syncFormatButtons = () => body.querySelectorAll("[data-format-style]").forEach((item) => item.classList.toggle("is-active", Boolean(format[item.dataset.formatStyle])));
+    applyFormat();
+    syncFormatButtons();
+    body.querySelectorAll("[data-format-style]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const style = button.dataset.formatStyle;
+        if (style === "reset") format = {};
+        else format[style] = !format[style];
+        localStorage.setItem(formatKey, JSON.stringify(format));
+        applyFormat();
+        syncFormatButtons();
+      });
+    });
+    addButton("Entendido").addEventListener("click", close);
+  } else {
+    close();
+    return;
+  }
+  prompt.addEventListener("click", (event) => { if (event.target === prompt) close(); });
+  document.body.append(prompt);
+  prompt.querySelector("textarea, input, button")?.focus();
 }
 
 async function loadNoteUsers() {
@@ -195,6 +352,7 @@ async function saveNote(event) {
     return;
   }
   noteForm.reset();
+  submitButton?.blur();
   setNotesStatus("Nota guardada.");
   if (submitButton) {
     submitButton.disabled = false;
@@ -203,8 +361,8 @@ async function saveNote(event) {
   await loadNotes();
 }
 
-async function deleteNote(noteId, button) {
-  if (!window.confirm("¿Quieres eliminar esta nota? Esta acción no se puede deshacer.")) {
+async function deleteNote(noteId, button, skipConfirmation = false) {
+  if (!skipConfirmation && !window.confirm("¿Quieres eliminar esta nota? Esta acción no se puede deshacer.")) {
     setNotesStatus("Eliminación cancelada.");
     return;
   }
@@ -310,9 +468,41 @@ async function updateNoteContent(noteId, content, button) {
   await loadNotes();
 }
 
-async function updateNoteColor(noteId, color, button) {
+async function updateNoteDetails(noteId, title, content, button) {
+  const nextContent = content.trim();
+  if (!nextContent) {
+    setNotesStatus("Escribe algo antes de guardar.", true);
+    return false;
+  }
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Guardando...";
+  }
+  setNotesStatus("Guardando cambios...");
+  const { error } = await notesClient
+    .from("notes")
+    .update({
+      title: title.trim() || "Sin título",
+      content: nextContent,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", noteId);
+  if (error) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Guardar";
+    }
+    setNotesStatus(error.message, true);
+    return false;
+  }
+  setNotesStatus("Nota actualizada.");
+  await loadNotes();
+  return true;
+}
+
+async function updateNoteColor(noteId, color, button, cardOverride = null) {
   const nextColor = normalizeNoteColor(color);
-  const card = button?.closest("[data-note-id]");
+  const card = cardOverride || button?.closest("[data-note-id]");
   const previousColor = NOTE_COLORS.find((item) => card?.classList.contains(`note-card--${item}`)) || "yellow";
   if (!card || nextColor === previousColor) return;
 
@@ -341,6 +531,68 @@ async function updateNoteColor(noteId, color, button) {
   setNotesStatus("Color de la nota actualizado.");
 }
 
+function openExpandedNote(card) {
+  if (!card || document.querySelector(".note-expanded-backdrop")) return;
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "note-expanded-backdrop";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
+  backdrop.setAttribute("aria-label", "Nota ampliada");
+
+  const expandedCard = card.cloneNode(true);
+  expandedCard.classList.add("note-expanded-card");
+  const titleElement = expandedCard.querySelector("h2");
+  const contentElement = expandedCard.querySelector("[data-note-content]");
+  const optionsElement = expandedCard.querySelector(".note-card__options");
+  const titleInput = document.createElement("input");
+  titleInput.className = "note-expanded-title";
+  titleInput.type = "text";
+  titleInput.maxLength = 120;
+  titleInput.value = titleElement?.textContent || "";
+  titleInput.setAttribute("aria-label", "Título de la nota");
+  const contentInput = document.createElement("textarea");
+  contentInput.className = "note-expanded-content";
+  contentInput.maxLength = 5000;
+  contentInput.value = contentElement?.textContent || "";
+  contentInput.setAttribute("aria-label", "Contenido de la nota");
+  titleElement?.replaceWith(titleInput);
+  contentElement?.replaceWith(contentInput);
+  applyNoteFormatStyles(contentInput, readNoteFormat(card.dataset.noteId));
+
+  const actions = document.createElement("div");
+  actions.className = "note-expanded-actions";
+  actions.innerHTML = '<button type="button" class="note-expanded-close">Cerrar</button><button type="button" class="note-expanded-save">Guardar</button>';
+  optionsElement?.before(actions);
+  backdrop.append(expandedCard);
+
+  const close = () => {
+    backdrop.remove();
+    document.removeEventListener("keydown", onKeydown);
+  };
+  const onKeydown = (event) => {
+    if (event.key === "Escape") close();
+  };
+
+  actions.querySelector(".note-expanded-close")?.addEventListener("click", close);
+  actions.querySelector(".note-expanded-save")?.addEventListener("click", async (event) => {
+    const saved = await updateNoteDetails(
+      card.dataset.noteId,
+      titleInput.value,
+      contentInput.value,
+      event.currentTarget,
+    );
+    if (saved) close();
+  });
+
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) close();
+  });
+  document.addEventListener("keydown", onKeydown);
+  notesList.append(backdrop);
+  titleInput.focus();
+}
+
 if (!notesReady) {
   setNotesStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
 } else {
@@ -354,11 +606,16 @@ if (!notesReady) {
   });
   document.addEventListener("click", (event) => {
     if (event.target.closest(".note-user-picker")) return;
-    notesList?.querySelectorAll("[data-note-user-results]").forEach((results) => {
+    document.querySelectorAll("[data-note-user-results]").forEach((results) => {
       results.hidden = true;
     });
   });
   notesList?.addEventListener("click", (event) => {
+    const tool = event.target.closest("[data-note-tool]");
+    if (tool) {
+      showNoteToolPrompt(tool.dataset.noteTool, tool.closest("[data-note-id]")?.dataset.noteId);
+      return;
+    }
     const userOption = event.target.closest("[data-note-user]");
     if (userOption) {
       const picker = userOption.closest(".note-user-picker");
@@ -423,6 +680,12 @@ if (!notesReady) {
         delete editButton.dataset.saveNote;
       }
       setNotesStatus("Edición cancelada.");
+    }
+
+    if (event.target.closest(".note-expanded-backdrop")) return;
+    const noteCard = event.target.closest(".note-card");
+    if (noteCard && !event.target.closest("button, input, select, textarea, a")) {
+      openExpandedNote(noteCard);
     }
   });
   notesClient.auth.onAuthStateChange((_event, session) => renderNotesSession(session));

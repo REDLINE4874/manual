@@ -22,6 +22,8 @@ body.site-auth-required .app { display: none; }
 .site-auth-submit { min-height: 42px; margin-top: 6px; border: 1px solid var(--brand-teal); border-radius: 9px; background: var(--brand-teal); color: #fff; font: 700 13px var(--font-body); cursor: pointer; }
 .site-auth-submit:hover { background: var(--brand-teal-hover); }
 .site-auth-submit:disabled { cursor: wait; opacity: .65; }
+.site-auth-link { display: block; margin: 14px auto 0; border: 0; padding: 0; background: none; color: var(--brand-teal); font: 700 12px var(--font-body); cursor: pointer; }
+.site-auth-link[hidden] { display: none; }
 .site-auth-switch { margin: 16px 0 0 !important; text-align: center; font-size: 12px; }
 .site-auth-switch button { border: 0; padding: 0; background: none; color: var(--brand-teal); font: 700 12px var(--font-body); cursor: pointer; }
 .site-auth-status { min-height: 18px; margin: 14px 0 0 !important; color: var(--brand-teal) !important; font-size: 12px; }
