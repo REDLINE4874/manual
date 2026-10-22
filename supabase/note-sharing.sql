@@ -70,6 +70,47 @@ $$;
 revoke all on function public.get_note_owner_emails(uuid[]) from public;
 grant execute on function public.get_note_owner_emails(uuid[]) to authenticated;
 
+create or replace function public.get_note_owner_usernames(target_note_ids uuid[])
+returns table(note_id uuid, owner_username text)
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select n.id, p.username
+  from public.notes n
+  join public.profiles p on p.id = n.user_id
+  where n.id = any(target_note_ids)
+    and exists (
+      select 1
+      from public.note_shares ns
+      where ns.note_id = n.id
+        and lower(ns.recipient_email) = lower(auth.jwt() ->> 'email')
+    );
+$$;
+
+revoke all on function public.get_note_owner_usernames(uuid[]) from public;
+grant execute on function public.get_note_owner_usernames(uuid[]) to authenticated;
+
+create or replace function public.get_note_shares(target_note_ids uuid[])
+returns table(note_id uuid, recipient_email text, recipient_username text, permission text)
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select ns.note_id, ns.recipient_email, p.username, ns.permission
+  from public.note_shares ns
+  join auth.users u on lower(u.email) = lower(ns.recipient_email)
+  left join public.profiles p on p.id = u.id
+  where ns.note_id = any(target_note_ids)
+    and (
+      exists (select 1 from public.notes n where n.id = ns.note_id and n.user_id = auth.uid())
+      or lower(ns.recipient_email) = lower(auth.jwt() ->> 'email')
+    );
+$$;
+
+revoke all on function public.get_note_shares(uuid[]) from public;
+grant execute on function public.get_note_shares(uuid[]) to authenticated;
+
 -- 3. Limpiar y recrear las políticas de seguridad (RLS) para note_shares y notes
 drop policy if exists "Owners can view shares of their notes" on public.note_shares;
 drop policy if exists "Owners can create shares for their notes" on public.note_shares;
@@ -99,11 +140,11 @@ using (public.user_owns_note(note_id));
 
 create policy "Recipients can view shares sent to them"
 on public.note_shares for select
-using (lower(recipient_email) = lower(auth.jwt() ->> 'email'));
+using (lower(public.note_shares.recipient_email) = lower(auth.jwt() ->> 'email'));
 
 create policy "Recipients can revoke their own note access"
 on public.note_shares for delete
-using (lower(recipient_email) = lower(auth.jwt() ->> 'email'));
+using (lower(public.note_shares.recipient_email) = lower(auth.jwt() ->> 'email'));
 
 create policy "Users can read notes shared with them"
 on public.notes for select

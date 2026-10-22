@@ -14,6 +14,9 @@ create unique index if not exists profiles_username_lower_key
 -- 1. Eliminamos las funciones primero para evitar conflictos de tipos de retorno
 drop function if exists public.get_auth_email_by_username(text);
 drop function if exists public.list_note_users();
+-- La firma incluye los nombres de los argumentos que usa Supabase RPC.
+-- Se elimina antes de recrearla para corregir versiones anteriores.
+drop function if exists public.share_note_with_username(uuid, text, text);
 
 -- 2. Volvemos a crear la función get_auth_email_by_username
 create or replace function public.get_auth_email_by_username(target_username text)
@@ -51,8 +54,8 @@ grant execute on function public.list_note_users() to authenticated;
 
 create or replace function public.share_note_with_username(
   target_note_id uuid,
-  target_username text,
-  target_permission text default 'view'
+  target_permission text,
+  target_username text
 )
 returns void
 language plpgsql
@@ -60,7 +63,7 @@ security definer
 set search_path = public, auth
 as $$
 declare
-  recipient_email text;
+  v_recipient_email text;
 begin
   if target_permission not in ('view', 'edit') then
     raise exception 'Permiso no válido.';
@@ -71,17 +74,17 @@ begin
   ) then
     raise exception 'No tienes permiso para compartir esta nota.';
   end if;
-  select lower(u.email) into recipient_email
+  select lower(u.email) into v_recipient_email
   from public.profiles p
   join auth.users u on u.id = p.id
   where lower(p.username) = lower(trim(target_username))
     and p.id <> auth.uid()
   limit 1;
-  if recipient_email is null then
+  if v_recipient_email is null then
     raise exception 'No encontramos ese usuario.';
   end if;
   insert into public.note_shares (note_id, recipient_email, permission)
-  values (target_note_id, recipient_email, target_permission)
+  values (target_note_id, v_recipient_email, target_permission)
   on conflict (note_id, recipient_email)
   do update set permission = excluded.permission;
 end;
@@ -89,3 +92,5 @@ $$;
 
 revoke all on function public.share_note_with_username(uuid, text, text) from public;
 grant execute on function public.share_note_with_username(uuid, text, text) to authenticated;
+
+notify pgrst, 'reload schema';

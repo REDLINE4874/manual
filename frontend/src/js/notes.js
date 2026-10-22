@@ -176,7 +176,7 @@ function renderNotes(
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
         ${isOwner
-    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => `<li><span>${escapeNoteHtml(share.recipient_email)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(share.recipient_email)}">Quitar acceso</button></li>`).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
+    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => `<li><span>${escapeNoteHtml(share.recipient_username || "Usuario")} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" data-revoke-username="${escapeNoteHtml(share.recipient_username || "Usuario")}" aria-label="Dejar de compartir con ${escapeNoteHtml(share.recipient_username || "Usuario")}">Quitar acceso</button></li>`).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
     : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span><button type="button" class="note-card__leave-share" data-leave-share>Dejar de ver</button></div>`}
       </div>
     </article>
@@ -199,9 +199,16 @@ async function loadNotes() {
     setNotesStatus(`No se pudieron cargar las notas: ${error.message}`, true);
     return;
   }
-  const { data: shares, error: sharesError } = await notesClient
-    .from("note_shares")
-    .select("note_id, recipient_email, permission");
+  let { data: shares, error: sharesError } = await notesClient
+    .rpc("get_note_shares", { target_note_ids: (data || []).map((note) => note.id) });
+  // Compatibilidad mientras se aplica note-sharing.sql en Supabase.
+  if (sharesError?.message?.includes("Could not find the function public.get_note_shares")) {
+    const fallback = await notesClient
+      .from("note_shares")
+      .select("note_id, recipient_email, permission");
+    shares = fallback.data;
+    sharesError = fallback.error;
+  }
   if (sharesError) {
     setNotesStatus(`No se pudieron cargar los accesos compartidos: ${sharesError.message}`, true);
     return;
@@ -229,12 +236,12 @@ async function loadNotes() {
     .filter((note) => note.user_id !== currentNotesUser?.id)
     .map((note) => note.id);
   const { data: owners, error: ownersError } = sharedNoteIds.length
-    ? await notesClient.rpc("get_note_owner_emails", { target_note_ids: sharedNoteIds })
+    ? await notesClient.rpc("get_note_owner_usernames", { target_note_ids: sharedNoteIds })
     : { data: [], error: null };
   if (ownersError) {
     setNotesStatus(`No se pudo identificar quién compartió una nota: ${ownersError.message}`, true);
   }
-  const shareOwners = new Map((owners || []).map((owner) => [owner.note_id, owner.owner_email]));
+  const shareOwners = new Map((owners || []).map((owner) => [owner.note_id, owner.owner_username]));
   loadedNotes = data || [];
   loadedSharePermissions = sharePermissions;
   loadedShareOwners = shareOwners;
@@ -586,8 +593,8 @@ function confirmRemoveNoteShare(isOwner, recipientEmail) {
   });
 }
 
-async function removeNoteShare(noteId, recipientEmail, button, isOwner) {
-  if (!await confirmRemoveNoteShare(isOwner, recipientEmail)) {
+async function removeNoteShare(noteId, recipientEmail, button, isOwner, recipientUsername = "Usuario") {
+  if (!await confirmRemoveNoteShare(isOwner, isOwner ? recipientUsername : "")) {
     setNotesStatus("Acción cancelada.");
     return;
   }
@@ -844,8 +851,9 @@ if (!notesReady) {
     if (revokeShareButton) {
       const card = revokeShareButton.closest("[data-note-id]");
       const recipientEmail = revokeShareButton.dataset.revokeShare;
+      const recipientUsername = revokeShareButton.dataset.revokeUsername;
       if (card && recipientEmail) {
-        removeNoteShare(card.dataset.noteId, recipientEmail, revokeShareButton, true);
+        removeNoteShare(card.dataset.noteId, recipientEmail, revokeShareButton, true, recipientUsername);
       }
       return;
     }
