@@ -251,6 +251,266 @@ body.custom-background .note-card p {
   color: var(--note-ink);
 }
 
+body.custom-background .notes-filter {
+  color: var(--notes-text, var(--text));
+}
+
+body.custom-background .notes-filter .notes-calendar__trigger,
+body.custom-background .notes-filter>button,
+body.custom-background .notes-calendar__popup {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
+  background: #ffffff;
+  color: var(--notes-text, var(--text));
+}
+
+body.custom-background .notes-calendar__popup {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .24);
+}
+
+body.custom-background .notes-filter .notes-calendar__trigger:hover,
+body.custom-background .notes-filter>button:hover,
+body.custom-background .notes-filter .notes-calendar__trigger.is-selected {
+  border-color: var(--custom-accent-text);
+  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .notes-filter .notes-calendar__nav {
+  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .notes-filter .notes-calendar__nav:hover {
+  background: var(--custom-accent-text);
+  color: #ffffff;
+}
+
+body.custom-background-dark .notes-filter .notes-calendar__nav:hover {
+  color: #003848;
+}
+
+body.custom-background .notes-calendar__weekdays span {
+  color: var(--notes-muted, var(--text-muted));
+}
+
+body.custom-background .notes-filter .notes-calendar__day {
+  color: var(--notes-text, var(--text));
+}
+
+body.custom-background .notes-filter .notes-calendar__day:hover,
+body.custom-background .notes-filter .notes-calendar__day:focus-visible {
+  border-color: var(--custom-accent-text);
+  background: color-mix(in srgb, var(--custom-accent-text) 12%, var(--notes-surface, #ffffff));
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .notes-filter .notes-calendar__day.is-today {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 55%, transparent);
+}
+
+body.custom-background .notes-filter .notes-calendar__day.is-selected,
+body.custom-background .notes-filter .notes-calendar__day.is-selected:hover {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-accent-text);
+  color: #ffffff;
+}
+
+body.custom-background-dark .notes-filter .notes-calendar__day.is-selected,
+body.custom-background-dark .notes-filter .notes-calendar__day.is-selected:hover {
+  color: #003848;
+}
+
+body.custom-background .note-expanded-card .note-expanded-title,
+body.custom-background .note-expanded-card .note-expanded-content {
+  border-color: color-mix(in srgb, var(--note-ink) 24%, transparent);
+  background: color-mix(in srgb, var(--note-background) 88%, #ffffff);
+  color: var(--note-ink);
+}
+
+body.custom-background .note-expanded-card .note-expanded-title:focus,
+body.custom-background .note-expanded-card .note-expanded-content:focus {
+  border-color: var(--custom-accent-text);
+  background: color-mix(in srgb, var(--note-background) 80%, #ffffff);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--custom-accent-text) 20%, transparent);
+}
+
+body.custom-background .note-card__shared-access {
+  border-bottom-color: color-mix(in srgb, var(--custom-accent-text) 24%, transparent);
+}
+
+body.custom-background .note-card__shared-access li button,
+body.custom-background .note-card__toolbar .note-card__leave-share {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 26%, transparent);
+  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .note-card__shared-access li button:hover,
+body.custom-background .note-card__toolbar .note-card__leave-share:hover {
+  background: color-mix(in srgb, var(--custom-accent-text) 18%, var(--notes-surface, #ffffff));
+}
+
+body.custom-background .note-card .note-tool::after {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 34%, transparent);
+  background: var(--custom-accent-text);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+}
+
+body.custom-background-dark .note-card .note-tool::after {
+  color: #003848;
+}
+
+body.custom-background .note-prompt {
+  background: rgba(8, 15, 20, .68);
+  backdrop-filter: blur(3px);
+}
+
+body.custom-background .note-prompt__card {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 34%, transparent);
+  border-radius: 22px;
+  background: #ffffff;
+  color: #101828;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .38);
+}
+
+body.custom-background-dark .notes-filter .notes-calendar__trigger,
+body.custom-background-dark .notes-filter>button,
+body.custom-background-dark .notes-calendar__popup,
+body.custom-background-dark .note-prompt__card {
+  background: #172329;
+  color: #f5f7fa;
+}
+
+body.custom-background .note-prompt__card h2 {
+  color: var(--custom-accent-text);
+}
+
+body.custom-background .note-prompt__card p,
+body.custom-background .note-prompt__label {
+  color: var(--notes-muted, var(--text-muted));
+}
+
+body.custom-background .note-prompt[data-note-tool="delete"] .note-prompt__card {
+  border-color: color-mix(in srgb, #b4234d 42%, transparent);
+}
+
+body.custom-background .note-prompt[data-note-tool="delete"] .note-prompt__card h2 {
+  color: #b4234d;
+}
+
+body.custom-background .note-prompt[data-note-tool="revoke-share"] .note-prompt__card {
+  border-color: color-mix(in srgb, #b4234d 34%, var(--custom-accent-text));
+}
+
+body.custom-background .note-prompt[data-note-tool="revoke-share"] .note-prompt__card h2 {
+  color: #b4234d;
+}
+
+body.custom-background .note-prompt__input,
+body.custom-background .note-prompt__select,
+body.custom-background .note-prompt__textarea,
+body.custom-background .note-prompt .calculator-select__trigger,
+body.custom-background .note-format-options button {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
+  border-radius: 14px;
+  background: #f7f9fb;
+  color: #101828;
+}
+
+body.custom-background-dark .note-prompt__input,
+body.custom-background-dark .note-prompt__select,
+body.custom-background-dark .note-prompt__textarea,
+body.custom-background-dark .note-prompt .calculator-select__trigger,
+body.custom-background-dark .note-format-options button {
+  background: #101b20;
+  color: #f5f7fa;
+}
+
+body.custom-background .note-prompt__input:focus,
+body.custom-background .note-prompt__textarea:focus,
+body.custom-background .note-prompt .calculator-select__trigger:focus,
+body.custom-background .note-format-options button:focus-visible {
+  border-color: var(--custom-accent-text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--custom-accent-text) 18%, transparent);
+  outline: 0;
+}
+
+body.custom-background .note-prompt .calculator-select__menu,
+body.custom-background .note-prompt .note-user-results {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+body.custom-background-dark .note-prompt .calculator-select__menu,
+body.custom-background-dark .note-prompt .note-user-results {
+  background: #172329;
+}
+
+body.custom-background .note-prompt .calculator-select__option,
+body.custom-background .note-prompt .note-user-option {
+  background: transparent;
+  color: #101828;
+}
+
+body.custom-background-dark .note-prompt .calculator-select__option,
+body.custom-background-dark .note-prompt .note-user-option {
+  color: #f5f7fa;
+}
+
+body.custom-background .note-prompt .calculator-select__option:hover,
+body.custom-background .note-prompt .calculator-select__option[aria-selected="true"],
+body.custom-background .note-prompt .note-user-option:hover,
+body.custom-background .note-prompt .note-user-option:focus-visible,
+body.custom-background .note-format-options button:hover,
+body.custom-background .note-format-options button.is-active {
+  background: color-mix(in srgb, var(--custom-accent-text) 14%, #ffffff);
+  color: var(--custom-accent-text) !important;
+}
+
+body.custom-background-dark .note-prompt .calculator-select__option:hover,
+body.custom-background-dark .note-prompt .calculator-select__option[aria-selected="true"],
+body.custom-background-dark .note-prompt .note-user-option:hover,
+body.custom-background-dark .note-prompt .note-user-option:focus-visible,
+body.custom-background-dark .note-format-options button:hover,
+body.custom-background-dark .note-format-options button.is-active {
+  background: color-mix(in srgb, var(--custom-accent-text) 18%, #172329);
+  color: var(--custom-accent-text) !important;
+}
+
+body.custom-background .note-prompt__close {
+  border-radius: 12px;
+  background: var(--custom-accent-text);
+  color: #ffffff;
+}
+
+body.custom-background-dark .note-prompt__close {
+  color: #003848;
+}
+
+body.custom-background .note-prompt__secondary {
+  border: 1px solid color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
+  border-radius: 12px;
+  color: var(--notes-text, var(--text));
+}
+
+body.custom-background .note-prompt__secondary:hover {
+  background: color-mix(in srgb, var(--custom-accent-text) 10%, #ffffff);
+}
+
+body.custom-background-dark .note-prompt__secondary {
+  color: #f5f7fa;
+}
+
+body.custom-background-dark .note-prompt__secondary:hover {
+  background: color-mix(in srgb, var(--custom-accent-text) 10%, #172329);
+}
+
+body.custom-background .note-prompt__danger {
+  border-radius: 12px;
+}
+
 body.custom-background .note-card__edit-area,
 body.custom-background .note-card__share input,
 body.custom-background .note-card__share select {

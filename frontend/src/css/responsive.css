@@ -73,7 +73,9 @@
  
 }
 @media(max-width:500px){
-  .internal-tabs{display:none;}
+  .internal-tabs{display:flex;width:max-content;max-width:calc(100% - 24px);justify-content:space-between;margin:10px 12px 0;padding:4px;}
+  .internal-tab{justify-content:center;gap:0;padding:9px 12px;}
+  .internal-tab span{display:none;}
 }
 @media(max-width:1350px){
   .utility-nav__actions .utility-action,

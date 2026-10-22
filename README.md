@@ -68,7 +68,12 @@ URL de callback de Supabase:
 
 Para habilitar la validación de usuarios al compartir notas, ejecuta también
 el contenido actualizado de `supabase/note-sharing.sql` en el SQL Editor de
-Supabase.
+Supabase. Este script también habilita que el propietario quite accesos y que
+cada destinatario deje de ver una nota compartida.
+
+Para habilitar las fechas en las notas (incluidas las existentes), ejecuta
+`supabase/notes.sql` en el SQL Editor de Supabase. Las notas anteriores reciben
+la fecha en que fueron creadas.
 
 ### Backend
 
