@@ -136,13 +136,27 @@ body.dark-theme .site-auth-logo {
   border: 0;
   padding: 0;
   background: none;
-  color: var(--brand-teal);
+  color: #006d77;
   font: 700 12px var(--font-body);
   cursor: pointer;
 }
 
 .site-auth-link:hover { color: var(--brand-teal-hover); text-decoration: underline; }
 .site-auth-link:focus-visible { border-radius: 4px; outline: 3px solid color-mix(in srgb, var(--brand-teal) 24%, transparent); outline-offset: 4px; }
+
+html[data-theme="dark"] .site-auth-link,
+body[data-theme="dark"] .site-auth-link,
+body.dark-mode .site-auth-link,
+html.dark .site-auth-link,
+body.dark .site-auth-link,
+body.dark-theme .site-auth-link { color: #67e8f9; }
+
+html[data-theme="dark"] .site-auth-link:hover,
+body[data-theme="dark"] .site-auth-link:hover,
+body.dark-mode .site-auth-link:hover,
+html.dark .site-auth-link:hover,
+body.dark .site-auth-link:hover,
+body.dark-theme .site-auth-link:hover { color: #a5f3fc; }
 .site-auth-status { min-height: 18px; margin: 20px 0 0 !important; color: var(--brand-teal) !important; font-size: 12px; }
 .site-auth-status.is-error { color: var(--brand-red) !important; }
 
