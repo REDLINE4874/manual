@@ -14,12 +14,87 @@ const noteSaveStatus = document.getElementById("noteSaveStatus");
 const noteForm = document.getElementById("noteForm");
 const notesList = document.getElementById("notesList");
 const notesUserLabel = document.getElementById("notesUserLabel");
+const noteDateFilter = document.getElementById("noteDateFilter");
+const noteDateFilterTrigger = document.getElementById("noteDateFilterTrigger");
+const noteDateCalendar = document.getElementById("noteDateCalendar");
+const clearNoteDateFilter = document.getElementById("clearNoteDateFilter");
+const noteDateFilterLabel = document.getElementById("noteDateFilterLabel");
 
 let notesClient = null;
 let currentNotesUser = null;
 let noteUsers = [];
 let notesFeedbackTimer = null;
+let loadedNotes = [];
+let loadedSharePermissions = new Map();
+let loadedShareOwners = new Map();
+let loadedOwnerShares = new Map();
+let displayedCalendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 const NOTE_COLORS = ["yellow", "blue", "green", "pink", "purple", "coral"];
+
+function getLocalDateValue() {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${today.getFullYear()}-${month}-${day}`;
+}
+
+function formatNoteDate(date) {
+  if (!date) return "";
+  const parsedDate = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsedDate.getTime())) return "";
+  return parsedDate.toLocaleDateString("es-MX", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function getDateValue(date) {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function renderNoteDateCalendar() {
+  if (!noteDateCalendar) return;
+  const year = displayedCalendarMonth.getFullYear();
+  const month = displayedCalendarMonth.getMonth();
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = getLocalDateValue();
+  const monthLabel = displayedCalendarMonth.toLocaleDateString("es-MX", {
+    month: "long",
+    year: "numeric",
+  });
+  const weekdays = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+  const dayButtons = Array.from({ length: firstWeekday }, () => (
+    '<span class="notes-calendar__empty" aria-hidden="true"></span>'
+  ));
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = new Date(year, month, day);
+    const value = getDateValue(date);
+    const selected = value === noteDateFilter?.value;
+    const isToday = value === today;
+    dayButtons.push(`
+      <button
+        class="notes-calendar__day${selected ? " is-selected" : ""}${isToday ? " is-today" : ""}"
+        type="button"
+        data-calendar-date="${value}"
+        aria-label="${escapeNoteHtml(formatNoteDate(value))}"
+        aria-pressed="${selected}"
+      >${day}</button>
+    `);
+  }
+  noteDateCalendar.innerHTML = `
+    <div class="notes-calendar__header">
+      <button class="notes-calendar__nav" type="button" data-calendar-month="-1" aria-label="Mes anterior">‹</button>
+      <strong>${escapeNoteHtml(monthLabel)}</strong>
+      <button class="notes-calendar__nav" type="button" data-calendar-month="1" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="notes-calendar__weekdays">${weekdays.map((weekday) => `<span>${weekday}</span>`).join("")}</div>
+    <div class="notes-calendar__days">${dayButtons.join("")}</div>
+  `;
+}
 
 function normalizeNoteColor(color) {
   return NOTE_COLORS.includes(color) ? color : "yellow";
@@ -71,22 +146,38 @@ function escapeNoteHtml(value) {
   })[character]);
 }
 
-function renderNotes(notes, sharePermissions = new Map(), shareOwners = new Map()) {
+function renderNotes(
+  notes,
+  sharePermissions = new Map(),
+  shareOwners = new Map(),
+  ownerShares = new Map(),
+) {
   if (!notesList) return;
-  if (!notes.length) {
-    notesList.innerHTML = '<p class="notes-empty">Todavía no tienes notas guardadas.</p>';
+  const selectedDate = noteDateFilter?.value;
+  const visibleNotes = selectedDate
+    ? notes.filter((note) => note.note_date === selectedDate)
+    : notes;
+  if (!visibleNotes.length) {
+    const emptyMessage = notes.length && selectedDate
+      ? "No hay notas para esta fecha."
+      : "Todavía no tienes notas guardadas.";
+    notesList.innerHTML = `<p class="notes-empty">${emptyMessage}</p>`;
     return;
   }
-  notesList.innerHTML = notes.map((note) => {
+  notesList.innerHTML = visibleNotes.map((note) => {
     const isOwner = note.user_id === currentNotesUser?.id;
     const canEdit = isOwner || sharePermissions.get(note.id) === "edit";
     const noteColor = isOwner ? normalizeNoteColor(note.color) : "shared";
+    const recipients = ownerShares.get(note.id) || [];
     return `
     <article class="note-card note-card--${noteColor}" data-note-id="${escapeNoteHtml(note.id)}">
+      ${note.note_date ? `<time class="note-card__date" datetime="${escapeNoteHtml(note.note_date)}">${escapeNoteHtml(formatNoteDate(note.note_date))}</time>` : ""}
       <h2>${escapeNoteHtml(note.title || "Sin título")}</h2>
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
-        ${isOwner ? NOTE_TOOL_MARKUP : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span></div>`}
+        ${isOwner
+    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => `<li><span>${escapeNoteHtml(share.recipient_email)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(share.recipient_email)}">Quitar acceso</button></li>`).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
+    : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span><button type="button" class="note-card__leave-share" data-leave-share>Dejar de ver</button></div>`}
       </div>
     </article>
   `;
@@ -102,17 +193,38 @@ function renderNotes(notes, sharePermissions = new Map(), shareOwners = new Map(
 async function loadNotes() {
   const { data, error } = await notesClient
     .from("notes")
-    .select("id, user_id, title, content, color, updated_at")
+    .select("id, user_id, title, content, color, note_date, updated_at")
     .order("updated_at", { ascending: false });
   if (error) {
     setNotesStatus(`No se pudieron cargar las notas: ${error.message}`, true);
     return;
   }
-  const { data: shares } = await notesClient
+  const { data: shares, error: sharesError } = await notesClient
     .from("note_shares")
-    .select("note_id, permission")
-    .eq("recipient_email", currentNotesUser.email.toLowerCase());
-  const sharePermissions = new Map((shares || []).map((share) => [share.note_id, share.permission]));
+    .select("note_id, recipient_email, permission");
+  if (sharesError) {
+    setNotesStatus(`No se pudieron cargar los accesos compartidos: ${sharesError.message}`, true);
+    return;
+  }
+  const visibleShares = shares || [];
+  const currentEmail = currentNotesUser.email.toLowerCase();
+  const sharePermissions = new Map(
+    visibleShares
+      .filter((share) => share.recipient_email.toLowerCase() === currentEmail)
+      .map((share) => [share.note_id, share.permission]),
+  );
+  const ownedNoteIds = new Set(
+    (data || [])
+      .filter((note) => note.user_id === currentNotesUser?.id)
+      .map((note) => note.id),
+  );
+  const ownerShares = new Map();
+  visibleShares.forEach((share) => {
+    if (!ownedNoteIds.has(share.note_id)) return;
+    const recipients = ownerShares.get(share.note_id) || [];
+    recipients.push(share);
+    ownerShares.set(share.note_id, recipients);
+  });
   const sharedNoteIds = (data || [])
     .filter((note) => note.user_id !== currentNotesUser?.id)
     .map((note) => note.id);
@@ -123,7 +235,11 @@ async function loadNotes() {
     setNotesStatus(`No se pudo identificar quién compartió una nota: ${ownersError.message}`, true);
   }
   const shareOwners = new Map((owners || []).map((owner) => [owner.note_id, owner.owner_email]));
-  renderNotes(data || [], sharePermissions, shareOwners);
+  loadedNotes = data || [];
+  loadedSharePermissions = sharePermissions;
+  loadedShareOwners = shareOwners;
+  loadedOwnerShares = ownerShares;
+  renderNotes(loadedNotes, loadedSharePermissions, loadedShareOwners, loadedOwnerShares);
   loadNoteUsers();
 }
 
@@ -137,10 +253,10 @@ const NOTE_TOOL_PROMPTS = {
 
 const NOTE_TOOL_MARKUP = `
   <div class="note-card__tools" aria-label="Opciones de la nota">
-    <button class="note-tool" type="button" data-note-tool="delete" aria-label="Eliminar" title="Eliminar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v6m4-6v6" /></svg></button>
-    <button class="note-tool" type="button" data-note-tool="format" aria-label="Formato" title="Formato"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M12 5v14M8 19h8" /></svg></button>
-    <button class="note-tool" type="button" data-note-tool="color" aria-label="Color de fondo" title="Color de fondo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z" /><circle cx="7.5" cy="10" r="1" /><circle cx="10" cy="6.5" r="1" /><circle cx="15" cy="6.5" r="1" /><circle cx="18" cy="10" r="1" /></svg></button>
-    <button class="note-tool" type="button" data-note-tool="share" aria-label="Compartir" title="Compartir"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3.5 20a5.5 5.5 0 0 1 11 0M17 8v6m-3-3h6" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="delete" aria-label="Eliminar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6m4-6v6M5 7l1 13h12l1-13M9 7V4h6v3" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="format" aria-label="Formato"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3.5 19 5-14h2l5 14M5 15h9M17 11h2a2 2 0 0 1 0 4h-2v-4Zm0 4h2.5a2 2 0 0 1 0 4H17v-4Z" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="color" aria-label="Color de fondo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18h1.2a2.3 2.3 0 0 0 1.5-4.1 1.9 1.9 0 0 1 1.2-3.4H18a4 4 0 0 0 4-4c0-3.6-4.5-6.5-10-6.5Z" /><circle cx="7.5" cy="10" r=".8" /><circle cx="10" cy="6.8" r=".8" /><circle cx="14" cy="6.8" r=".8" /><circle cx="17.5" cy="9.5" r=".8" /></svg></button>
+    <button class="note-tool" type="button" data-note-tool="share" aria-label="Compartir"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10" cy="8" r="3" /><path d="M4.5 20a5.5 5.5 0 0 1 11 0M18 8v6m-3-3h6" /></svg></button>
   </div>
 `;
 
@@ -183,6 +299,7 @@ function showNoteToolPrompt(tool, noteId) {
   };
   const prompt = document.createElement("div");
   prompt.className = "note-prompt";
+  prompt.dataset.noteTool = tool;
   prompt.innerHTML = `<div class="note-prompt__card" role="dialog" aria-modal="true" aria-labelledby="note-prompt-title"><h2 id="note-prompt-title">${titles[tool] || "Opciones"}</h2><div class="note-prompt__body"></div><div class="note-prompt__actions"></div></div>`;
   const body = prompt.querySelector(".note-prompt__body");
   const actions = prompt.querySelector(".note-prompt__actions");
@@ -294,8 +411,7 @@ function renderNoteUserResults(input) {
   if (!results) return;
   const query = input.value.trim().toLowerCase();
   const matches = noteUsers
-    .filter((email) => !query || email.includes(query))
-    .slice(0, 8);
+    .filter((email) => !query || email.includes(query));
   results.innerHTML = matches.map((email) => `
     <button type="button" class="note-user-option" data-note-user="${escapeNoteHtml(email)}" role="option">
       ${escapeNoteHtml(email)}
@@ -352,6 +468,7 @@ async function saveNote(event) {
     user_id: currentNotesUser.id,
     title,
     content,
+    note_date: getLocalDateValue(),
   });
   if (error) {
     if (submitButton) {
@@ -454,6 +571,77 @@ async function shareNote(noteId, email, permission, button) {
   const shareResults = shareInput?.closest(".note-user-picker")
     ?.querySelector("[data-note-user-results]");
   if (shareResults) shareResults.hidden = true;
+  await loadNotes();
+}
+
+function confirmRemoveNoteShare(isOwner, recipientEmail) {
+  return new Promise((resolve) => {
+    const prompt = document.createElement("div");
+    prompt.className = "note-prompt";
+    prompt.dataset.noteTool = "revoke-share";
+    prompt.innerHTML = `
+      <div class="note-prompt__card" role="dialog" aria-modal="true" aria-labelledby="note-share-confirm-title">
+        <h2 id="note-share-confirm-title">${isOwner ? "Dejar de compartir" : "Dejar de ver nota"}</h2>
+        <p></p>
+        <div class="note-prompt__actions">
+          <button class="note-prompt__secondary" type="button">Cancelar</button>
+          <button class="note-prompt__danger" type="button">${isOwner ? "Quitar acceso" : "Dejar de ver"}</button>
+        </div>
+      </div>
+    `;
+    const message = isOwner
+      ? `¿Quieres dejar de compartir esta nota con ${recipientEmail}?`
+      : "¿Quieres dejar de ver esta nota compartida?";
+    prompt.querySelector(".note-prompt__card p").textContent = message;
+    const finish = (confirmed) => {
+      document.removeEventListener("keydown", handleKeydown);
+      prompt.remove();
+      resolve(confirmed);
+    };
+    const handleKeydown = (event) => {
+      if (event.key === "Escape") finish(false);
+    };
+    prompt.querySelector(".note-prompt__secondary").addEventListener("click", () => finish(false));
+    prompt.querySelector(".note-prompt__danger").addEventListener("click", () => finish(true));
+    prompt.addEventListener("click", (event) => {
+      if (event.target === prompt) finish(false);
+    });
+    document.addEventListener("keydown", handleKeydown);
+    document.body.append(prompt);
+    prompt.querySelector(".note-prompt__secondary").focus();
+  });
+}
+
+async function removeNoteShare(noteId, recipientEmail, button, isOwner) {
+  if (!await confirmRemoveNoteShare(isOwner, recipientEmail)) {
+    setNotesStatus("Acción cancelada.");
+    return;
+  }
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Quitando...";
+  }
+  const { data, error } = await notesClient
+    .from("note_shares")
+    .delete()
+    .eq("note_id", noteId)
+    .eq("recipient_email", recipientEmail.toLowerCase())
+    .select("id");
+  if (error) {
+    if (button) {
+      button.disabled = false;
+      button.textContent = isOwner ? "Quitar acceso" : "Dejar de ver";
+    }
+    setNotesStatus(`No se pudo quitar el acceso: ${error.message}`, true);
+    return;
+  }
+  if (!data?.length) {
+    setNotesStatus("El acceso compartido ya no estaba activo.", true);
+    await loadNotes();
+    return;
+  }
+  setNotesStatus(isOwner ? `Se quitó el acceso de ${recipientEmail}.` : "Ya no verás esta nota compartida.");
+  await loadNotes();
 }
 
 async function updateNoteContent(noteId, content, button) {
@@ -558,6 +746,7 @@ function openExpandedNote(card) {
   const titleInput = document.createElement("input");
   titleInput.className = "note-expanded-title";
   titleInput.type = "text";
+  titleInput.autocomplete = "off";
   titleInput.maxLength = 120;
   titleInput.value = titleElement?.textContent || "";
   titleInput.setAttribute("aria-label", "Título de la nota");
@@ -608,6 +797,62 @@ if (!notesReady) {
 } else {
   notesClient = window.supabase.createClient(notesConfig.url, notesConfig.anonKey);
   noteForm?.addEventListener("submit", saveNote);
+  const updateDateFilter = () => {
+    const hasDate = Boolean(noteDateFilter?.value);
+    if (noteDateFilterTrigger) {
+      noteDateFilterTrigger.textContent = hasDate ? formatNoteDate(noteDateFilter.value) : "Elegir fecha";
+      noteDateFilterTrigger.classList.toggle("is-selected", hasDate);
+    }
+    if (noteDateFilterLabel) {
+      noteDateFilterLabel.textContent = hasDate ? "Notas del día" : "Ver notas de la fecha";
+    }
+    renderNotes(loadedNotes, loadedSharePermissions, loadedShareOwners, loadedOwnerShares);
+  };
+  noteDateFilterTrigger?.addEventListener("click", () => {
+    if (!noteDateCalendar) return;
+    const isOpening = noteDateCalendar.hidden;
+    if (isOpening) {
+      const selectedDate = noteDateFilter?.value;
+      const initialMonth = selectedDate
+        ? new Date(`${selectedDate}T00:00:00`)
+        : new Date();
+      displayedCalendarMonth = new Date(initialMonth.getFullYear(), initialMonth.getMonth(), 1);
+      renderNoteDateCalendar();
+    }
+    noteDateCalendar.hidden = !isOpening;
+    noteDateFilterTrigger.setAttribute("aria-expanded", String(isOpening));
+  });
+  noteDateCalendar?.addEventListener("click", (event) => {
+    const monthButton = event.target.closest("[data-calendar-month]");
+    if (monthButton) {
+      displayedCalendarMonth.setMonth(
+        displayedCalendarMonth.getMonth() + Number(monthButton.dataset.calendarMonth),
+      );
+      renderNoteDateCalendar();
+      return;
+    }
+    const dayButton = event.target.closest("[data-calendar-date]");
+    if (!dayButton || !noteDateFilter) return;
+    noteDateFilter.value = dayButton.dataset.calendarDate;
+    noteDateCalendar.hidden = true;
+    noteDateFilterTrigger?.setAttribute("aria-expanded", "false");
+    updateDateFilter();
+  });
+  document.addEventListener("click", (event) => {
+    if (event.target.closest(".notes-calendar")) return;
+    if (noteDateCalendar) noteDateCalendar.hidden = true;
+    noteDateFilterTrigger?.setAttribute("aria-expanded", "false");
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || noteDateCalendar?.hidden) return;
+    noteDateCalendar.hidden = true;
+    noteDateFilterTrigger?.setAttribute("aria-expanded", "false");
+    noteDateFilterTrigger?.focus();
+  });
+  clearNoteDateFilter?.addEventListener("click", () => {
+    if (noteDateFilter) noteDateFilter.value = "";
+    updateDateFilter();
+  });
   notesList?.addEventListener("input", (event) => {
     if (event.target.matches("[data-share-email]")) renderNoteUserResults(event.target);
   });
@@ -621,6 +866,23 @@ if (!notesReady) {
     });
   });
   notesList?.addEventListener("click", (event) => {
+    const revokeShareButton = event.target.closest("[data-revoke-share]");
+    if (revokeShareButton) {
+      const card = revokeShareButton.closest("[data-note-id]");
+      const recipientEmail = revokeShareButton.dataset.revokeShare;
+      if (card && recipientEmail) {
+        removeNoteShare(card.dataset.noteId, recipientEmail, revokeShareButton, true);
+      }
+      return;
+    }
+    const leaveShareButton = event.target.closest("[data-leave-share]");
+    if (leaveShareButton) {
+      const card = leaveShareButton.closest("[data-note-id]");
+      if (card && currentNotesUser?.email) {
+        removeNoteShare(card.dataset.noteId, currentNotesUser.email, leaveShareButton, false);
+      }
+      return;
+    }
     const tool = event.target.closest("[data-note-tool]");
     if (tool) {
       showNoteToolPrompt(tool.dataset.noteTool, tool.closest("[data-note-id]")?.dataset.noteId);

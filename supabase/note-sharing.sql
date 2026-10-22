@@ -87,6 +87,7 @@ drop policy if exists "Owners can create shares for their notes" on public.note_
 drop policy if exists "Owners can update shares of their notes" on public.note_shares;
 drop policy if exists "Owners can delete shares of their notes" on public.note_shares;
 drop policy if exists "Recipients can view shares sent to them" on public.note_shares;
+drop policy if exists "Recipients can revoke their own note access" on public.note_shares;
 drop policy if exists "Users can read notes shared with them" on public.notes;
 drop policy if exists "Users can edit notes shared with them" on public.notes;
 
@@ -109,6 +110,10 @@ using (public.user_owns_note(note_id));
 
 create policy "Recipients can view shares sent to them"
 on public.note_shares for select
+using (lower(recipient_email) = lower(auth.jwt() ->> 'email'));
+
+create policy "Recipients can revoke their own note access"
+on public.note_shares for delete
 using (lower(recipient_email) = lower(auth.jwt() ->> 'email'));
 
 create policy "Users can read notes shared with them"

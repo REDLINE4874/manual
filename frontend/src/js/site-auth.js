@@ -21,12 +21,12 @@ siteAuthScreen.innerHTML = `
 
     <div id="siteAuthLoginPanel">
       
-      <form class="site-auth-form" id="siteAuthLoginForm">
+      <form class="site-auth-form" id="siteAuthLoginForm" autocomplete="off">
         <label>Correo electronico
-          <input id="siteAuthLoginEmail" type="email" autocomplete="email" required />
+          <input id="siteAuthLoginEmail" type="email" autocomplete="off" required />
         </label>
         <label>Contrasena
-          <input id="siteAuthLoginPassword" type="password" autocomplete="current-password" required />
+          <input id="siteAuthLoginPassword" type="password" autocomplete="off" required />
         </label>
         <button class="site-auth-submit" type="submit">Iniciar sesion</button>
       </form>
@@ -35,9 +35,9 @@ siteAuthScreen.innerHTML = `
 
     <div id="siteAuthRequestPanel" hidden>
       <p>Escribe tu correo y te enviaremos un enlace para cambiar la contrasena.</p>
-      <form class="site-auth-form" id="siteAuthRequestForm">
+      <form class="site-auth-form" id="siteAuthRequestForm" autocomplete="off">
         <label>Correo electronico
-          <input id="siteAuthRequestEmail" type="email" autocomplete="email" required />
+          <input id="siteAuthRequestEmail" type="email" autocomplete="off" required />
         </label>
         <button class="site-auth-submit" type="submit">Enviar enlace</button>
       </form>
@@ -46,12 +46,12 @@ siteAuthScreen.innerHTML = `
 
     <div id="siteAuthUpdatePanel" hidden>
       <p>Escribe y confirma tu nueva contrasena.</p>
-      <form class="site-auth-form" id="siteAuthUpdateForm">
+      <form class="site-auth-form" id="siteAuthUpdateForm" autocomplete="off">
         <label>Contrasena nueva
-          <input id="siteAuthNewPassword" type="password" autocomplete="new-password" required />
+          <input id="siteAuthNewPassword" type="password" autocomplete="off" required />
         </label>
         <label>Confirmar contrasena
-          <input id="siteAuthConfirmPassword" type="password" autocomplete="new-password" required />
+          <input id="siteAuthConfirmPassword" type="password" autocomplete="off" required />
         </label>
         <button class="site-auth-submit" type="submit">Guardar contrasena</button>
       </form>

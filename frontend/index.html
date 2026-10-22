@@ -124,9 +124,26 @@
           </div>
         </nav>
         <div class="internal-tabs" id="internalTabs" role="tablist" aria-label="Pestañas internas">
-          <button class="internal-tab" type="button" role="tab" data-view="documentos" draggable="true">Formalización</button>
-          <button class="internal-tab" type="button" role="tab" data-view="agendas" draggable="true">Agendas</button>
-          <button class="internal-tab" type="button" role="tab" data-view="guia" draggable="true">Script</button>
+          <button class="internal-tab" type="button" role="tab" data-view="documentos" draggable="true">
+            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M6 3.75h8l4 4V20a1.25 1.25 0 0 1-1.25 1.25h-9.5A1.25 1.25 0 0 1 6 20V5a1.25 1.25 0 0 1 1.25-1.25Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+              <path d="M14 4v4h4M9 13h6m-6 3h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Formalización</span>
+          </button>
+          <button class="internal-tab" type="button" role="tab" data-view="agendas" draggable="true">
+            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="4" y="5.5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7" />
+              <path d="M8 3.5v4m8-4v4M4 10h16m-12 4h2m3 0h2m-7 3h2m3 0h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+            <span>Agendas</span>
+          </button>
+          <button class="internal-tab" type="button" role="tab" data-view="guia" draggable="true">
+            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2.5-13-3 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Script</span>
+          </button>
           <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" draggable="true">
             <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M4 20h4L19 9l-4-4L4 16v4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
@@ -333,9 +350,9 @@
           <button class="back-link" onclick="showView('home')">&#8592; Volver al men&#250;</button>
           <div class="hero notes-view__hero">
             <div>
-              <span class="eyebrow">Privadas por usuario</span>
+            
               <h1>Mis notas</h1>
-              <p>Guarda recordatorios personales sincronizados con tu cuenta.</p>
+             
             </div>
           </div>
           <div class="notes-auth" id="notesAuthState">
@@ -347,14 +364,23 @@
             <div class="notes-app__toolbar">
               <span id="notesUserLabel"></span>
             </div>
-            <form class="note-editor" id="noteForm">
-              <input id="noteTitle" type="text" maxlength="120" placeholder="Crear una nota..." aria-label="T&#237;tulo de la nota" />
+            <form class="note-editor" id="noteForm" autocomplete="off">
+              <input id="noteTitle" type="text" autocomplete="off" maxlength="120" placeholder="Crear una nota..." aria-label="T&#237;tulo de la nota" />
               <textarea id="noteContent" maxlength="5000" placeholder="Escribe una nota..." aria-label="Contenido de la nota"></textarea>
               <div class="note-editor__actions">
                 <span class="notes-status" id="noteSaveStatus" role="status"></span>
                 <button class="note-editor__close" type="submit">Cerrar</button>
               </div>
             </form>
+            <div class="notes-filter">
+              <span id="noteDateFilterLabel">Ver notas de la fecha</span>
+              <input id="noteDateFilter" type="hidden" />
+              <div class="notes-calendar">
+                <button id="noteDateFilterTrigger" class="notes-calendar__trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="noteDateCalendar">Elegir fecha</button>
+                <div id="noteDateCalendar" class="notes-calendar__popup" role="dialog" aria-label="Calendario para filtrar notas" hidden></div>
+              </div>
+              <button id="clearNoteDateFilter" type="button">Todas las fechas</button>
+            </div>
             <div class="notes-grid" id="notesList"></div>
           </div>
         </section>
