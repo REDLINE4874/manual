@@ -176,7 +176,7 @@ function renderNotes(
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
         ${isOwner
-    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => { const recipientUser = noteUsers.find(({ email }) => email === share.recipient_email); const recipientLabel = recipientUser?.username || share.recipient_email; return `<li><span>${escapeNoteHtml(recipientLabel)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(recipientLabel)}">Quitar acceso</button></li>`; }).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
+    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => `<li><span>${escapeNoteHtml(share.recipient_email)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(share.recipient_email)}">Quitar acceso</button></li>`).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
     : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span><button type="button" class="note-card__leave-share" data-leave-share>Dejar de ver</button></div>`}
       </div>
     </article>
@@ -399,8 +399,8 @@ async function loadNoteUsers() {
     return;
   }
   noteUsers = (data || [])
-    .filter(({ username, email }) => username && email)
-    .map(({ username, email }) => ({ username: username.toLowerCase(), email: email.toLowerCase() }));
+    .filter(({ username }) => username)
+    .map(({ username }) => username.toLowerCase());
   const activeInput = notesList?.querySelector("[data-share-email]:focus");
   if (activeInput) renderNoteUserResults(activeInput);
 }
@@ -410,11 +410,10 @@ function renderNoteUserResults(input) {
   const results = picker?.querySelector("[data-note-user-results]");
   if (!results) return;
   const query = input.value.trim().toLowerCase();
-  const matches = noteUsers
-    .filter(({ username, email }) => !query || username.includes(query) || email.includes(query));
-  results.innerHTML = matches.map(({ username, email }) => `
+  const matches = noteUsers.filter((username) => !query || username.includes(query));
+  results.innerHTML = matches.map((username) => `
     <button type="button" class="note-user-option" data-note-user="${escapeNoteHtml(username)}" role="option">
-      <strong>${escapeNoteHtml(username)}</strong><small>${escapeNoteHtml(email)}</small>
+      ${escapeNoteHtml(username)}
     </button>
   `).join("");
   results.hidden = matches.length === 0;
@@ -512,48 +511,21 @@ async function deleteNote(noteId, button, skipConfirmation = false) {
 }
 
 async function shareNote(noteId, userInput, permission, button) {
-  const recipient = userInput.trim().toLowerCase();
-  const selectedUser = noteUsers.find(({ username, email }) => username === recipient || email === recipient);
-  const recipientEmail = selectedUser?.email || recipient;
-  if (!recipientEmail || !recipientEmail.includes("@")) {
+  const recipientUsername = userInput.trim().toLowerCase();
+  if (!recipientUsername || !noteUsers.includes(recipientUsername)) {
     setNotesStatus("Escribe un usuario registrado para compartir la nota.", true);
-    return;
-  }
-  if (recipientEmail === currentNotesUser.email?.toLowerCase()) {
-    setNotesStatus("No necesitas compartir la nota contigo mismo.", true);
     return;
   }
   if (button) {
     button.disabled = true;
     button.textContent = "Compartiendo...";
   }
-  setNotesStatus("Verificando la cuenta...");
-  const { data: userExists, error: lookupError } = await notesClient.rpc(
-    "user_exists_by_email",
-    { target_email: recipientEmail },
-  );
-  if (lookupError) {
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Compartir";
-    }
-    setNotesStatus(`No se pudo verificar el usuario: ${lookupError.message}`, true);
-    return;
-  }
-  if (!userExists) {
-    if (button) {
-      button.disabled = false;
-      button.textContent = "Compartir";
-    }
-    setNotesStatus(`No encontramos una cuenta registrada con ${recipientEmail}.`, true);
-    return;
-  }
-
-  const { error } = await notesClient.from("note_shares").upsert({
-    note_id: noteId,
-    recipient_email: recipientEmail,
-    permission,
-  }, { onConflict: "note_id,recipient_email" });
+  setNotesStatus("Compartiendo nota...");
+  const { error } = await notesClient.rpc("share_note_with_username", {
+    target_note_id: noteId,
+    target_username: recipientUsername,
+    target_permission: permission,
+  });
   if (error) {
     if (button) {
       button.disabled = false;
@@ -562,7 +534,7 @@ async function shareNote(noteId, userInput, permission, button) {
     setNotesStatus(error.message, true);
     return;
   }
-  setNotesStatus(`Nota compartida con ${recipientEmail}.`);
+  setNotesStatus(`Nota compartida con ${recipientUsername}.`);
   if (button) {
     button.disabled = false;
     button.textContent = "Compartir";

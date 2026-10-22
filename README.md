@@ -73,8 +73,9 @@ cada destinatario deje de ver una nota compartida.
 
 Para habilitar el acceso por nombre de usuario y la recuperación por correo,
 ejecuta primero `supabase/profiles.sql` y después `supabase/note-sharing.sql`.
-El script supone que `profiles` y los usuarios Auth ya existen con sus `id`,
-`username` y `email`; no crea usuarios nuevos. Al compartir una nota se muestran
+El script supone que `profiles` y los usuarios Auth ya existen con sus `id` y
+`username`; no crea usuarios nuevos. El correo se obtiene internamente desde
+`auth.users` solo al guardar el acceso. Al compartir una nota se muestran
 los nombres de usuario, aunque el acceso se guarda internamente con el correo
 para conservar compatibilidad con las notas existentes.
 
