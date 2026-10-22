@@ -22,8 +22,8 @@ siteAuthScreen.innerHTML = `
     <div id="siteAuthLoginPanel">
       
       <form class="site-auth-form" id="siteAuthLoginForm" autocomplete="off">
-        <label>Correo electronico
-          <input id="siteAuthLoginEmail" type="email" autocomplete="off" required />
+        <label>Usuario
+          <input id="siteAuthLoginUsername" type="text" autocomplete="username" minlength="3" required />
         </label>
         <label>Contrasena
           <input id="siteAuthLoginPassword" type="password" autocomplete="off" required />
@@ -68,7 +68,7 @@ const siteAuthUpdatePanel = document.getElementById("siteAuthUpdatePanel");
 const siteAuthLoginForm = document.getElementById("siteAuthLoginForm");
 const siteAuthRequestForm = document.getElementById("siteAuthRequestForm");
 const siteAuthUpdateForm = document.getElementById("siteAuthUpdateForm");
-const siteAuthLoginEmail = document.getElementById("siteAuthLoginEmail");
+const siteAuthLoginUsername = document.getElementById("siteAuthLoginUsername");
 const siteAuthLoginPassword = document.getElementById("siteAuthLoginPassword");
 const siteAuthRequestEmail = document.getElementById("siteAuthRequestEmail");
 const siteAuthNewPassword = document.getElementById("siteAuthNewPassword");
@@ -95,7 +95,7 @@ function showSiteAuthPanel(panel) {
       : "Iniciar sesion";
   setSiteAuthStatus("");
 
-  if (panel === "login") siteAuthLoginEmail.focus();
+  if (panel === "login") siteAuthLoginUsername.focus();
   if (panel === "request") siteAuthRequestEmail.focus();
   if (panel === "update") siteAuthNewPassword.focus();
 }
@@ -125,12 +125,21 @@ async function submitSiteAuthLogin(event) {
   const submit = siteAuthLoginForm.querySelector("button[type=submit]");
   submit.disabled = true;
   setSiteAuthStatus("Iniciando sesion...");
+  const { data: email, error: lookupError } = await window.SUPABASE_AUTH_CLIENT.rpc(
+    "get_auth_email_by_username",
+    { target_username: siteAuthLoginUsername.value.trim() },
+  );
+  if (lookupError || !email) {
+    submit.disabled = false;
+    setSiteAuthStatus("Usuario o contrasena incorrectos.", true);
+    return;
+  }
   const { error } = await window.SUPABASE_AUTH_CLIENT.auth.signInWithPassword({
-    email: siteAuthLoginEmail.value.trim(),
+    email,
     password: siteAuthLoginPassword.value,
   });
   submit.disabled = false;
-  if (error) setSiteAuthStatus("Correo o contrasena incorrectos.", true);
+  if (error) setSiteAuthStatus("Usuario o contrasena incorrectos.", true);
 }
 
 async function submitSiteAuthRequest(event) {

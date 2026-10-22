@@ -176,7 +176,7 @@ function renderNotes(
       <p data-note-content>${escapeNoteHtml(note.content).replace(/\n/g, "<br>")}</p>
       <div class="note-card__options">
         ${isOwner
-    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => `<li><span>${escapeNoteHtml(share.recipient_email)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(share.recipient_email)}">Quitar acceso</button></li>`).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
+    ? `${recipients.length ? `<div class="note-card__shared-access"><span class="note-card__shared-heading">Compartida con</span><ul>${recipients.map((share) => { const recipientUser = noteUsers.find(({ email }) => email === share.recipient_email); const recipientLabel = recipientUser?.username || share.recipient_email; return `<li><span>${escapeNoteHtml(recipientLabel)} <small>${share.permission === "edit" ? "Puede editar" : "Solo lectura"}</small></span><button type="button" data-revoke-share="${escapeNoteHtml(share.recipient_email)}" aria-label="Dejar de compartir con ${escapeNoteHtml(recipientLabel)}">Quitar acceso</button></li>`; }).join("")}</ul></div>` : ""}${NOTE_TOOL_MARKUP}`
     : `<div class="note-card__toolbar"><span>Compartida contigo${shareOwners.get(note.id) ? ` por ${escapeNoteHtml(shareOwners.get(note.id))}` : ""}</span><button type="button" class="note-card__leave-share" data-leave-share>Dejar de ver</button></div>`}
       </div>
     </article>
@@ -328,7 +328,7 @@ function showNoteToolPrompt(tool, noteId) {
     cancel.addEventListener("click", close);
     remove.addEventListener("click", async () => { await deleteNote(noteId, remove, true); close(); });
   } else if (tool === "share") {
-    body.innerHTML = '<label class="note-prompt__label">Usuario<div class="note-user-picker"><input class="note-prompt__input" data-share-email type="email" placeholder="Busca un usuario por correo" autocomplete="off" required /><div class="note-user-results" data-note-user-results hidden role="listbox"></div></div></label><label class="note-prompt__label">Permiso<select id="note-permission-' + noteId + '" class="note-prompt__select custom-select"><option value="view">Solo lectura</option><option value="edit">Puede editar</option></select></label>';
+    body.innerHTML = '<label class="note-prompt__label">Usuario<div class="note-user-picker"><input class="note-prompt__input" data-share-email type="text" placeholder="Busca por usuario o correo" autocomplete="off" required /><div class="note-user-results" data-note-user-results hidden role="listbox"></div></div></label><label class="note-prompt__label">Permiso<select id="note-permission-' + noteId + '" class="note-prompt__select custom-select"><option value="view">Solo lectura</option><option value="edit">Puede editar</option></select></label>';
     const email = body.querySelector("[data-share-email]");
     const permission = body.querySelector(".note-prompt__select");
     const userResults = body.querySelector("[data-note-user-results]");
@@ -399,8 +399,8 @@ async function loadNoteUsers() {
     return;
   }
   noteUsers = (data || [])
-    .filter(({ email }) => email)
-    .map(({ email }) => email.toLowerCase());
+    .filter(({ username, email }) => username && email)
+    .map(({ username, email }) => ({ username: username.toLowerCase(), email: email.toLowerCase() }));
   const activeInput = notesList?.querySelector("[data-share-email]:focus");
   if (activeInput) renderNoteUserResults(activeInput);
 }
@@ -411,10 +411,10 @@ function renderNoteUserResults(input) {
   if (!results) return;
   const query = input.value.trim().toLowerCase();
   const matches = noteUsers
-    .filter((email) => !query || email.includes(query));
-  results.innerHTML = matches.map((email) => `
-    <button type="button" class="note-user-option" data-note-user="${escapeNoteHtml(email)}" role="option">
-      ${escapeNoteHtml(email)}
+    .filter(({ username, email }) => !query || username.includes(query) || email.includes(query));
+  results.innerHTML = matches.map(({ username, email }) => `
+    <button type="button" class="note-user-option" data-note-user="${escapeNoteHtml(username)}" role="option">
+      <strong>${escapeNoteHtml(username)}</strong><small>${escapeNoteHtml(email)}</small>
     </button>
   `).join("");
   results.hidden = matches.length === 0;
@@ -511,10 +511,12 @@ async function deleteNote(noteId, button, skipConfirmation = false) {
   await loadNotes();
 }
 
-async function shareNote(noteId, email, permission, button) {
-  const recipientEmail = email.trim().toLowerCase();
+async function shareNote(noteId, userInput, permission, button) {
+  const recipient = userInput.trim().toLowerCase();
+  const selectedUser = noteUsers.find(({ username, email }) => username === recipient || email === recipient);
+  const recipientEmail = selectedUser?.email || recipient;
   if (!recipientEmail || !recipientEmail.includes("@")) {
-    setNotesStatus("Escribe un correo válido para compartir la nota.", true);
+    setNotesStatus("Escribe un usuario registrado para compartir la nota.", true);
     return;
   }
   if (recipientEmail === currentNotesUser.email?.toLowerCase()) {

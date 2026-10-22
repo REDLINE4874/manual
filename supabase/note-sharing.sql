@@ -1,3 +1,4 @@
+-- 1. Crear la tabla note_shares si no existe
 create table if not exists public.note_shares (
   id uuid primary key default gen_random_uuid(),
   note_id uuid not null references public.notes(id) on delete cascade,
@@ -9,6 +10,7 @@ create table if not exists public.note_shares (
 
 alter table public.note_shares enable row level security;
 
+-- 2. Actualizar funciones auxiliares con CREATE OR REPLACE (sin necesidad de hacer DROP)
 create or replace function public.user_owns_note(target_note_id uuid)
 returns boolean
 language sql
@@ -26,6 +28,7 @@ $$;
 revoke all on function public.user_owns_note(uuid) from public;
 grant execute on function public.user_owns_note(uuid) to authenticated;
 
+-- Consulta auth.users directamente
 create or replace function public.user_exists_by_email(target_email text)
 returns boolean
 language sql
@@ -42,31 +45,16 @@ $$;
 revoke all on function public.user_exists_by_email(text) from public;
 grant execute on function public.user_exists_by_email(text) to authenticated;
 
-create or replace function public.list_note_users()
-returns table(email text)
-language sql
-security definer
-set search_path = public, auth
-as $$
-  select lower(auth.users.email)::text
-  from auth.users
-  where auth.users.email is not null
-    and auth.users.id <> auth.uid()
-  order by lower(auth.users.email);
-$$;
-
-revoke all on function public.list_note_users() from public;
-grant execute on function public.list_note_users() to authenticated;
-
+-- Obtiene el correo haciendo JOIN con auth.users
 create or replace function public.get_note_owner_emails(target_note_ids uuid[])
 returns table(note_id uuid, owner_email text)
 language sql
 security definer
 set search_path = public, auth
 as $$
-  select notes.id, lower(users.email)::text
+  select notes.id, u.email::text
   from public.notes
-  join auth.users as users on users.id = notes.user_id
+  join auth.users u on u.id = notes.user_id
   where notes.id = any(target_note_ids)
     and (
       notes.user_id = auth.uid()
@@ -82,6 +70,7 @@ $$;
 revoke all on function public.get_note_owner_emails(uuid[]) from public;
 grant execute on function public.get_note_owner_emails(uuid[]) to authenticated;
 
+-- 3. Limpiar y recrear las políticas de seguridad (RLS) para note_shares y notes
 drop policy if exists "Owners can view shares of their notes" on public.note_shares;
 drop policy if exists "Owners can create shares for their notes" on public.note_shares;
 drop policy if exists "Owners can update shares of their notes" on public.note_shares;

@@ -71,6 +71,13 @@ el contenido actualizado de `supabase/note-sharing.sql` en el SQL Editor de
 Supabase. Este script también habilita que el propietario quite accesos y que
 cada destinatario deje de ver una nota compartida.
 
+Para habilitar el acceso por nombre de usuario y la recuperación por correo,
+ejecuta primero `supabase/profiles.sql` y después `supabase/note-sharing.sql`.
+El script supone que `profiles` y los usuarios Auth ya existen con sus `id`,
+`username` y `email`; no crea usuarios nuevos. Al compartir una nota se muestran
+los nombres de usuario, aunque el acceso se guarda internamente con el correo
+para conservar compatibilidad con las notas existentes.
+
 Para habilitar las fechas en las notas (incluidas las existentes), ejecuta
 `supabase/notes.sql` en el SQL Editor de Supabase. Las notas anteriores reciben
 la fecha en que fueron creadas.
