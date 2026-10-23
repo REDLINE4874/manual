@@ -20,6 +20,9 @@ body.custom-background {
   --sidebar-active: var(--bg);
   --sidebar-border: var(--border);
   --sidebar-tooltip-bg: var(--bg-3);
+  --scrollbar-track: var(--page-background);
+  --scrollbar-thumb: color-mix(in srgb, var(--brand-teal) 64%, var(--page-background));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-teal) 82%, var(--page-background));
   background: var(--page-background);
 }
 
