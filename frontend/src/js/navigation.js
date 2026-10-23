@@ -60,7 +60,7 @@ function renderNav() {
       <span class="nav-label">Enlaces</span>
       <span class="caret">▾</span>
     </button>
-    <div class="nav-submenu">${EXTERNAL_LINKS.filter((link) => !link.url.includes("docs.google.com") && !link.url.includes("agendas-rab6.onrender.com")).map(
+    <div class="nav-submenu">${EXTERNAL_LINKS.filter((link) => !link.url.includes("agendas-rab6.onrender.com")).map(
       (link) => `
       <a class="nav-item nav-subitem" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
         <span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span>

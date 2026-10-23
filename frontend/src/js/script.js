@@ -21,12 +21,13 @@ document.addEventListener("click", () => {
 });
 
 utilityLinks?.querySelectorAll(".utility-links__menu a[href^='http']").forEach((link) => {
-  if (link.href.includes("docs.google.com") || link.href.includes("agendas-rab6.onrender.com")) {
+  if (link.href.includes("agendas-rab6.onrender.com")) {
     link.remove();
   }
 });
 
 const internalTabs = document.getElementById("internalTabs");
+internalTabs?.querySelector('.internal-tab[data-view="documentos"]')?.remove();
 let draggedTab = null;
 
 function lockParentScrollOnFrame(frame) {
