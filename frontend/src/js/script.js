@@ -7,7 +7,7 @@ showView("home");
 
 const utilityLinks = document.getElementById("utilityLinks");
 document
-  .querySelectorAll('.utility-nav__actions .utility-action[data-view="documentos"], .utility-nav__actions .utility-action[data-view="agendas"]')
+  .querySelectorAll('.utility-nav__actions .utility-action[data-view="documentos"]')
   .forEach((button) => button.remove());
 const utilityLinksTrigger = utilityLinks?.querySelector(".utility-links__trigger");
 utilityLinksTrigger?.addEventListener("click", (event) => {
@@ -18,12 +18,6 @@ utilityLinksTrigger?.addEventListener("click", (event) => {
 document.addEventListener("click", () => {
   utilityLinks?.classList.remove("is-open");
   utilityLinksTrigger?.setAttribute("aria-expanded", "false");
-});
-
-utilityLinks?.querySelectorAll(".utility-links__menu a[href^='http']").forEach((link) => {
-  if (link.href.includes("agendas-rab6.onrender.com")) {
-    link.remove();
-  }
 });
 
 const internalTabs = document.getElementById("internalTabs");
@@ -72,10 +66,6 @@ const FLOATING_WINDOWS = {
   documentos: {
     title: "Formalización",
     url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-  },
-  agendas: {
-    title: "Agendas",
-    url: "https://agendas-rab6.onrender.com/",
   },
   guia: {
     title: "Script",

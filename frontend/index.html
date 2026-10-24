@@ -88,10 +88,6 @@
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span>
               <span>Formalización</span>
             </button>
-            <button class="utility-action" data-view="agendas" onclick="showView('agendas')" title="Agendas">
-              <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/agenda.svg');mask-image:url('assets/icons/agenda.svg')"></span>
-              <span>Agendas</span>
-            </button>
             <div class="utility-links" id="utilityLinks">
               <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
                 <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/link.svg');mask-image:url('assets/icons/link.svg')"></span>
@@ -131,13 +127,6 @@
             </svg>
             <span>Formalización</span>
           </button>
-          <button class="internal-tab" type="button" role="tab" data-view="agendas" draggable="true">
-            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="4" y="5.5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7" />
-              <path d="M8 3.5v4m8-4v4M4 10h16m-12 4h2m3 0h2m-7 3h2m3 0h2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-            </svg>
-            <span>Agendas</span>
-          </button>
           <button class="internal-tab" type="button" role="tab" data-view="guia" draggable="true">
             <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2.5-13-3 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -174,20 +163,6 @@
           </div>
           <div class="document-frame-wrap">
             <iframe class="document-frame" src="https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing" title="Documento de formalización" loading="lazy" allowfullscreen></iframe>
-          </div>
-        </section>
-
-        <section class="view documents-view" id="view-agendas">
-          <button class="back-link" onclick="showView('home')">← Volver al menú</button>
-          <div class="hero documents-view__hero">
-            <div>
-              <h1>Agendas</h1>
-            </div>
-            <a class="documents-view__external" href="https://agendas-rab6.onrender.com/" target="_blank" rel="noopener noreferrer">Abrir en otra pestaña ↗</a>
-            <button class="documents-view__external documents-view__floating" type="button" onclick="openFloatingWindow('agendas')">Abrir como ventana flotante</button>
-          </div>
-          <div class="document-frame-wrap">
-            <iframe class="document-frame" src="https://agendas-rab6.onrender.com/" title="Agendas" loading="lazy" allowfullscreen></iframe>
           </div>
         </section>
 

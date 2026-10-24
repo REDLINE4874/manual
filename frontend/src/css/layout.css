@@ -76,7 +76,6 @@
 .document-frame-wrap{overflow:hidden;margin-top:26px;border:1px solid var(--sidebar-border);border-radius:16px;background:var(--surface,#fff);box-shadow:var(--shadow);}
 .document-frame{display:block;width:100%;height:min(78vh,900px);border:0;}
 #view-guia .document-frame-wrap{width:min(100%,820px);margin-left:auto;margin-right:auto;}
-#view-agendas .document-frame-wrap{width:min(100%,1150px);margin-left:auto;margin-right:auto;}
 body.iframe-scroll-active{overflow:hidden;}
 .internal-tabs{display:flex;align-items:center;gap:6px;width:max-content;max-width:calc(100% - 40px);margin:12px 20px 0;padding:6px;background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 16px rgba(18,35,44,.06);}
 .internal-tab{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:11px;padding:9px 16px;background:transparent;color:var(--ink-soft);font:600 12px var(--font-body);cursor:grab;transition:background .2s ease,color .2s ease,opacity .2s ease;}
