@@ -119,6 +119,21 @@ function updateSiteAuthSession(session) {
   if (!signedIn) showSiteAuthPanel("login");
 }
 
+async function enforceSiteAuthBlock(session) {
+  if (!session?.user || !window.SUPABASE_AUTH_CLIENT) return false;
+  const { data, error } = await window.SUPABASE_AUTH_CLIENT
+    .from("profiles")
+    .select("blocked")
+    .eq("id", session.user.id)
+    .maybeSingle();
+  if (error || !data?.blocked) return false;
+  siteAuthScreen.hidden = false;
+  await window.SUPABASE_AUTH_CLIENT.auth.signOut();
+  siteAuthScreen.hidden = false;
+  setSiteAuthStatus("Tu usuario ha sido bloqueado. Solicita acceso al administrador.", true);
+  return true;
+}
+
 async function submitSiteAuthLogin(event) {
   event.preventDefault();
   siteAuthRecovery = false;
@@ -195,15 +210,15 @@ if (!siteAuthReady) {
   siteAuthUpdateForm.addEventListener("submit", submitSiteAuthUpdate);
   siteAuthForgot.addEventListener("click", () => showSiteAuthPanel("request"));
   siteAuthRequestBack.addEventListener("click", () => showSiteAuthPanel("login"));
-  window.SUPABASE_AUTH_CLIENT.auth.onAuthStateChange((event, session) => {
+  window.SUPABASE_AUTH_CLIENT.auth.onAuthStateChange(async (event, session) => {
     if (event === "PASSWORD_RECOVERY") {
       siteAuthRecovery = true;
       showSiteAuthPanel("update");
     }
-    updateSiteAuthSession(session);
+    if (!(await enforceSiteAuthBlock(session))) updateSiteAuthSession(session);
   });
-  window.SUPABASE_AUTH_CLIENT.auth.getSession().then(({ data, error }) => {
+  window.SUPABASE_AUTH_CLIENT.auth.getSession().then(async ({ data, error }) => {
     if (error) setSiteAuthStatus("No se pudo recuperar la sesion.", true);
-    updateSiteAuthSession(data?.session);
+    if (!(await enforceSiteAuthBlock(data?.session))) updateSiteAuthSession(data?.session);
   });
 }

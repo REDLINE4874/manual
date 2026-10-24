@@ -495,7 +495,10 @@ async function saveNote(event) {
 }
 
 async function deleteNote(noteId, button, skipConfirmation = false) {
-  if (!skipConfirmation && !window.confirm("¿Quieres eliminar esta nota? Esta acción no se puede deshacer.")) {
+  if (!skipConfirmation && !(await window.showCustomConfirm("Esta acción no se puede deshacer.", {
+    title: "Eliminar nota",
+    confirmText: "Eliminar",
+  }))) {
     setNotesStatus("Eliminación cancelada.");
     return;
   }

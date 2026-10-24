@@ -432,10 +432,13 @@ function openDigito(id) {
    Navegación entre vistas
    ============================================================ */
 function showView(name) {
+  if (name === "admin" && window.currentUserRole !== "admin") name = "home";
+  const targetView = document.getElementById("view-" + name);
+  if (!targetView) return;
   document
     .querySelectorAll(".view")
     .forEach((v) => v.classList.remove("active"));
-  document.getElementById("view-" + name).classList.add("active");
+  targetView.classList.add("active");
   document
     .querySelectorAll(".nav-item, .utility-action")
     .forEach((b) => b.classList.remove("active"));

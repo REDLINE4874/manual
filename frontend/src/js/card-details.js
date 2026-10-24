@@ -126,7 +126,7 @@ function openCard(id) {
      
     <div class="detail-two-col">
       <div class="extra-block"><h2>Beneficios</h2>${benefitsHtml}</div>
-      <div class="extra-block"><h2>Vigencias</h2>${vigenciasHtml}</div>
+      <div class="extra-block validity-block"><h2>Vigencias</h2>${vigenciasHtml}</div>
     </div>
 
     ${extraContentHtml}

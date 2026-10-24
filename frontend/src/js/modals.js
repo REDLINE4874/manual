@@ -41,3 +41,59 @@ document.getElementById("closeModal").addEventListener("click", closeScript);
 document.getElementById("scriptModal").addEventListener("click", (e) => {
   if (e.target.id === "scriptModal") closeScript();
 });
+
+function showCustomConfirm(message, options = {}) {
+  const modal = document.getElementById("confirmModal");
+  const title = document.getElementById("confirmModalTitle");
+  const messageElement = document.getElementById("confirmModalMessage");
+  const cancel = document.getElementById("confirmModalCancel");
+  const accept = document.getElementById("confirmModalAccept");
+  if (!modal || !title || !messageElement || !cancel || !accept) return Promise.resolve(false);
+
+  title.textContent = options.title || "Confirmar acción";
+  messageElement.textContent = message;
+  cancel.textContent = options.cancelText || "Cancelar";
+  accept.textContent = options.confirmText || "Confirmar";
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+  accept.focus();
+
+  return new Promise((resolve) => {
+    const finish = (result) => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      cancel.removeEventListener("click", onCancel);
+      accept.removeEventListener("click", onAccept);
+      modal.removeEventListener("click", onBackdrop);
+      document.removeEventListener("keydown", onKeydown);
+      resolve(result);
+    };
+    const onCancel = () => finish(false);
+    const onAccept = () => finish(true);
+    const onBackdrop = (event) => { if (event.target === modal) finish(false); };
+    const onKeydown = (event) => { if (event.key === "Escape") finish(false); };
+    cancel.addEventListener("click", onCancel);
+    accept.addEventListener("click", onAccept);
+    modal.addEventListener("click", onBackdrop);
+    document.addEventListener("keydown", onKeydown);
+  });
+}
+
+window.showCustomConfirm = showCustomConfirm;
+
+function showCustomNotice(message, options = {}) {
+  const notice = document.getElementById("operationNotice");
+  const messageElement = document.getElementById("operationNoticeMessage");
+  if (!notice || !messageElement) return;
+  messageElement.textContent = `${options.title ? `${options.title}: ` : ""}${message}`;
+  notice.hidden = false;
+  notice.classList.remove("is-visible");
+  requestAnimationFrame(() => notice.classList.add("is-visible"));
+  clearTimeout(showCustomNotice.timeoutId);
+  showCustomNotice.timeoutId = setTimeout(() => {
+    notice.classList.remove("is-visible");
+    setTimeout(() => { notice.hidden = true; }, 220);
+  }, 3800);
+}
+
+window.showCustomNotice = showCustomNotice;

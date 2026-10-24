@@ -51,7 +51,11 @@ function initCalculators() {
 }
 
 function enhanceCustomSelect(select) {
-  if (select.dataset.enhanced === "true") return;
+  if (select.dataset.enhanced === "true") {
+    const existingWrapper = select.closest(".calculator-select");
+    if (existingWrapper) existingWrapper.replaceWith(select);
+    delete select.dataset.enhanced;
+  }
   select.dataset.enhanced = "true";
 
   const wrapper = document.createElement("div");
@@ -121,3 +125,4 @@ function enhanceCustomSelect(select) {
 }
 
 window.initCalculators = initCalculators;
+window.enhanceCustomSelect = enhanceCustomSelect;

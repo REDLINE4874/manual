@@ -14,7 +14,7 @@ window.CARD_DATA.clasica = {
   validity:
     "<strong>CAT PROMEDIO 86.2% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.93% tasa variable</strong> y una comisión por <strong>administración mensual de $67.92 sin IVA</strong>, ¿de acuerdo?",
   script:
-    "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta CLÁSICA le genera una administración mensual de $67.92 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 86.2% sin IVA. Tasa de interés anual promedio ponderada de 60.93% tasa variable y una comisión por administración mensual de $67.92 sin IVA, ¿de acuerdo?",
+    "Según su perfil, el producto que le estaría recomendando es la TDC CLÁSICA, la cual le estará regresando un 5% de puntos premia, o el doble al usarlo en gasolineras, esto para que usted pueda estarlo intercambiando por dinero en efectivo, entre otros productos, para ello, yo lo apoyaré con su solicitud.",
   bonification: [
     "<strong>Activar la TDC Física y Digital asi como NetKey.</strong>",
     "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",

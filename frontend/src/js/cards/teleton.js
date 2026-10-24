@@ -14,7 +14,7 @@ window.CARD_DATA.teleton = {
   validity:
     "<strong>CAT PROMEDIO 84.9% sin IVA Informativo.</strong> Vigencia de la oferta: <strong>27 de Julio del 2026 al 27 de Enero del 2027.</strong> Tasa de interés anual promedio ponderada de <strong>60.92% tasa variable</strong> y una comisión por <strong>administración mensual $45 sin IVA</strong>, ¿de acuerdo?",
   script:
-    "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.\n\nEsta tarjeta TELETÓN le genera una administración mensual de $45 sin IVA, la cual podrá exentar con una compra mínima de 300 pesos al mes en el primer año.\n\nCAT PROMEDIO 84.9% sin IVA. Tasa de interés anual promedio ponderada de 60.92% tasa variable y una comisión por administración mensual de $45 sin IVA, ¿de acuerdo?",
+    "Según su perfil, el producto que le estaría recomendando es la TDC TELETÓN, la cual le estará brindando meses sin intereses hasta en el 98% de comercios, 30% de descuento en Starbucks y 2x1 en Cinépolis, para ello, yo lo apoyaré con su solicitud.",
   bonification: [
     "<strong>Activar la TDC Física y Digital asi como NetKey</strong>",
     "<strong><strong>Realizar una compra sin monto mínimo con la tarjeta digital (EL PRIMER MES).</strong></strong>",

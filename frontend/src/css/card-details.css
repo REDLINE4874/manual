@@ -173,6 +173,7 @@
   margin-top:16px;font-size:12.5px;color:var(--ink-soft);background:var(--surface-soft); 
   border:1px dashed var(--line);border-radius:10px; padding:9px 12px; display:inline-block;}
 .validity-note b{ color:var(--ink); }
+.validity-block .script-text{margin:0;line-height:1.65;}
 
 .waiver-block{ background:var(--surface-gold); border:1px solid rgba(169,134,59,0.35); border-radius:var(--radius-lg); padding:18px 22px;}
 .waiver-title{ font-family:var(--font-display); font-weight:600; font-size:16px; color:var(--gold); margin-bottom:6px;}
