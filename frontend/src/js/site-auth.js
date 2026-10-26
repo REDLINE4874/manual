@@ -84,6 +84,12 @@ function setSiteAuthStatus(message, isError = false) {
   siteAuthStatus.classList.toggle("is-error", isError);
 }
 
+function isPasswordResetRateLimitError(error) {
+  const errorText = `${error?.message || ""} ${error?.code || ""}`.toLowerCase();
+  return error?.status === 429
+    || /rate[ _-]?limit|too many requests|once every|email.send.rate_limit|over_email_send_rate_limit/.test(errorText);
+}
+
 function showSiteAuthPanel(panel) {
   siteAuthLoginPanel.hidden = panel !== "login";
   siteAuthRequestPanel.hidden = panel !== "request";
@@ -168,7 +174,12 @@ async function submitSiteAuthRequest(event) {
   );
   submit.disabled = false;
   if (error) {
-    setSiteAuthStatus(error.message, true);
+    setSiteAuthStatus(
+      isPasswordResetRateLimitError(error)
+        ? "Se alcanzó el límite de solicitudes para cambiar la contraseña por correo. Solicita el cambio de contraseña a un administrador."
+        : error.message,
+      true,
+    );
     return;
   }
   setSiteAuthStatus("Revisa tu correo y abre el enlace para cambiar tu contrasena.");
