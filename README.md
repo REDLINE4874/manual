@@ -83,6 +83,12 @@ Para habilitar las fechas en las notas (incluidas las existentes), ejecuta
 `supabase/notes.sql` en el SQL Editor de Supabase. Las notas anteriores reciben
 la fecha en que fueron creadas.
 
+Para habilitar el panel administrativo, ejecuta después `supabase/admin-panel.sql`.
+Además de los permisos y datos de tarjetas, este script crea la función protegida
+que permite a un administrador cambiar la contraseña de cualquier usuario desde
+la tabla de usuarios. La contraseña se guarda como hash en Supabase Auth y el
+administrador debe comunicar la contraseña temporal al usuario de forma segura.
+
 ### Backend
 
 No hay backend en este proyecto: no existe servidor, API ni base de datos.

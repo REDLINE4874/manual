@@ -208,7 +208,7 @@
             </div>
             <p class="admin-status" id="adminStatus" role="status"></p>
             <div class="admin-users-table-wrap">
-              <table class="admin-users-table"><thead><tr><th>Usuario</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="adminUsersTableBody"></tbody></table>
+              <table class="admin-users-table"><thead><tr><th>Usuario</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="adminUsersTableBody"></tbody></table>
             </div>
           </div>
           <div class="admin-card admin-card--settings admin-tab-panel" id="admin-panel-cards" data-admin-panel="cards" hidden>
@@ -228,6 +228,31 @@
             </form>
           </div>
         </section>
+
+        <div id="adminPasswordModal" class="modal admin-modal" aria-hidden="true">
+          <div class="modal-box admin-modal__box" role="dialog" aria-modal="true" aria-labelledby="adminPasswordTitle">
+            <button id="adminPasswordClose" class="modal-close" type="button" aria-label="Cerrar">✕</button>
+            <h2 id="adminPasswordTitle">Cambiar contraseña</h2>
+            <p id="adminPasswordDescription">Define una contraseña temporal para este usuario.</p>
+            <form class="admin-password-form" id="adminPasswordForm">
+              <label>Usuario
+                <input id="adminPasswordUsername" type="text" readonly>
+              </label>
+              <label>Nueva contraseña
+                <input id="adminPasswordInput" type="password" minlength="8" autocomplete="new-password" required>
+              </label>
+              <label>Confirmar contraseña
+                <input id="adminPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required>
+              </label>
+              <p class="admin-form-help">Usa al menos 8 caracteres. Comunica la contraseña temporal al usuario de forma segura.</p>
+              <p class="admin-status" id="adminPasswordStatus" role="status"></p>
+              <div class="admin-modal__actions">
+                <button id="adminPasswordCancel" class="notes-button notes-button--secondary" type="button">Cancelar</button>
+                <button class="notes-button" type="submit">Guardar contraseña</button>
+              </div>
+            </form>
+          </div>
+        </div>
 
         <section class="view commission-view" id="view-comision">
           <button class="back-link" onclick="showView('home')">&#8592; Volver al men&#250;</button>

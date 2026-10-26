@@ -2,6 +2,14 @@ const adminNavButton = document.getElementById("adminNavButton");
 const adminUsersTableBody = document.getElementById("adminUsersTableBody");
 const adminStatus = document.getElementById("adminStatus");
 const adminRefreshUsers = document.getElementById("adminRefreshUsers");
+const adminPasswordModal = document.getElementById("adminPasswordModal");
+const adminPasswordClose = document.getElementById("adminPasswordClose");
+const adminPasswordCancel = document.getElementById("adminPasswordCancel");
+const adminPasswordForm = document.getElementById("adminPasswordForm");
+const adminPasswordUsername = document.getElementById("adminPasswordUsername");
+const adminPasswordInput = document.getElementById("adminPasswordInput");
+const adminPasswordConfirm = document.getElementById("adminPasswordConfirm");
+const adminPasswordStatus = document.getElementById("adminPasswordStatus");
 const adminCardSelect = document.getElementById("adminCardSelect");
 const adminCardForm = document.getElementById("adminCardForm");
 const adminCardCat = document.getElementById("adminCardCat");
@@ -22,6 +30,24 @@ window.currentUserRole = "user";
 const cardSettings = new Map();
 const validityTemplates = new Map();
 const cardDefaults = new Map();
+let adminPasswordTargetId = "";
+
+function setAdminPasswordModal(open, user = null) {
+  adminPasswordModal?.classList.toggle("show", open);
+  adminPasswordModal?.setAttribute("aria-hidden", String(!open));
+  if (open && user) {
+    adminPasswordTargetId = user.id;
+    adminPasswordUsername.value = user.username || "";
+    adminPasswordInput.value = "";
+    adminPasswordConfirm.value = "";
+    adminPasswordStatus.textContent = "";
+    adminPasswordStatus.classList.remove("is-error");
+    adminPasswordInput.focus();
+  } else if (!open) {
+    adminPasswordTargetId = "";
+    adminPasswordForm?.reset();
+  }
+}
 
 function setAdminValidityModal(open) {
   adminValidityModal?.classList.toggle("show", open);
@@ -86,7 +112,8 @@ async function loadAdminUsers() {
   adminUsersTableBody.innerHTML = (data || []).map((user) => `
     <tr><td>${escapeAdminHtml(user.username)}</td>
     <td><span class="admin-role ${user.role === "admin" ? "admin-role--admin" : user.blocked ? "admin-role--blocked" : "admin-role--user"}">${user.role === "admin" ? "Administrador" : user.blocked ? "Bloqueado" : "Activo"}</span></td>
-    <td><button class="notes-button notes-button--secondary" type="button" data-user-id="${escapeAdminHtml(user.id)}" data-next-blocked="${!user.blocked}" ${user.role === "admin" ? "disabled title=\"Los administradores no se pueden bloquear\"" : ""}>${user.role === "admin" ? "Protegido" : user.blocked ? "Desbloquear" : "Bloquear"}</button></td></tr>`).join("");
+    <td class="admin-users-table__actions"><button class="notes-button notes-button--secondary" type="button" data-user-id="${escapeAdminHtml(user.id)}" data-next-blocked="${!user.blocked}" ${user.role === "admin" ? "disabled title=\"Los administradores no se pueden bloquear\"" : ""}>${user.role === "admin" ? "Protegido" : user.blocked ? "Desbloquear" : "Bloquear"}</button>
+    <button class="notes-button notes-button--secondary" type="button" data-password-user-id="${escapeAdminHtml(user.id)}" data-password-username="${escapeAdminHtml(user.username)}">Cambiar contraseña</button></td></tr>`).join("");
   setAdminStatus(`${data?.length || 0} usuario(s) encontrado(s).`);
 }
 
@@ -190,6 +217,11 @@ async function refreshAdminAccess(session) {
 adminNavButton?.addEventListener("click", () => showView("admin"));
 adminRefreshUsers?.addEventListener("click", () => { loadAdminUsers(); loadCardSettings(); });
 adminUsersTableBody?.addEventListener("click", async (event) => {
+  const passwordButton = event.target.closest("[data-password-user-id]");
+  if (passwordButton) {
+    setAdminPasswordModal(true, { id: passwordButton.dataset.passwordUserId, username: passwordButton.dataset.passwordUsername });
+    return;
+  }
   const button = event.target.closest("[data-user-id]");
   if (!button) return;
   button.disabled = true;
@@ -197,6 +229,42 @@ adminUsersTableBody?.addEventListener("click", async (event) => {
   button.disabled = false;
   if (error) { setAdminStatus(`No se pudo actualizar el bloqueo: ${error.message || "error desconocido"}`, true); return; }
   loadAdminUsers();
+});
+
+adminPasswordClose?.addEventListener("click", () => setAdminPasswordModal(false));
+adminPasswordCancel?.addEventListener("click", () => setAdminPasswordModal(false));
+adminPasswordModal?.addEventListener("click", (event) => {
+  if (event.target === adminPasswordModal) setAdminPasswordModal(false);
+});
+adminPasswordForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const password = adminPasswordInput.value;
+  if (password !== adminPasswordConfirm.value) {
+    adminPasswordStatus.textContent = "Las contraseñas no coinciden.";
+    adminPasswordStatus.classList.add("is-error");
+    return;
+  }
+  if (password.length < 8) {
+    adminPasswordStatus.textContent = "La contraseña debe tener al menos 8 caracteres.";
+    adminPasswordStatus.classList.add("is-error");
+    return;
+  }
+  const submit = adminPasswordForm.querySelector("button[type=submit]");
+  submit.disabled = true;
+  const { error } = await window.SUPABASE_AUTH_CLIENT.rpc("set_user_password", {
+    target_user_id: adminPasswordTargetId,
+    target_password: password,
+  });
+  submit.disabled = false;
+  if (error) {
+    adminPasswordStatus.textContent = `No se pudo cambiar la contraseña: ${error.message || "error desconocido"}`;
+    adminPasswordStatus.classList.add("is-error");
+    return;
+  }
+  const username = adminPasswordUsername.value;
+  setAdminPasswordModal(false);
+  setAdminStatus(`Contraseña actualizada para ${username}.`);
+  window.showCustomNotice("La contraseña se actualizó correctamente. Comunica la nueva contraseña al usuario de forma segura.", { title: "Contraseña actualizada" });
 });
 
 adminCardSelect?.addEventListener("change", () => fillCardEditor(adminCardSelect.value));
@@ -209,6 +277,7 @@ adminValidityModal?.addEventListener("click", (event) => {
 });
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && adminValidityModal?.classList.contains("show")) setAdminValidityModal(false);
+  if (event.key === "Escape" && adminPasswordModal?.classList.contains("show")) setAdminPasswordModal(false);
 });
 adminCardForm?.addEventListener("submit", async (event) => {
   event.preventDefault();

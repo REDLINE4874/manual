@@ -7,6 +7,7 @@ alter table public.profiles add constraint profiles_role_check check (role in ('
 
 drop function if exists public.list_admin_users();
 drop function if exists public.set_user_role(uuid, text);
+drop function if exists public.set_user_password(uuid, text);
 
 create or replace function public.list_admin_users()
 returns table(id uuid, username text, role text, blocked boolean)
@@ -27,6 +28,26 @@ begin
   if target_user_id = auth.uid() then raise exception 'No puedes bloquear tu propio usuario.'; end if;
   if exists (select 1 from public.profiles p where p.id = target_user_id and p.role = 'admin') then raise exception 'No puedes bloquear a otro administrador.'; end if;
   update public.profiles set blocked = target_blocked where id = target_user_id;
+end;
+$$;
+
+create or replace function public.set_user_password(target_user_id uuid, target_password text)
+returns void
+language plpgsql security definer set search_path = public, auth, extensions
+as $$
+begin
+  if not exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin' and not p.blocked) then
+    raise exception 'No autorizado.';
+  end if;
+  if target_password is null or char_length(target_password) < 8 then
+    raise exception 'La contraseña debe tener al menos 8 caracteres.';
+  end if;
+  if not exists (select 1 from auth.users where id = target_user_id) then
+    raise exception 'No encontramos ese usuario.';
+  end if;
+  update auth.users
+  set encrypted_password = extensions.crypt(target_password, extensions.gen_salt('bf')), updated_at = now()
+  where id = target_user_id;
 end;
 $$;
 
@@ -64,10 +85,12 @@ $$;
 
 revoke all on function public.list_admin_users() from public;
 revoke all on function public.set_user_blocked(uuid, boolean) from public;
+revoke all on function public.set_user_password(uuid, text) from public;
 revoke all on function public.get_card_settings() from public;
 revoke all on function public.set_card_settings(text, text, text, text, text) from public;
 grant execute on function public.list_admin_users() to authenticated;
 grant execute on function public.set_user_blocked(uuid, boolean) to authenticated;
+grant execute on function public.set_user_password(uuid, text) to authenticated;
 grant execute on function public.get_card_settings() to authenticated;
 grant execute on function public.set_card_settings(text, text, text, text, text) to authenticated;
 notify pgrst, 'reload schema';
