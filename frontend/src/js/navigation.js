@@ -2,11 +2,11 @@
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  {
-    name: "Agendas",
-    url: "https://agendas-rab6.onrender.com/",
-    icon: "assets/icons/agenda.svg",
-  },
+  // {
+  //   name: "Agendas",
+  //   url: "https://agendas-rab6.onrender.com/",
+  //   icon: "assets/icons/agenda.svg",
+  // },
   {
     name: "Vicidial",
     url: "https://aliadosmed4.directo.com/agc/vicidial.php",
@@ -17,21 +17,21 @@ const EXTERNAL_LINKS = [
     url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
-  {
-    name: "Renapo (CURP)",
-    url: "https://www.gob.mx/curp",
-    icon: "assets/icons/curp.svg",
-  },
-  {
-    name: "Formalización",
-    url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-    icon: "assets/icons/drive.svg",
-  },
-  {
-    name: "Sucursales",
-    url: "https://www.banamex.com/es/localizador-sucursales.html?lid=MX|index-H4-Information-IrLocalizadorSucursales-ES",
-    icon: "assets/icons/sucursales.svg",
-  },
+  // {
+  //   name: "Renapo (CURP)",
+  //   url: "https://www.gob.mx/curp",
+  //   icon: "assets/icons/curp.svg",
+  // },
+  // {
+  //   name: "Formalización",
+  //   url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
+  //   icon: "assets/icons/drive.svg",
+  // },
+  // {
+  //   name: "Sucursales",
+  //   url: "https://www.banamex.com/es/localizador-sucursales.html?lid=MX|index-H4-Information-IrLocalizadorSucursales-ES",
+  //   icon: "assets/icons/sucursales.svg",
+  // },
 ];
 
 function renderNav() {
