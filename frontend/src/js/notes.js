@@ -779,7 +779,15 @@ function openExpandedNote(card) {
 if (!notesReady) {
   setNotesStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
 } else {
-  notesClient = window.supabase.createClient(notesConfig.url, notesConfig.anonKey);
+  notesClient = window.supabase.createClient(notesConfig.url, notesConfig.anonKey, {
+    auth: {
+      // Compartir el mismo ciclo de vida de sesión que la autenticación principal.
+      storage: window.sessionStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  });
   noteForm?.addEventListener("submit", saveNote);
   const updateDateFilter = () => {
     const hasDate = Boolean(noteDateFilter?.value);
