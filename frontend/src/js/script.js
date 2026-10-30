@@ -3,6 +3,7 @@ renderNav();
 renderHome();
 renderDigitos();
 initCalculators();
+if (typeof initProfilingModule === "function") { initProfilingModule(); }
 showView("home");
 
 const utilityLinks = document.getElementById("utilityLinks");

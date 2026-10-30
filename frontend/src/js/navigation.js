@@ -156,7 +156,8 @@ function renderNav() {
 
   const calc = document.createElement("div");
   calc.className = "nav-calc";
-  calc.innerHTML = `<button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('assets/icons/cal.svg');mask-image:url('assets/icons/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
+  calc.innerHTML = `<button class="nav-item" data-view="perfilamiento" onclick="showView('perfilamiento')" title="Perfilamiento de cliente"><span class="ico" style="-webkit-mask-image:url('assets/icons/profile.svg');mask-image:url('assets/icons/profile.svg')"></span><span class="nav-label">Perfilamiento</span></button>
+  <button class="nav-item" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos"><span class="ico" style="-webkit-mask-image:url('assets/icons/cal.svg');mask-image:url('assets/icons/cal.svg')"></span><span class="nav-label">Calculadora de puntos</span></button>
   <button class="nav-item" data-view="digitos" onclick="showView('digitos')" title="Dígitos"><span class="ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span><span class="nav-label">Dígitos</span></button>`;
   document.getElementById("sidebar").appendChild(calc);
 
@@ -435,6 +436,7 @@ function showView(name) {
   if (name === "admin" && window.currentUserRole !== "admin") name = "home";
   const targetView = document.getElementById("view-" + name);
   if (!targetView) return;
+  if (name === "perfilamiento" && typeof renderProfilingUI === "function") { renderProfilingUI(); }
   document
     .querySelectorAll(".view")
     .forEach((v) => v.classList.remove("active"));

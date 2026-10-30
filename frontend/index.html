@@ -33,6 +33,7 @@
     <script src="src/js/card-details.js" defer></script>
     <script src="src/js/sidebar.js" defer></script>
     <script src="src/js/modals.js" defer></script>
+    <script src="src/js/profiling.js" defer></script>
     <script src="src/js/script.js" defer></script>
     <script src="src/js/notes.js" defer></script>
     <script src="src/js/components/theme-toggle.js" defer></script>
@@ -78,6 +79,10 @@
             <img src="assets/images/Banamex.svg" alt="Banamex">
           </a>
           <div class="utility-nav__actions">
+            <button class="utility-action" data-view="perfilamiento" onclick="showView('perfilamiento')" title="Perfilamiento de cliente">
+              <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/profile.svg');mask-image:url('assets/icons/profile.svg')"></span>
+              <span>Perfilamiento</span>
+            </button>
             <button class="utility-action" data-view="puntos" onclick="showView('puntos')" title="Calculadora de puntos">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/cal.svg');mask-image:url('assets/icons/cal.svg')"></span>
               <span>Calculadora</span>
@@ -152,8 +157,12 @@
             <div>
               <span class="eyebrow">Manual actualizado · <span id="manualUpdatedHero">25/09/2026</span></span>
               <h1>Tarjetas de crédito Banamex</h1>
-              
+              <p>Consulta características, beneficios y utiliza el perfilamiento inteligente para recomendar la mejor opción a tu cliente.</p>
             </div>
+            <button class="notes-button" type="button" onclick="showView('perfilamiento')" style="display:inline-flex; align-items:center; gap:8px;">
+              <span class="ico" style="-webkit-mask-image:url('assets/icons/profile.svg');mask-image:url('assets/icons/profile.svg');width:16px;height:16px;background:currentColor;display:inline-block;"></span>
+              <span>Perfilador de Cliente</span> <span class="profiling-beta-tag" style="background:#fff; color:#003848; border:none; margin-left:4px; font-size:10px; padding:1px 6px;">BETA</span>
+            </button>
           </div>
           <div id="segmentsContainer"><!-- generado por JS --></div>
         </section>
@@ -276,6 +285,30 @@
             ← Volver al menú
           </button>
           <div id="cardDetailContainer"><!-- generado por JS --></div>
+        </section>
+
+        
+        <section class="view profiling-view" id="view-perfilamiento">
+          <button class="back-link" onclick="showView('home')">← Volver al menú</button>
+          <div class="hero profiling-hero">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span class="eyebrow" style="margin-bottom:0;">Asesoría de Venta Consultiva</span>
+                <span class="profiling-beta-tag">Fase de prueba</span>
+              </div>
+              <h1>Perfilamiento de Cliente</h1>
+              <p>Herramienta para asesores de venta: ingresa los datos del cliente para obtener la mejor tarjeta Banamex recomendada, evaluar su límite crediticio y utilizar los argumentos comerciales clave listos para el cliente.</p>
+            </div>
+          </div>
+          <div class="profiling-beta-banner" role="alert">
+            <span class="profiling-beta-banner__icon">⚠️</span>
+            <div class="profiling-beta-banner__content">
+              <strong>Sección en fase de prueba (BETA):</strong> Esta herramienta se encuentra en periodo de prueba y ajuste para pulir detalles con el equipo. Las recomendaciones y argumentos se siguen perfeccionando según retroalimentación de ventas.
+            </div>
+          </div>
+          <div id="profilingAppContainer">
+            <!-- Renderizado por profiling.js -->
+          </div>
         </section>
 
         <section class="view" id="view-puntos">
