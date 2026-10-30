@@ -89,6 +89,12 @@ que permite a un administrador cambiar la contraseña de cualquier usuario desde
 la tabla de usuarios. La contraseña se guarda como hash en Supabase Auth y el
 administrador debe comunicar la contraseña temporal al usuario de forma segura.
 
+Para habilitar el apartado de sugerencias, ejecuta `supabase/suggestions.sql`
+después de `supabase/admin-panel.sql`. Los usuarios del manual podrán enviar un
+mensaje y dejar el nombre en blanco; solo un administrador activo podrá leer los
+mensajes en Panel administrativo > Sugerencias. El SQL también permite inserciones
+sin sesión por si el acceso al manual se hace público más adelante.
+
 ### Backend
 
 No hay backend en este proyecto: no existe servidor, API ni base de datos.

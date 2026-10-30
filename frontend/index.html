@@ -19,6 +19,7 @@
     <script src="src/js/supabase-config.js" defer></script>
     <script src="src/js/site-auth.js" defer></script>
     <script src="src/js/admin-panel.js" defer></script>
+    <script src="src/js/suggestions.js" defer></script>
     <script src="src/js/cards/joy.js" defer></script>
     <script src="src/js/cards/clasica.js" defer></script>
     <script src="src/js/cards/teleton.js" defer></script>
@@ -94,6 +95,9 @@
             <button class="utility-action" data-view="comision" onclick="showView('comision')" title="Comisi&#243;n por administraci&#243;n">
               <span class="commission-icon" aria-hidden="true">$</span>
               <span>Comisi&#243;n</span>
+            </button>
+            <button class="utility-action" data-view="sugerencias" onclick="showView('sugerencias')" title="Enviar sugerencia">
+              <span aria-hidden="true">✎</span><span>Sugerencias</span>
             </button>
             <button class="utility-action" data-view="documentos" onclick="showView('documentos')" title="Formalización">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span>
@@ -209,6 +213,7 @@
           <div class="admin-tabs" role="tablist" aria-label="Secciones administrativas">
             <button class="admin-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="admin-panel-users" data-admin-tab="users">Usuarios bloqueados</button>
             <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="admin-panel-cards" data-admin-tab="cards">Datos de tarjetas</button>
+            <button class="admin-tab" type="button" role="tab" aria-selected="false" aria-controls="admin-panel-suggestions" data-admin-tab="suggestions">Sugerencias</button>
           </div>
           <div class="admin-card admin-tab-panel" id="admin-panel-users" data-admin-panel="users">
             <div class="admin-card__header">
@@ -234,6 +239,24 @@
               </section>
               <div class="admin-validity-launcher"><div><h3>Leyenda Sofom</h3><p>Edita CAT, vigencia, tasa de interés y comisión por administración.</p></div><button class="notes-button notes-button--secondary" id="adminOpenValidity" type="button">Editar leyenda</button></div>
               <div class="admin-form-actions"><button class="notes-button notes-button--secondary" id="adminRestoreCard" type="button">Restaurar valores originales</button><button class="notes-button" type="submit">Guardar datos</button></div>
+            </form>
+          </div>
+          <div class="admin-card admin-tab-panel" id="admin-panel-suggestions" data-admin-panel="suggestions" hidden>
+            <div class="admin-card__header"><div><h2>Sugerencias recibidas</h2><p>Solo tú puedes consultar los mensajes enviados desde el manual.</p></div><button class="notes-button notes-button--secondary" id="adminRefreshSuggestions" type="button">Actualizar</button></div>
+            <p class="admin-status" id="adminSuggestionsStatus" role="status"></p>
+            <div class="suggestions-list" id="adminSuggestionsList"></div>
+          </div>
+        </section>
+
+        <section class="view suggestions-view" id="view-sugerencias">
+          <button class="back-link" type="button" onclick="showView('home')">← Volver al menú</button>
+          <div class="hero"><div><span class="eyebrow">Tu opinión nos ayuda</span><h1>Envíanos una sugerencia</h1><p>Comparte una idea, reporta un error o dinos qué información te gustaría ver en el manual.</p></div></div>
+          <div class="admin-card suggestions-card">
+            <form id="suggestionForm" class="suggestion-form">
+              <label>Tu nombre (opcional)<input id="suggestionName" type="text" maxlength="80" autocomplete="name" placeholder="¿Cómo te llamas?"></label>
+              <label>Sugerencia<textarea id="suggestionMessage" rows="6" minlength="5" maxlength="2000" required placeholder="Escribe aquí tu sugerencia..."></textarea></label>
+              <p class="admin-status" id="suggestionStatus" role="status" aria-live="polite"></p>
+              <button class="notes-button" type="submit">Enviar sugerencia</button>
             </form>
           </div>
         </section>
