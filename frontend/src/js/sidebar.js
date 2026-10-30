@@ -26,7 +26,7 @@ function setSidebarCollapsed(collapsed) {
   const toggleBtn = document.getElementById("sidebarToggle");
   if (toggleBtn) toggleBtn.textContent = collapsed ? "☰" : "☰";
   try {
-    localStorage.setItem("sidebarCollapsed", collapsed ? "1" : "0");
+    localStorage.setItem("sidebarCollapsedV2", collapsed ? "1" : "0");
   } catch (e) {}
 }
 function toggleSidebarCollapsed() {
@@ -39,13 +39,8 @@ document
 (function restoreSidebarState() {
   let saved = null;
   try {
-    saved = localStorage.getItem("sidebarCollapsed");
+    saved = localStorage.getItem("sidebarCollapsedV2");
   } catch (e) {}
-
-  if (saved === null) {
-    setSidebarCollapsed(true);
-    return;
-  }
 
   if (saved === "1") setSidebarCollapsed(true);
 })();

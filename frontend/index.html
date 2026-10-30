@@ -96,9 +96,6 @@
               <span class="commission-icon" aria-hidden="true">$</span>
               <span>Comisi&#243;n</span>
             </button>
-            <button class="utility-action" data-view="sugerencias" onclick="showView('sugerencias')" title="Enviar sugerencia">
-              <span aria-hidden="true">✎</span><span>Sugerencias</span>
-            </button>
             <button class="utility-action" data-view="documentos" onclick="showView('documentos')" title="Formalización">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span>
               <span>Formalización</span>
@@ -248,19 +245,6 @@
           </div>
         </section>
 
-        <section class="view suggestions-view" id="view-sugerencias">
-          <button class="back-link" type="button" onclick="showView('home')">← Volver al menú</button>
-          <div class="hero"><div><span class="eyebrow">Tu opinión nos ayuda</span><h1>Envíanos una sugerencia</h1><p>Comparte una idea, reporta un error o dinos qué información te gustaría ver en el manual.</p></div></div>
-          <div class="admin-card suggestions-card">
-            <form id="suggestionForm" class="suggestion-form">
-              <label>Tu nombre (opcional)<input id="suggestionName" type="text" maxlength="80" autocomplete="name" placeholder="¿Cómo te llamas?"></label>
-              <label>Sugerencia<textarea id="suggestionMessage" rows="6" minlength="5" maxlength="2000" required placeholder="Escribe aquí tu sugerencia..."></textarea></label>
-              <p class="admin-status" id="suggestionStatus" role="status" aria-live="polite"></p>
-              <button class="notes-button" type="submit">Enviar sugerencia</button>
-            </form>
-          </div>
-        </section>
-
         <div id="adminPasswordModal" class="modal admin-modal" aria-hidden="true">
           <div class="modal-box admin-modal__box" role="dialog" aria-modal="true" aria-labelledby="adminPasswordTitle">
             <button id="adminPasswordClose" class="modal-close" type="button" aria-label="Cerrar">✕</button>
@@ -331,6 +315,15 @@
           </div>
           <div id="profilingAppContainer">
             <!-- Renderizado por profiling.js -->
+          </div>
+          <div class="admin-card suggestions-card profiling-suggestions">
+            <div class="admin-card__header"><div><h2>¿Tienes una sugerencia para Perfilamiento?</h2><p>Cuéntanos qué mejorarías de esta herramienta o qué función te gustaría agregar.</p></div></div>
+            <form id="suggestionForm" class="suggestion-form">
+              <label>Tu nombre (opcional)<input id="suggestionName" type="text" maxlength="80" autocomplete="name" placeholder="¿Cómo te llamas?"></label>
+              <label>Tu sugerencia<textarea id="suggestionMessage" rows="5" minlength="5" maxlength="2000" required placeholder="Escribe aquí tu sugerencia sobre Perfilamiento..."></textarea></label>
+              <p class="admin-status" id="suggestionStatus" role="status" aria-live="polite"></p>
+              <button class="notes-button" type="submit">Enviar sugerencia</button>
+            </form>
           </div>
         </section>
 
