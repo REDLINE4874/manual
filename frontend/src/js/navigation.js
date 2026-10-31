@@ -282,7 +282,6 @@ function renderHome() {
   cont.innerHTML = `
     <div class="segment-block">
       <div class="segment-heading">
-        <h2 class="segment-title">Todas las tarjetas</h2>
         <div class="carousel-controls">
           <button class="carousel-manual-control" type="button" data-direction="-1" aria-label="Tarjeta anterior">‹</button>
           <button class="carousel-manual-control" type="button" data-direction="1" aria-label="Tarjeta siguiente">›</button>
