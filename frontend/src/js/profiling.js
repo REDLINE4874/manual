@@ -7,20 +7,19 @@ const PROFILING_STATE = {
   lim: "clasico",    // "clasico", "oro", "platinum", "no_pregunto"
   interest: "recompensas", // "cero_anualidad", "recompensas", "viajes", "eventos", "benefica"
   selectedCards: new Set(),
-  activeCardTab: "bancarias", // "bancarias", "fintech", "departamentales", "invalidas"
   manualSuggestedId: null,   // Para cuando el usuario hace clic en una opción alternativa
 };
 
 const PROFILING_INCOME_OPTIONS = [
-  { id: "clasico", range: "$10,000 a $30,000", label: "Segmento Clásico", level: 1 },
-  { id: "oro", range: "$30,000 a $75,000", label: "Segmento Oro", level: 2 },
-  { id: "platinum", range: "Más de $75,000", label: "Segmento Platinum", level: 3 },
+  { id: "clasico", range: "$10 mil a $30 mil", label: "Segmento Clásico", level: 1 },
+  { id: "oro", range: "$30 mil a $75 mil", label: "Segmento Oro", level: 2 },
+  { id: "platinum", range: "Más de $75 mil", label: "Segmento Platinum", level: 3 },
 ];
 
 const PROFILING_LIM_OPTIONS = [
-  { id: "clasico", range: "$10,000 a $30,000", label: "Nivel Clásico", level: 1 },
-  { id: "oro", range: "$30,000 a $75,000", label: "Nivel Oro", level: 2 },
-  { id: "platinum", range: "Más de $75,000", label: "Nivel Platinum", level: 3 },
+  { id: "clasico", range: "$10 mil a $30 mil", label: "Nivel Clásico", level: 1 },
+  { id: "oro", range: "$30 mil a $75 mil", label: "Nivel Oro", level: 2 },
+  { id: "platinum", range: "Más de $75 mil", label: "Nivel Platinum", level: 3 },
   { id: "no_pregunto", range: "No se preguntó", label: "Límite desconocido", level: 0 },
 ];
 
@@ -61,7 +60,7 @@ function evaluateLimRelation(incomeId, limId) {
       badgeText: "ℹ️ Límite inferior al segmento",
       badgeClass: "profiling-lim-badge--bajo",
       noticeClass: "profiling-lim-notice--bajo",
-      message: "<strong>Límite actual bajo:</strong> El cliente califica formalmente por ingresos mínimos, pero maneja líneas menores. La asignación de línea inicial podría ser conservadora según su historial en buró.",
+      message: "<strong>Límite actual bajo:</strong> El cliente podría declinar por límite de crédito inferior al requerido.",
     };
   } else {
     return {
@@ -74,56 +73,57 @@ function evaluateLimRelation(incomeId, limId) {
   }
 }
 
-// Determina la mejor tarjeta según segmento e interés del cliente
-function determineCardRecommendation(incomeId, interestId, manualId, selectedCards) {
-  const cardsInSegment = (window.CARD_DATA ? Object.values(window.CARD_DATA) : []).filter(
-    (c) => c.segment === incomeId
+function getIncomeCeiling(incomeId) {
+  return { clasico: 30, oro: 75, platinum: Infinity }[incomeId] ?? 0;
+}
+
+function getCardMinimumIncome(card) {
+  const value = Number(String(card.income || "").match(/\d+/)?.[0]);
+  return Number.isFinite(value) ? value : Infinity;
+}
+
+function getPreferredCardId(segmentId, interestId, selectedCards) {
+  if (segmentId === "clasico") {
+    const hasFintech = Array.from(selectedCards).some((card) =>
+      ["Nu", "Stori", "Plata Card (Tarjeta de usos especiales)", "Mercado Pago", "Didi Card", "Rappi Card"].some((name) => card.includes(name))
+    );
+    if (interestId === "cero_anualidad" || (hasFintech && interestId === "recompensas")) return "joy";
+    if (interestId === "benefica") return "teleton";
+    return "clasica";
+  }
+  if (segmentId === "oro") return interestId === "viajes" ? "descubre" : "oro";
+  if (segmentId === "platinum") return interestId === "viajes" ? "explora" : "platinum";
+  return "";
+}
+
+function determineCardRecommendation(incomeId, limId, interestId, manualId, selectedCards) {
+  const allCards = window.CARD_DATA ? Object.values(window.CARD_DATA) : [];
+  const incomeCeiling = getIncomeCeiling(incomeId);
+  const incomeCards = allCards.filter((card) =>
+    card.segment === incomeId && getCardMinimumIncome(card) <= incomeCeiling
+  );
+  const incomePreferredId = getPreferredCardId(incomeId, interestId, selectedCards);
+  const incomeCard = incomeCards.find((card) => card.id === incomePreferredId) || incomeCards[0] || null;
+  const hasKnownLimit = ["clasico", "oro", "platinum"].includes(limId);
+  const incomeLevels = { clasico: 1, oro: 2, platinum: 3 };
+  const limitAboveIncome = hasKnownLimit && incomeLevels[incomeId] < incomeLevels[limId];
+  const compatibleCards = hasKnownLimit && !limitAboveIncome
+    ? allCards.filter((card) => card.segment === limId && getCardMinimumIncome(card) <= incomeCeiling)
+    : incomeCards;
+  const priorityPreferredId = hasKnownLimit && !limitAboveIncome
+    ? getPreferredCardId(limId, interestId, selectedCards)
+    : incomePreferredId;
+  let priorityCard = compatibleCards.find((card) => card.id === priorityPreferredId)
+    || (hasKnownLimit ? compatibleCards[0] || null : incomeCard);
+
+  const manualCard = compatibleCards.find((card) => card.id === manualId);
+  if (manualCard) priorityCard = manualCard;
+
+  const alternatives = compatibleCards.filter((card) =>
+    card.id !== priorityCard?.id && (!hasKnownLimit || card.id !== incomeCard?.id)
   );
 
-  if (!cardsInSegment.length) {
-    return { mainCard: null, alternatives: [] };
-  }
-
-  // Si el usuario forzó manualmente una tarjeta del segmento
-  if (manualId && cardsInSegment.some((c) => c.id === manualId)) {
-    const main = cardsInSegment.find((c) => c.id === manualId);
-    const alts = cardsInSegment.filter((c) => c.id !== manualId);
-    return { mainCard: main, alternatives: alts };
-  }
-
-  let recommendedId = "";
-
-  if (incomeId === "clasico") {
-    // Si viene de fintech y no eligió otro interés específico, Joy es ideal (cero costo)
-    const hasFintech = Array.from(selectedCards).some((c) =>
-      ["Nu", "Stori", "Plata Card (Tarjeta de usos especiales)", "Mercado Pago", "Didi Card", "Rappi Card"].some((f) => c.includes(f))
-    );
-
-    if (interestId === "cero_anualidad" || (hasFintech && interestId === "recompensas")) {
-      recommendedId = "joy";
-    } else if (interestId === "benefica") {
-      recommendedId = "teleton";
-    } else {
-      recommendedId = "clasica";
-    }
-  } else if (incomeId === "oro") {
-    if (interestId === "viajes") {
-      recommendedId = "descubre";
-    } else {
-      recommendedId = "oro";
-    }
-  } else if (incomeId === "platinum") {
-    if (interestId === "viajes") {
-      recommendedId = "explora";
-    } else {
-      recommendedId = "platinum";
-    }
-  }
-
-  const mainCard = cardsInSegment.find((c) => c.id === recommendedId) || cardsInSegment[0];
-  const alternatives = cardsInSegment.filter((c) => c.id !== mainCard.id);
-
-  return { mainCard, alternatives };
+  return { priorityCard, incomeCard, alternatives, hasKnownLimit, limitAboveIncome };
 }
 
 // Genera los argumentos de venta ("Se recomienda por:") dinámicos
@@ -135,12 +135,12 @@ function generateSalesReasons(mainCard, incomeId, limInfo, interestId, selectedC
   if (incomeId === "clasico") {
     reasons.push({
       strong: "Segmento Clásico accesible:",
-      text: "Diseñada para ingresos de $10,000 a $30,000 con los beneficios más competitivos del mercado bancario.",
+      text: "Diseñada para ingresos de $10 mil a $30 mil con los beneficios más competitivos del mercado bancario.",
     });
   } else if (incomeId === "oro") {
     reasons.push({
       strong: "Segmento Oro preferente:",
-      text: "Respalda ingresos de $30,000 a $75,000 brindando asistencias completas, mayor porcentaje de recompensas y promociones exclusivas.",
+      text: "Respalda ingresos de $30 mil a $75 mil brindando asistencias completas, mayor porcentaje de recompensas y promociones exclusivas.",
     });
   } else if (incomeId === "platinum") {
     reasons.push({
@@ -218,9 +218,6 @@ function generateSalesReasons(mainCard, incomeId, limInfo, interestId, selectedC
   const hasBancarias = selectedCardsList.some((c) =>
     ["BBVA", "Santander", "Banorte", "HSBC", "American Express", "Scotiabank", "Invex"].some((b) => c.includes(b))
   );
-  const hasInvalidas = selectedCardsList.some((c) =>
-    ["Banco Azteca", "Coppel Departamental", "Mercado Pago", "Didi Card", "Rappi Card", "Hey Banco"].some((i) => c.includes(i))
-  );
 
   if (hasFintech) {
     reasons.push({
@@ -236,12 +233,6 @@ function generateSalesReasons(mainCard, incomeId, limInfo, interestId, selectedC
     });
   }
 
-  if (hasInvalidas) {
-    reasons.push({
-      strong: "⚠️ Nota sobre autenticación:",
-      text: "El cliente cuenta con plásticos que NO autentican para trámite directo en Banamex. Asegúrate de verificar comprobante de ingresos o tarjetas bancarias válidas.",
-    });
-  }
 
   if (selectedCardsList.includes("Ninguna")) {
     reasons.push({
@@ -261,30 +252,6 @@ function generateSalesReasons(mainCard, incomeId, limInfo, interestId, selectedC
   return reasons;
 }
 
-// Genera speech rápido para el vendedor
-function generateSalesPitch(mainCard, incomeId, limInfo, interestId, selectedCards) {
-  let pitch = `Estimado cliente, revisando su perfil y sus ingresos comprobables, la tarjeta ideal que le recomendamos hoy es la **${mainCard.name}**. `;
-
-  if (mainCard.id === "joy") {
-    pitch += `Es una tarjeta sin costo de comisión de administración de por vida con solo realizar una compra de $300 al mes. Además, cuenta con la máxima seguridad al no tener CVV visible y le brinda acceso a las famosas Preventas Exclusivas Banamex.`;
-  } else if (mainCard.id === "clasica") {
-    pitch += `Le otorgará un 5% en Puntos Premia canjeables directamente por dinero en efectivo en cajeros, y se duplican al 10% en todas sus compras de gasolina, además de poder exentar la comisión de administración con un gasto mínimo de $300 pesos al mes.`;
-  } else if (mainCard.id === "oro") {
-    pitch += `Le entrega un 7% de recompensas en Puntos Premia y el doble (14%) en gasolineras, con la comodidad de exentar su comisión mensual y gozar de seguros y asistencias completas de categoría Oro.`;
-  } else if (mainCard.id === "descubre") {
-    pitch += `Con esta tarjeta categoría Platinum obtendrá boletos de avión 2x1 a destinos de playa nacionales y accesos ilimitados a la Sala VIP Mastercard en la Terminal 1 del AICM, acumulando puntos Momentos Banamex en cada compra.`;
-  } else if (mainCard.id === "platinum") {
-    pitch += `Le brinda nuestra tasa de interés más competitiva del 30.47%, 10% en Puntos Premia y el paquete de asistencia gratuita Libra Premium con cobertura vial, médica y en el hogar.`;
-  } else if (mainCard.id === "explora") {
-    pitch += `Es el producto ideal para viajar: 10 accesos gratuitos al año en Salas VIP Beyond en CDMX, Guadalajara y Monterrey, boletos 2x1 a playas y 1.15 puntos por dólar.`;
-  } else {
-    pitch += `Le brinda meses sin intereses en la mayoría de comercios, promociones en cines y restaurantes, y preventas exclusivas.`;
-  }
-
-  pitch += ` Con su autorización, yo mismo lo apoyaré con su solicitud de inmediato.`;
-  return pitch;
-}
-
 // Inicialización y renderizado del módulo
 function initProfilingModule() {
   const container = document.getElementById("profilingAppContainer");
@@ -293,42 +260,96 @@ function initProfilingModule() {
   renderProfilingUI();
 }
 
+function renderProfilingEligibilityAlerts(invalidCards, validCards) {
+  const authenticationLevels = {
+    Bancarias: "Mayor &#237;ndice de autenticaci&#243;n",
+    Departamentales: "&#205;ndice de autenticaci&#243;n normal",
+    Fintech: "&#205;ndice de autenticaci&#243;n bajo",
+  };
+  let markup = "";
+
+  if (invalidCards.length) {
+    markup += `
+      <div class="profiling-eligibility-alert" role="alert" aria-live="assertive">
+        <span class="profiling-eligibility-alert__icon" aria-hidden="true">!</span>
+        <div>
+          <strong>Tarjetas no aptas para este tr&#225;mite</strong>
+          <p>Las tarjetas seleccionadas (${invalidCards.join(", ")}) no autentican para el tr&#225;mite.</p>
+        </div>
+      </div>`;
+  }
+
+  if (validCards.length) {
+    markup += `
+      <div class="profiling-eligibility-alert profiling-eligibility-alert--valid" role="status" aria-live="polite">
+        <span class="profiling-eligibility-alert__icon" aria-hidden="true">&#10003;</span>
+        <div>
+          <strong>${validCards.length === 1 ? "Tarjeta apta" : "Tarjetas aptas"} para este tr&#225;mite</strong>
+          <ul class="profiling-eligibility-alert__levels">
+            ${["Bancarias", "Departamentales", "Fintech"].map((category) => {
+              const cards = validCards.filter((card) => card.category === category).map((card) => card.cardName);
+              if (!cards.length) return "";
+              return `<li><strong>${category}:</strong> ${cards.join(", ")} &middot; <span class="profiling-auth-level profiling-auth-level--${category.toLowerCase()}">${authenticationLevels[category]}</span></li>`;
+            }).join("")}
+          </ul>
+        </div>
+      </div>`;
+  }
+
+  return markup;
+}
+
 function renderProfilingUI() {
   const container = document.getElementById("profilingAppContainer");
   if (!container) return;
 
-  const limInfo = evaluateLimRelation(PROFILING_STATE.income, PROFILING_STATE.lim);
-  const { mainCard, alternatives } = determineCardRecommendation(
+  const { priorityCard, incomeCard, alternatives, hasKnownLimit, limitAboveIncome } = determineCardRecommendation(
     PROFILING_STATE.income,
+    PROFILING_STATE.lim,
     PROFILING_STATE.interest,
     PROFILING_STATE.manualSuggestedId,
     PROFILING_STATE.selectedCards
   );
+  const recommendationSegment = priorityCard?.segment || PROFILING_STATE.income;
+  const limInfo = evaluateLimRelation(recommendationSegment, PROFILING_STATE.lim);
+  const segmentLevels = { clasico: 1, oro: 2, platinum: 3 };
+  const mayDeclineForLimit = hasKnownLimit
+    && segmentLevels[PROFILING_STATE.lim] < segmentLevels[PROFILING_STATE.income];
 
-  const reasons = mainCard
-    ? generateSalesReasons(mainCard, PROFILING_STATE.income, limInfo, PROFILING_STATE.interest, PROFILING_STATE.selectedCards)
+  const cardGroups = typeof VALID_CARD_GROUPS !== "undefined" ? VALID_CARD_GROUPS : [];
+  const invalidCardNames = cardGroups
+    .filter((group) => group.category === "No Validas")
+    .flatMap((group) => group.cards);
+  const validCards = cardGroups
+    .filter((group) => group.category !== "No Validas")
+    .flatMap((group) => group.cards.map((cardName) => ({ cardName, category: group.category })));
+  const selectedInvalidCards = Array.from(PROFILING_STATE.selectedCards)
+    .filter((cardName) => invalidCardNames.includes(cardName));
+  const selectedValidCards = validCards
+    .filter(({ cardName }) => PROFILING_STATE.selectedCards.has(cardName));
+
+  const reasons = priorityCard
+    ? generateSalesReasons(priorityCard, recommendationSegment, limInfo, PROFILING_STATE.interest, PROFILING_STATE.selectedCards)
     : [];
-  const pitchText = mainCard
-    ? generateSalesPitch(mainCard, PROFILING_STATE.income, limInfo, PROFILING_STATE.interest, PROFILING_STATE.selectedCards)
-    : "";
-
   // Segment metadata
   const currentSegMeta = (typeof SEGMENTS !== "undefined" ? SEGMENTS : []).find(
-    (s) => s.id === PROFILING_STATE.income
-  ) || { label: "Segmento " + PROFILING_STATE.income, bar: "#009cc6" };
+    (s) => s.id === recommendationSegment
+  ) || { label: "Segmento " + recommendationSegment, bar: "#009cc6" };
 
   container.innerHTML = `
     <div class="profiling-layout">
       <!-- Columna Izquierda: Criterios del Prospecto -->
-      <div class="profiling-card">
-        
-        <!-- 1. Ingresos Comprobables (Define segmento) -->
+      <section class="profiling-card profiling-profile-section">
+        <header class="profiling-panel-heading">
+          <span class="eyebrow">Perfil del cliente</span>
+          <h2>Perfila por ingresos</h2>
+        </header>
+        <!-- 1. Ingresos Comprobables -->
         <div class="profiling-section">
           <div class="profiling-section__title">
             <span class="profiling-step-badge">1</span>
             <span>Ingresos Mensuales Comprobables</span>
           </div>
-          <div class="profiling-section__subtitle">Define obligatoriamente el segmento por requisito mínimo</div>
           <div class="profiling-btn-grid">
             ${PROFILING_INCOME_OPTIONS.map(
               (opt) => `
@@ -336,7 +357,6 @@ function renderProfilingUI() {
                       class="profiling-option-btn ${PROFILING_STATE.income === opt.id ? "is-selected" : ""}"
                       onclick="setProfilingIncome('${opt.id}')">
                 <span class="profiling-option-btn__main">${opt.range}</span>
-                <span class="profiling-option-btn__sub">${opt.label}</span>
               </button>
             `
             ).join("")}
@@ -349,7 +369,6 @@ function renderProfilingUI() {
             <span class="profiling-step-badge">2</span>
             <span>Límite de Crédito Actual ("LIM")</span>
           </div>
-          <div class="profiling-section__subtitle">Evalúa el límite respecto al segmento (no lo restringe)</div>
           <div class="profiling-btn-grid profiling-btn-grid--lim">
             ${PROFILING_LIM_OPTIONS.map(
               (opt) => `
@@ -357,7 +376,6 @@ function renderProfilingUI() {
                       class="profiling-option-btn ${PROFILING_STATE.lim === opt.id ? "is-selected" : ""}"
                       onclick="setProfilingLim('${opt.id}')">
                 <span class="profiling-option-btn__main">${opt.range}</span>
-                <span class="profiling-option-btn__sub">${opt.label}</span>
               </button>
             `
             ).join("")}
@@ -387,74 +405,69 @@ function renderProfilingUI() {
         </div>
 
         <!-- 4. Tarjetas que ya maneja el cliente -->
-        <div class="profiling-section">
+        <div class="profiling-section profiling-section--client-cards">
           <div class="profiling-section__title">
             <span class="profiling-step-badge">4</span>
             <span>Tarjetas que maneja actualmente</span>
           </div>
-          <div class="profiling-section__subtitle">Basadas en la tabla de validación de tarjetas del manual</div>
-          
-          <div class="profiling-cards-filter">
-            <button type="button" class="profiling-cards-filter__btn ${PROFILING_STATE.activeCardTab === "bancarias" ? "is-active" : ""}" onclick="setProfilingCardTab('bancarias')">Bancarias</button>
-            <button type="button" class="profiling-cards-filter__btn ${PROFILING_STATE.activeCardTab === "fintech" ? "is-active" : ""}" onclick="setProfilingCardTab('fintech')">Fintech</button>
-            <button type="button" class="profiling-cards-filter__btn ${PROFILING_STATE.activeCardTab === "departamentales" ? "is-active" : ""}" onclick="setProfilingCardTab('departamentales')">Departamentales</button>
-            <button type="button" class="profiling-cards-filter__btn ${PROFILING_STATE.activeCardTab === "invalidas" ? "is-active" : ""}" onclick="setProfilingCardTab('invalidas')">No Válidas</button>
-          </div>
-
           <div class="profiling-cards-chips" id="profilingChipsContainer">
             ${renderProfilingCardChips()}
           </div>
         </div>
-
-      </div>
+      </section>
 
       <!-- Columna Derecha: Tarjeta Sugerida y Recomendación -->
-      <div class="profiling-result-card">
+      <div class="profiling-recommendation-column">
+      <section class="profiling-feedback-section">
+        <div class="profiling-profile-feedback">
+          <div class="profiling-badge-group">
+            <span class="profiling-lim-badge ${limInfo.badgeClass}">${limInfo.badgeText}</span>
+          </div>
+          ${limInfo.status !== "alto" ? `<div class="profiling-lim-notice ${limInfo.noticeClass}"><div>${limInfo.message}</div></div>` : ""}
+        </div>
+
+        ${renderProfilingEligibilityAlerts(selectedInvalidCards, selectedValidCards)}
+      </section>
+            <section class="profiling-result-card">
         
         <div class="profiling-result-header">
           <div>
-            <span class="eyebrow" style="color:var(--brand-teal); font-weight:700;">Recomendación Inteligente</span>
-            <h2 style="font-family:var(--font-display); margin:4px 0 0; font-size:1.4rem;">Tarjeta Sugerida</h2>
+            <span class="eyebrow profiling-recommendation-eyebrow">Recomendación Inteligente</span>
+            <h2 style="font-family:var(--font-display); margin:4px 0 0; font-size:1.4rem;">Tarjeta recomendada</h2>
           </div>
           <div class="profiling-badge-group">
+            <span class="profiling-priority-badge">Prioridad</span>
             <span class="profiling-segment-badge" style="background:${currentSegMeta.bar}">${currentSegMeta.label}</span>
-            <span class="profiling-lim-badge ${limInfo.badgeClass}">${limInfo.badgeText}</span>
           </div>
         </div>
 
-        <!-- Alerta / Mensaje sobre el Límite de Crédito -->
-        <div class="profiling-lim-notice ${limInfo.noticeClass}">
-          <div>${limInfo.message}</div>
-        </div>
 
         <!-- Tarjeta Principal -->
         ${
-          mainCard
+          priorityCard
             ? `
           <div class="profiling-suggested-card">
             <div class="profiling-suggested-card__img-wrap">
-              <img class="profiling-suggested-card__img" src="${mainCard.image}" alt="${mainCard.name}">
+              <button type="button" class="profiling-suggested-card__image-button"
+                      onclick="openCard('${priorityCard.id}')" aria-label="Ver detalle de ${priorityCard.name}"
+                      title="Ver detalle de ${priorityCard.name}">
+                <img class="profiling-suggested-card__img" src="${priorityCard.image}" alt="">
+              </button>
             </div>
             <div class="profiling-suggested-card__info">
-              <h3>${mainCard.name}</h3>
+              <h3>${priorityCard.name}</h3>
               <div class="profiling-suggested-card__specs">
-                <span>Ingreso mínimo: <strong>${mainCard.income}</strong></span>
-                <span>Comisión: <strong>${mainCard.admin || "Sin costo"}</strong></span>
-                <span>CAT: <strong>${mainCard.cat || "N/A"}</strong></span>
-              </div>
-              <div class="profiling-suggested-card__actions">
-                <button type="button" class="profiling-btn profiling-btn--primary" onclick="openCard('${mainCard.id}')">
-                  Ver detalle completo
-                </button>
-                <button type="button" class="profiling-btn profiling-btn--secondary" onclick="openCardScript('${mainCard.id}')">
-                  Ver Script Oficial
-                </button>
+                <span>Ingreso mínimo: <strong>${priorityCard.income}</strong></span>
+                <span>Comisión: <strong>${priorityCard.admin || "Sin costo"}</strong></span>
+                <span>CAT: <strong>${priorityCard.cat || "N/A"}</strong></span>
               </div>
             </div>
           </div>
         `
-            : `<p>Selecciona los datos para ver la tarjeta sugerida.</p>`
+            : `<p>No hay una tarjeta que cumpla con el ingreso y el l&iacute;mite seleccionados.</p>`
         }
+
+
 
         <!-- "Se recomienda por:" -->
         <div class="profiling-reasons">
@@ -477,30 +490,47 @@ function renderProfilingUI() {
         </div>
 
         <!-- Argumento de venta rápido para el vendedor -->
-        <div class="profiling-pitch">
-          <div class="profiling-pitch__header">
-            <span class="profiling-pitch__title">Pitch de venta sugerido</span>
-            <button type="button" class="profiling-pitch__copy" onclick="copyProfilingPitch()">
-              Copiar texto 📋
+
+
+
+
+
+      <section class="profiling-options-section">
+        ${incomeCard && incomeCard.id !== priorityCard?.id ? `
+          <div class="profiling-income-recommendation">
+            <div>
+              <span class="eyebrow">Opci&oacute;n por ingresos</span>
+              <strong>${incomeCard.name}</strong>
+              <span>Ingreso m&iacute;nimo: ${incomeCard.income}</span>
+              ${mayDeclineForLimit ? `<span class="profiling-income-recommendation__warning" role="note">⚠ Puede declinar por l&iacute;mite de cr&eacute;dito inferior al requerido</span>` : ""}
+            </div>
+            <button type="button" class="profiling-income-recommendation__image" onclick="openCard('${incomeCard.id}')" aria-label="Ver detalle de ${incomeCard.name}" title="Ver detalle de ${incomeCard.name}">
+              <img src="${incomeCard.image}" alt="">
             </button>
           </div>
-          <p class="profiling-pitch__text" id="profilingPitchText">"${pitchText}"</p>
-        </div>
+        ` : ""}
 
-        <!-- Otras opciones disponibles en el segmento -->
+      <section class="profiling-alternatives-section">
+        <header class="profiling-panel-heading">
+          <span class="eyebrow">Alternativas</span>
+          <h2>${hasKnownLimit && !limitAboveIncome ? "Otras opciones que cumplen ingreso y l&iacute;mite" : "Otras opciones por ingresos"}</h2>
+        </header>
         ${
           alternatives.length > 0
             ? `
           <div class="profiling-alternatives">
-            <div class="profiling-alternatives__title">Otras opciones en el segmento:</div>
             <div class="profiling-alternatives__grid">
               ${alternatives
                 .map(
                   (alt) => `
-                <div class="profiling-alt-card" onclick="selectAlternativeCard('${alt.id}')" title="Hacer clic para sugerir esta tarjeta">
-                  <img class="profiling-alt-card__img" src="${alt.image}" alt="${alt.name}">
-                  <span class="profiling-alt-card__name">${alt.name}</span>
-                  <span class="profiling-alt-card__segment">Sugerir esta</span>
+                <div class="profiling-alt-card" onclick="selectAlternativeCard('${alt.id}')"
+                     title="${hasKnownLimit && !limitAboveIncome ? "Cumple ingreso y l&iacute;mite seleccionados; queda despu&eacute;s por la prioridad del cliente" : "Cumple el ingreso seleccionado; queda despu&eacute;s por la prioridad del cliente"}">
+                  <div class="profiling-alt-card__info">
+                    <span class="profiling-alt-card__name">${alt.name}</span>
+                    <span class="profiling-alt-card__badge">&#10003; Buena opci&oacute;n tambi&eacute;n</span>
+                    <span class="profiling-alt-card__segment">${hasKnownLimit && !limitAboveIncome ? `Cumple ingreso y l&iacute;mite &middot; desde ${alt.income}` : `Cumple ingreso &middot; desde ${alt.income}`}</span>
+                  </div>
+                  <img class="profiling-alt-card__img" src="${alt.image}" alt="">
                 </div>
               `
                 )
@@ -508,64 +538,47 @@ function renderProfilingUI() {
             </div>
           </div>
         `
-            : ""
+            : `<p>${hasKnownLimit && !limitAboveIncome ? "No hay otras tarjetas que cumplan ambos criterios." : "No hay otras tarjetas que cumplan el criterio de ingreso."}</p>`
         }
-
+      </section>
+      </section>
+      </section>
       </div>
+
+
     </div>
   `;
 }
 
-// Renderiza los chips de tarjetas según la pestaña activa
+// Renderiza todas las tarjetas juntas e identifica las que no autentican.
 function renderProfilingCardChips() {
   const groups = typeof VALID_CARD_GROUPS !== "undefined" ? VALID_CARD_GROUPS : [];
-  let targetGroup = null;
+  const isNoneSelected = PROFILING_STATE.selectedCards.has("Ninguna");
+  const noneButton = `
+    <button type="button" class="profiling-card-chip ${isNoneSelected ? "is-selected" : ""}"
+            aria-pressed="${isNoneSelected}" onclick="toggleProfilingCard('Ninguna')">
+      <span>Sin tarjetas previas (Ninguna)</span>
+    </button>`;
+  const allCards = groups.flatMap((group) => group.cards.map((cardName) => ({
+    cardName,
+    isInvalid: group.category === "No Validas",
+  })));
 
-  if (PROFILING_STATE.activeCardTab === "bancarias") {
-    targetGroup = groups.find((g) => g.category === "Bancarias");
-  } else if (PROFILING_STATE.activeCardTab === "fintech") {
-    targetGroup = groups.find((g) => g.category === "Fintech");
-  } else if (PROFILING_STATE.activeCardTab === "departamentales") {
-    targetGroup = groups.find((g) => g.category === "Departamentales");
-  } else if (PROFILING_STATE.activeCardTab === "invalidas") {
-    targetGroup = groups.find((g) => g.category === "No Validas");
-  }
-
-  const cards = targetGroup ? targetGroup.cards : [];
-  const isInvalidGroup = PROFILING_STATE.activeCardTab === "invalidas";
-
-  let html = "";
-
-  // Botón especial "Ninguna" en pestaña de bancarias
-  if (PROFILING_STATE.activeCardTab === "bancarias") {
-    const isNoneSelected = PROFILING_STATE.selectedCards.has("Ninguna");
-    html += `
-      <button type="button" 
-              class="profiling-card-chip ${isNoneSelected ? "is-selected" : ""}"
-              onclick="toggleProfilingCard('Ninguna')">
-        <span class="profiling-card-chip__status" style="background:#888;"></span>
-        <span>Sin tarjetas previas (Ninguna)</span>
-      </button>
-    `;
-  }
-
-  cards.forEach((cardName) => {
+  return noneButton + allCards.map(({ cardName, isInvalid }) => {
     const isSelected = PROFILING_STATE.selectedCards.has(cardName);
     const logoMarkup = typeof getCardLogoMarkup === "function" ? getCardLogoMarkup(cardName) : "";
+    const safeCardName = cardName.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 
-    html += `
-      <button type="button" 
-              class="profiling-card-chip ${isSelected ? "is-selected" : ""} ${isInvalidGroup ? "is-invalid" : ""}"
-              onclick="toggleProfilingCard('${cardName.replace(/'/g, "\\'")}')"
-              title="${isInvalidGroup ? "No autentica para trámite Banamex" : "Autentica como referencia"}">
+    return `
+      <button type="button"
+              class="profiling-card-chip ${isSelected ? "is-selected" : ""} ${isInvalid ? "is-invalid" : ""}"
+              aria-pressed="${isSelected}"
+              onclick="toggleProfilingCard('${safeCardName}')"
+              title="${isInvalid ? "No autentica para trámite Banamex" : "Autentica como referencia"}">
         ${logoMarkup}
-        <span class="profiling-card-chip__status"></span>
         <span>${cardName}</span>
-      </button>
-    `;
-  });
-
-  return html;
+      </button>`;
+  }).join("");
 }
 
 // Controladores de eventos
@@ -577,6 +590,7 @@ function setProfilingIncome(incomeId) {
 
 function setProfilingLim(limId) {
   PROFILING_STATE.lim = limId;
+  PROFILING_STATE.manualSuggestedId = null;
   renderProfilingUI();
 }
 
@@ -586,19 +600,9 @@ function setProfilingInterest(interestId) {
   renderProfilingUI();
 }
 
-function setProfilingCardTab(tabName) {
-  PROFILING_STATE.activeCardTab = tabName;
-  const container = document.getElementById("profilingChipsContainer");
-  if (container) {
-    container.innerHTML = renderProfilingCardChips();
-    // Actualizar botones de filtro
-    document.querySelectorAll(".profiling-cards-filter__btn").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.textContent.toLowerCase().includes(tabName.substring(0, 4)));
-    });
-  }
-}
 
 function toggleProfilingCard(cardName) {
+  PROFILING_STATE.manualSuggestedId = null;
   if (cardName === "Ninguna") {
     if (PROFILING_STATE.selectedCards.has("Ninguna")) {
       PROFILING_STATE.selectedCards.delete("Ninguna");
@@ -620,22 +624,6 @@ function toggleProfilingCard(cardName) {
 function selectAlternativeCard(cardId) {
   PROFILING_STATE.manualSuggestedId = cardId;
   renderProfilingUI();
-}
-
-function copyProfilingPitch() {
-  const el = document.getElementById("profilingPitchText");
-  if (!el) return;
-  const text = el.textContent.replace(/^"|"$/g, "");
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.querySelector(".profiling-pitch__copy");
-    if (btn) {
-      const prev = btn.textContent;
-      btn.textContent = "¡Copiado! ✅";
-      setTimeout(() => (btn.textContent = prev), 2000);
-    }
-  }).catch(() => {
-    alert("Texto copiado");
-  });
 }
 
 function openCardScript(cardId) {
