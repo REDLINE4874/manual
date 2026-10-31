@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "Manual de Tarjetas Banamex",
+  "short_name": "Manual Banamex",
+  "description": "Manual de tarjetas de crédito Banamex.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003da5",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

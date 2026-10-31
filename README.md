@@ -95,6 +95,15 @@ mensaje y dejar el nombre en blanco; solo un administrador activo podrá leer lo
 mensajes en Panel administrativo > Sugerencias. El SQL también permite inserciones
 sin sesión por si el acceso al manual se hace público más adelante.
 
+### Instalar como aplicacion
+
+El frontend incluye un manifiesto web y un service worker para que Chrome pueda
+ofrecer la instalacion. Publica el contenido de `frontend/` como raiz del sitio
+y accede mediante HTTPS (o `localhost` durante desarrollo). Al abrir el sitio,
+Chrome mostrara la opcion de instalar cuando se cumplan sus criterios; el
+service worker conserva la pagina principal para abrirla sin conexion. Las
+funciones que dependen de Supabase o de servicios externos requieren conexion.
+
 ### Backend
 
 No hay backend en este proyecto: no existe servidor, API ni base de datos.
