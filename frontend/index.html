@@ -19,6 +19,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="src/css/styles.css" />
     <link rel="stylesheet" href="src/css/admin-panel.css" />
+    <link rel="stylesheet" href="src/css/custom-background-overrides.css" />
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="src/js/supabase-config.js" defer></script>
@@ -169,7 +170,7 @@
             </div>
             <button class="notes-button" type="button" onclick="showView('perfilamiento')" style="display:inline-flex; align-items:center; gap:8px;">
               <span class="ico" style="-webkit-mask-image:url('assets/icons/profile.svg');mask-image:url('assets/icons/profile.svg');width:16px;height:16px;background:currentColor;display:inline-block;"></span>
-              <span>Perfilador de Cliente</span> <span class="profiling-beta-tag" style="background:#fff; color:#003848; border:none; margin-left:4px; font-size:10px; padding:1px 6px;">BETA</span>
+              <span>Perfilador de Cliente</span> <span class="profiling-beta-tag" style="background:var(--custom-control-background,#fff); color:var(--custom-control-text,#003848); border:none; margin-left:4px; font-size:10px; padding:1px 6px;">BETA</span>
             </button>
           </div>
           <div id="segmentsContainer"><!-- generado por navigation.js --></div>

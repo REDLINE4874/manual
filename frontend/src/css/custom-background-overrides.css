@@ -1,0 +1,84 @@
+/* Controls use a darker shade of the selected page color for clear separation. */
+body.custom-background .notes-button,
+body.custom-background .notes-button--secondary,
+body.custom-background .documents-view__external,
+body.custom-background .detail-header .stat-button,
+body.custom-background .open-script,
+body.custom-background .internal-tab.is-active,
+body.custom-background .nav-item.active,
+body.custom-background .utility-action.active,
+body.custom-background .admin-view .admin-tab.is-active,
+body.custom-background .admin-view .admin-tab.is-active:hover {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, var(--custom-control-background));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+}
+
+body.custom-background .notes-button:hover,
+body.custom-background .notes-button--secondary:hover,
+body.custom-background .documents-view__external:hover,
+body.custom-background .detail-header .stat-button:hover,
+body.custom-background .open-script:hover,
+body.custom-background .internal-tab.is-active:hover,
+body.custom-background .nav-item.active:hover,
+body.custom-background .utility-action.active:hover,
+body.custom-background .admin-view .admin-tab.is-active:hover {
+  border-color: var(--custom-control-hover);
+  background: var(--custom-control-hover);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .notes-button:focus-visible,
+body.custom-background .admin-view .admin-tab:focus-visible,
+body.custom-background .documents-view__external:focus-visible,
+body.custom-background .detail-header .stat-button:focus-visible,
+body.custom-background .open-script:focus-visible {
+  outline-color: var(--custom-control-text);
+}
+
+body.custom-background .nav-item.active .ico,
+body.custom-background .utility-action.active .utility-action__icon {
+  background-color: var(--custom-control-text);
+}
+
+body.custom-background .admin-view .admin-tab:hover,
+body.custom-background .admin-view .admin-tab.is-active {
+  border-bottom-color: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .admin-view .admin-status:not(.is-error) {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .admin-view .admin-role {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .admin-view .admin-users-table__actions .notes-button:disabled {
+  background: color-mix(in srgb, var(--custom-control-background) 72%, var(--page-background));
+  border-color: color-mix(in srgb, var(--custom-control-text) 12%, transparent);
+  color: var(--custom-control-text);
+  opacity: .82;
+}
+
+body.custom-background .profiling-beta-tag {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, transparent);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .profiling-step-badge,
+body.custom-background .profiling-cards-filter__btn.is-active,
+body.custom-background .profiling-option-btn.is-selected,
+body.custom-background .profiling-interest-chip.is-selected {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, var(--custom-control-background));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .profiling-option-btn.is-selected .profiling-option-btn__sub {
+  color: color-mix(in srgb, var(--custom-control-text) 82%, transparent);
+}
