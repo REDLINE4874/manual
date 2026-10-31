@@ -98,10 +98,6 @@
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span>
               <span>Dígitos</span>
             </button>
-            <button class="utility-action" data-view="comision" onclick="showView('comision')" title="Comisi&#243;n por administraci&#243;n">
-              <span class="commission-icon" aria-hidden="true">$</span>
-              <span>Comisi&#243;n</span>
-            </button>
             <button class="utility-action" data-view="documentos" onclick="showView('documentos')" title="Formalización">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span>
               <span>Formalización</span>
@@ -150,6 +146,12 @@
               <path d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2.5-13-3 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
             <span>Script</span>
+          </button>
+          <button class="internal-tab" type="button" role="tab" data-view="comision" draggable="true">
+            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3v18m4-14.5c-.8-1-2.1-1.5-4-1.5-2.5 0-4 1.2-4 3s1.4 2.7 4 3.2 4 1.4 4 3.3-1.6 3.2-4 3.2c-1.8 0-3.4-.7-4.3-1.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Comisi&#243;n</span>
           </button>
           <!-- <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" draggable="true">
             <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
