@@ -540,11 +540,13 @@ function renderProfilingUI() {
             <span class="profiling-step-badge">1</span>
             <span>Ingresos Mensuales Comprobables</span>
           </div>
+        
           <div class="profiling-btn-grid">
             ${PROFILING_INCOME_OPTIONS.map(
               (opt) => `
               <button type="button"
                       class="profiling-option-btn ${PROFILING_STATE.income === opt.id ? "is-selected" : ""}"
+                      aria-pressed="${PROFILING_STATE.income === opt.id}"
                       onclick="setProfilingIncome('${opt.id}')">
                 <span class="profiling-option-btn__main">${opt.range}</span>
               </button>
@@ -558,11 +560,13 @@ function renderProfilingUI() {
             <span class="profiling-step-badge">2</span>
             <span>Límite de Crédito Actual</span>
           </div>
+       
           <div class="profiling-btn-grid profiling-btn-grid--lim">
             ${PROFILING_LIM_OPTIONS.map(
               (opt) => `
               <button type="button"
                       class="profiling-option-btn ${PROFILING_STATE.lim === opt.id ? "is-selected" : ""}"
+                      aria-pressed="${PROFILING_STATE.lim === opt.id}"
                       onclick="setProfilingLim('${opt.id}')">
                 <span class="profiling-option-btn__main">${opt.range}</span>
               </button>
@@ -576,11 +580,13 @@ function renderProfilingUI() {
             <span class="profiling-step-badge">3</span>
             <span>¿Qué busca o prioriza el cliente?</span>
           </div>
+         
           <div class="profiling-interest-grid">
             ${PROFILING_INTEREST_OPTIONS.map(
               (opt) => `
               <button type="button"
                       class="profiling-interest-chip ${PROFILING_STATE.interest === opt.id ? "is-selected" : ""}"
+                      aria-pressed="${PROFILING_STATE.interest === opt.id}"
                       onclick="setProfilingInterest('${opt.id}')"
                       title="${opt.desc}">
                 <span class="profiling-interest-chip__icon">${opt.icon}</span>

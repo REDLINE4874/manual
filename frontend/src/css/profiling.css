@@ -314,6 +314,48 @@
   margin-bottom: 12px;
 }
 
+/* Mantiene alineados los subtÃ­tulos cuando un encabezado ocupa dos lÃ­neas. */
+.profiling-profile-section .profiling-section__title {
+  min-height: 48px;
+  align-items: flex-start;
+  margin-bottom: 0;
+  color: #8a5a00;
+}
+
+/* Cada paso debe leerse como una instrucciÃ³n independiente. */
+.profiling-profile-section .profiling-section {
+  padding: 14px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.profiling-profile-section .profiling-step-badge {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  margin-top: 0;
+  background: var(--brand-teal);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-teal) 22%, transparent);
+}
+
+.profiling-profile-section .profiling-section__subtitle {
+  margin-top: 0;
+  color: #9b6a00;
+  font-weight: 700;
+}
+
+:is(body.dark-mode, body.custom-background-dark) .profiling-profile-section .profiling-section__title,
+:is(body.dark-mode, body.custom-background-dark) .profiling-profile-section .profiling-section__subtitle {
+  color: #f6d98b;
+}
+
+body.custom-background .profiling-profile-section .profiling-section__title,
+body.custom-background .profiling-profile-section .profiling-section__subtitle {
+  color: var(--custom-gold-text, #8a5a00);
+}
+
 .profiling-step-badge {
   display: inline-flex;
   align-items: center;
@@ -1340,6 +1382,43 @@ body.custom-background-dark .profiling-lim-notice--adecuado {
   color: #62d8f2;
   border-color: rgba(98, 216, 242, 0.42);
   background: rgba(0, 156, 198, 0.16);
+}
+
+/* Estado seleccionado: debe destacar incluso sobre fondos personalizados. */
+:is(body.dark-mode, body.custom-background-dark) .profiling-option-btn.is-selected,
+:is(body.dark-mode, body.custom-background-dark) .profiling-interest-chip.is-selected,
+:is(body.dark-mode, body.custom-background-dark) .profiling-card-chip.is-selected {
+  background: color-mix(in srgb, #62d8f2 20%, var(--surface));
+  border-color: #62d8f2;
+  color: #f7fcfd;
+  box-shadow: 0 0 0 2px rgba(98, 216, 242, 0.3), inset 0 0 0 1px rgba(98, 216, 242, 0.45);
+}
+
+:is(body.dark-mode, body.custom-background-dark) .profiling-interest-chip.is-selected {
+  background: color-mix(in srgb, #ff5c86 20%, var(--surface));
+  border-color: #ff7d9d;
+  box-shadow: 0 0 0 2px rgba(255, 125, 157, 0.3), inset 0 0 0 1px rgba(255, 125, 157, 0.45);
+}
+
+:is(body.dark-mode, body.custom-background-dark) .profiling-card-chip.is-selected {
+  background: #62d8f2;
+  border-color: #b8f1ff;
+  color: #003848;
+  box-shadow: 0 0 0 2px rgba(98, 216, 242, 0.32);
+}
+
+body.custom-background .profiling-option-btn.is-selected,
+body.custom-background .profiling-interest-chip.is-selected,
+body.custom-background .profiling-card-chip.is-selected {
+  background: var(--custom-control-background);
+  border-color: var(--custom-control-text);
+  color: var(--custom-control-text);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--custom-control-text) 42%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--custom-control-text) 55%, transparent);
+}
+
+body.custom-background .profiling-option-btn.is-selected .profiling-option-btn__sub {
+  color: var(--custom-control-text);
 }
 
 .profiling-option-btn:focus-visible,
