@@ -531,8 +531,7 @@ function renderProfilingUI() {
       </div>
             <section class="profiling-card profiling-profile-section">
         <header class="profiling-panel-heading">
-          <span class="eyebrow">Perfil del cliente</span>
-          <h2>Perfila por ingresos</h2>
+          <h2>Perfil del cliente</h2>
         </header>
         <!-- 1. Ingresos Comprobables -->
         <div class="profiling-section profiling-section--income">
