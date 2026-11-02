@@ -777,7 +777,7 @@ function openExpandedNote(card) {
 }
 
 if (!notesReady) {
-  setNotesStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
+  setNotesStatus("Falta configurar Supabase en src/js/auth/supabase-config.js.", true);
 } else {
   notesClient = window.supabase.createClient(notesConfig.url, notesConfig.anonKey, {
     auth: {

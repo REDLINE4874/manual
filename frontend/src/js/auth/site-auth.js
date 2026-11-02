@@ -213,7 +213,7 @@ async function submitSiteAuthUpdate(event) {
 if (!siteAuthReady) {
   document.body.classList.remove("site-auth-pending");
   document.body.classList.add("site-auth-required");
-  setSiteAuthStatus("Falta configurar Supabase en src/js/supabase-config.js.", true);
+  setSiteAuthStatus("Falta configurar Supabase en src/js/auth/supabase-config.js.", true);
 } else {
   window.SUPABASE_AUTH_CLIENT = window.supabase.createClient(siteAuthConfig.url, siteAuthConfig.anonKey, {
     auth: {

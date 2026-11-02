@@ -1,0 +1,29 @@
+/* Presentación específica de elementos declarativos del index. */
+
+.ico[data-icon] {
+  -webkit-mask: var(--icon-mask) center / contain no-repeat;
+  mask: var(--icon-mask) center / contain no-repeat;
+}
+
+.ico[data-icon="profile"] { --icon-mask: url("../../assets/icons/profile.svg"); }
+.ico[data-icon="calculator"] { --icon-mask: url("../../assets/icons/cal.svg"); }
+.ico[data-icon="digits"] { --icon-mask: url("../../assets/icons/dig.svg"); }
+.ico[data-icon="drive"] { --icon-mask: url("../../assets/icons/drive.svg"); }
+.ico[data-icon="link"] { --icon-mask: url("../../assets/icons/link.svg"); }
+.ico[data-icon="dial"] { --icon-mask: url("../../assets/icons/dial.svg"); }
+.ico[data-icon="crm"] { --icon-mask: url("../../assets/icons/crm.svg"); }
+
+.profiling-launcher { gap: 8px; }
+.profiling-launcher .ico { width: 16px; height: 16px; background: currentColor; display: inline-block; }
+.profiling-beta-tag--compact {
+  background: var(--custom-control-background, #fff);
+  color: var(--custom-control-text, #003848);
+  border: 0;
+  margin-left: 4px;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+.profiling-hero__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.profiling-hero__eyebrow .eyebrow { margin-bottom: 0; }
+.hero--compact { margin-bottom: 26px; }
+.result--full-width { grid-column: 1 / -1; }

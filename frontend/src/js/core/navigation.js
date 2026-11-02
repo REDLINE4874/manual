@@ -2,16 +2,6 @@
    RENDER: navegación lateral
    ============================================================ */
 const EXTERNAL_LINKS = [
-  // {
-  //   name: "Agendas",
-  //   url: "https://agendas-rab6.onrender.com/",
-  //   icon: "assets/icons/agenda.svg",
-  // },
-  {
-    name: "Vicidial",
-    url: "https://aliadosmed4.directo.com/agc/vicidial.php",
-    icon: "assets/icons/dial.svg",
-  },
   {
     name: "Vicidial",
     url: "https://aliadosmed4.directo.com/agc/vicidial.php",
@@ -22,21 +12,7 @@ const EXTERNAL_LINKS = [
     url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
-  // {
-  //   name: "Renapo (CURP)",
-  //   url: "https://www.gob.mx/curp",
-  //   icon: "assets/icons/curp.svg",
-  // },
-  // {
-  //   name: "Formalización",
-  //   url: "https://docs.google.com/spreadsheets/d/1VcjjlgxWYKs2rRVI-MwBDXtqmDICwqb0lYqVTqrTnAk/edit?usp=sharing",
-  //   icon: "assets/icons/drive.svg",
-  // },
-  // {
-  //   name: "Sucursales",
-  //   url: "https://www.banamex.com/es/localizador-sucursales.html?lid=MX|index-H4-Information-IrLocalizadorSucursales-ES",
-  //   icon: "assets/icons/sucursales.svg",
-  // },
+  
 ];
 
 function renderNav() {
@@ -77,6 +53,20 @@ function renderNav() {
   </div>`;
 
   nav.innerHTML = html;
+
+  const utilityLinks = document.getElementById("utilityLinks");
+  if (utilityLinks) {
+    utilityLinks.innerHTML = `
+      <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
+        <span class="utility-action__icon ico" data-icon="link"></span>
+        <span>Enlaces</span><span class="utility-links__caret">▾</span>
+      </button>
+      <div class="utility-links__menu">${EXTERNAL_LINKS.map((link) => `
+        <a href="${link.url}" target="_blank" rel="noopener noreferrer">
+          <span class="ico" data-icon="${link.name === "Vicidial" ? "dial" : "crm"}"></span>
+          <span>${link.name}</span><span>↗</span>
+        </a>`).join("")}</div>`;
+  }
 
   const cardPreview = document.getElementById("navCardPreview") || document.createElement("div");
   cardPreview.id = "navCardPreview";
