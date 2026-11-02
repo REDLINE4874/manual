@@ -12,8 +12,31 @@ const EXTERNAL_LINKS = [
     url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
-  
+  {
+    name: "Agendas",
+    url: "https://agendas-rab6.onrender.com/",
+    icon: "assets/icons/agenda.svg",
+  },
+  {
+    name: "Curp",
+    url: "https://www.gob.mx/curp",
+    icon: "assets/icons/curp.svg",
+  },
+  {
+    name: "Vicidial Respaldo",
+    url: "https://aliadosmedb.directo.com/agc/vicidial.php",
+    icon: "assets/icons/dial.svg",
+  },
+  {
+    name: "CRM Respaldo",
+    url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
+    icon: "assets/icons/crm.svg",
+  },
+
 ];
+
+const getExternalIconName = (iconPath) =>
+  iconPath.split("/").pop().replace(/\.svg$/i, "");
 
 function renderNav() {
   const nav = document.getElementById("navContainer");
@@ -44,7 +67,7 @@ function renderNav() {
     <div class="nav-submenu">${EXTERNAL_LINKS.map(
       (link) => `
       <a class="nav-item nav-subitem" href="${link.url}" target="_blank" rel="noopener noreferrer" title="${link.name}">
-        <span class="ico" style="-webkit-mask-image:url('${link.icon}');mask-image:url('${link.icon}')"></span>
+        <span class="ico" data-icon="${getExternalIconName(link.icon)}"></span>
         <span class="nav-label">${link.name}</span>
         <span class="ext-arrow">↗</span>
       </a>
@@ -63,7 +86,7 @@ function renderNav() {
       </button>
       <div class="utility-links__menu">${EXTERNAL_LINKS.map((link) => `
         <a href="${link.url}" target="_blank" rel="noopener noreferrer">
-          <span class="ico" data-icon="${link.name === "Vicidial" ? "dial" : "crm"}"></span>
+          <span class="ico" data-icon="${getExternalIconName(link.icon)}"></span>
           <span>${link.name}</span><span>↗</span>
         </a>`).join("")}</div>`;
   }

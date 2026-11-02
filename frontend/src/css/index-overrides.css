@@ -12,6 +12,8 @@
 .ico[data-icon="link"] { --icon-mask: url("../../assets/icons/link.svg"); }
 .ico[data-icon="dial"] { --icon-mask: url("../../assets/icons/dial.svg"); }
 .ico[data-icon="crm"] { --icon-mask: url("../../assets/icons/crm.svg"); }
+.ico[data-icon="agenda"] { --icon-mask: url("../../assets/icons/agenda.svg"); }
+.ico[data-icon="curp"] { --icon-mask: url("../../assets/icons/curp.svg"); }
 
 .profiling-launcher { gap: 8px; }
 .profiling-launcher .ico { width: 16px; height: 16px; background: currentColor; display: inline-block; }
