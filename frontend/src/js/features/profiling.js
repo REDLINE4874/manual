@@ -82,9 +82,10 @@ function getPreferredCardId(segmentId, interestId) {
   if (interestId === "viajes_experiencias" && segmentId === "platinum") return "explora";
   return getProfileCardId(segmentId);
 }
-function getModifierTargetCardId(segmentId, interestId) {
+function getModifierTargetCardId(segmentId, interestId, incomeId, limId) {
   if (interestId === "cero_anualidad") return "joy";
   if (interestId === "puntos_cotidianos") return segmentId === "clasico" ? "clasica" : "oro";
+  if (interestId === "viajes_experiencias" && incomeId === "oro" && limId === "oro") return "descubre";
   if (interestId === "viajes_experiencias" && segmentId === "platinum") return "explora";
   return null;
 }
@@ -95,6 +96,11 @@ function determineCardRecommendation(incomeId, limId, interestId, manualId, sele
   const allCards = window.CARD_DATA ? Object.values(window.CARD_DATA) : [];
   const incomeCeiling = getIncomeCeiling(incomeId);
   const incomeLevels = { clasico: 1, oro: 2, platinum: 3 };
+  // Con ingresos y LIM de $25 mil a $75 mil el cliente no perfila para la
+  // siguiente categoría; la recomendación debe ser DESCUBRE.
+  const recommendsDescubre = incomeId === "oro"
+    && limId === "oro"
+    && interestId === "viajes_experiencias";
   const incomeCards = allCards.filter((card) =>
     incomeLevels[card.segment] <= incomeLevels[incomeId]
       && getCardMinimumIncome(card) <= incomeCeiling
@@ -115,12 +121,15 @@ function determineCardRecommendation(incomeId, limId, interestId, manualId, sele
     && (!hasKnownLimit || incomeLevels[limId] >= (incomeLevels[joyCard.segment] || 1));
   const profileSegment = hasKnownLimit && !limitAboveIncome ? limId : incomeId;
   const profileCardId = getProfileCardId(profileSegment);
-  const modifierTargetId = getModifierTargetCardId(profileSegment, interestId);
+  const modifierTargetId = getModifierTargetCardId(profileSegment, interestId, incomeId, limId);
   const modifierCard = modifierTargetId === "joy" && joyMeetsProfile
     ? joyCard
     : compatibleCards.find((card) => card.id === modifierTargetId) || null;
   const modifierNotApplicable = interestId !== "sin_preferencias" && !modifierCard;
-  let priorityCard = modifierCard
+  let priorityCard = (recommendsDescubre
+    ? compatibleCards.find((card) => card.id === "descubre")
+    : null)
+    || modifierCard
     || compatibleCards.find((card) => card.id === profileCardId)
     || (hasKnownLimit ? compatibleCards[0] || null : incomeCard);
   const manualCard = compatibleCards.find((card) => card.id === manualId);
@@ -139,6 +148,11 @@ function generateSalesReasons(mainCard, incomeId, interestId, selectedCards) {
     reasons.push({
       strong: "Segmento Clásico accesible:",
       text: "Diseñada para ingresos de $15 mil a $25 mil con los beneficios más competitivos del mercado bancario.",
+    });
+  } else if (incomeId === "oro" && interestId === "viajes_experiencias" && mainCard.id === "descubre") {
+    reasons.push({
+      strong: "Ingreso y LIM dentro de $25 mil a $75 mil:",
+      text: "No perfila para la siguiente categoría; por eso se recomienda la TDC DESCUBRE como la opción adecuada para este nivel.",
     });
   } else if (incomeId === "oro") {
     reasons.push({

@@ -12,16 +12,16 @@ const EXTERNAL_LINKS = [
     url: "http://aliados2.medc.com.mx:7070/MA_ALIADOS",
     icon: "assets/icons/crm.svg",
   },
-  {
-    name: "Agendas",
-    url: "https://agendas-rab6.onrender.com/",
-    icon: "assets/icons/agenda.svg",
-  },
-  {
-    name: "Curp",
-    url: "https://www.gob.mx/curp",
-    icon: "assets/icons/curp.svg",
-  },
+  // {
+  //   name: "Agendas",
+  //   url: "https://agendas-rab6.onrender.com/",
+  //   icon: "assets/icons/agenda.svg",
+  // },
+  // {
+  //   name: "Curp",
+  //   url: "https://www.gob.mx/curp",
+  //   icon: "assets/icons/curp.svg",
+  // },
   {
     name: "Vicidial Respaldo",
     url: "https://aliadosmedb.directo.com/agc/vicidial.php",
