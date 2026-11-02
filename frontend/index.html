@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manual de Tarjetas · Banamex</title>
-    <link rel="icon" href="assets/images/favicon.png" />
+    <link rel="icon" type="image/png" href="assets/images/favicon.png?v=2" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#003da5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Manual Banamex" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,6 +19,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="src/css/styles.css" />
     <link rel="stylesheet" href="src/css/admin-panel.css" />
+    <link rel="stylesheet" href="src/css/custom-background-overrides.css" />
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="src/js/supabase-config.js" defer></script>
@@ -39,6 +45,7 @@
     <script src="src/js/notes.js" defer></script>
     <script src="src/js/components/theme-toggle.js" defer></script>
     <script src="src/js/components/theme-background-picker.js" defer></script>
+    <script src="src/js/pwa.js" defer></script>
   </head>
   <body class="site-auth-pending">
     <div class="overlay" id="overlay"></div>
@@ -63,7 +70,7 @@
             <div class="t2">Tarjetas de Crédito</div>
           </div>
         </div>
-        <div id="navContainer"><!-- generado por JS --></div>
+        <div id="navContainer"><!-- generado por navigation.js --></div>
         <button class="nav-item admin-nav-item" id="adminNavButton" data-view="admin" type="button" title="Panel administrativo" hidden>
           <span class="sidebar-auth__icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="m8.5 12 2.2 2.2 4.8-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg></span>
           <span class="nav-label">Panel administrativo</span>
@@ -91,10 +98,6 @@
             <button class="utility-action" data-view="digitos" onclick="showView('digitos')" title="Dígitos">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/dig.svg');mask-image:url('assets/icons/dig.svg')"></span>
               <span>Dígitos</span>
-            </button>
-            <button class="utility-action" data-view="comision" onclick="showView('comision')" title="Comisi&#243;n por administraci&#243;n">
-              <span class="commission-icon" aria-hidden="true">$</span>
-              <span>Comisi&#243;n</span>
             </button>
             <button class="utility-action" data-view="documentos" onclick="showView('documentos')" title="Formalización">
               <span class="utility-action__icon ico" style="-webkit-mask-image:url('assets/icons/drive.svg');mask-image:url('assets/icons/drive.svg')"></span>
@@ -145,6 +148,12 @@
             </svg>
             <span>Script</span>
           </button>
+          <button class="internal-tab" type="button" role="tab" data-view="comision" draggable="true">
+            <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3v18m4-14.5c-.8-1-2.1-1.5-4-1.5-2.5 0-4 1.2-4 3s1.4 2.7 4 3.2 4 1.4 4 3.3-1.6 3.2-4 3.2c-1.8 0-3.4-.7-4.3-1.9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Comisi&#243;n</span>
+          </button>
           <!-- <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" draggable="true">
             <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M4 20h4L19 9l-4-4L4 16v4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
@@ -158,14 +167,13 @@
             <div>
               <span class="eyebrow">Manual actualizado · <span id="manualUpdatedHero">25/09/2026</span></span>
               <h1>Tarjetas de crédito Banamex</h1>
-              <p>Consulta características, beneficios y utiliza el perfilamiento inteligente para recomendar la mejor opción a tu cliente.</p>
             </div>
             <button class="notes-button" type="button" onclick="showView('perfilamiento')" style="display:inline-flex; align-items:center; gap:8px;">
               <span class="ico" style="-webkit-mask-image:url('assets/icons/profile.svg');mask-image:url('assets/icons/profile.svg');width:16px;height:16px;background:currentColor;display:inline-block;"></span>
-              <span>Perfilador de Cliente</span> <span class="profiling-beta-tag" style="background:#fff; color:#003848; border:none; margin-left:4px; font-size:10px; padding:1px 6px;">BETA</span>
+              <span>Perfilador de Cliente</span> <span class="profiling-beta-tag" style="background:var(--custom-control-background,#fff); color:var(--custom-control-text,#003848); border:none; margin-left:4px; font-size:10px; padding:1px 6px;">BETA</span>
             </button>
           </div>
-          <div id="segmentsContainer"><!-- generado por JS --></div>
+          <div id="segmentsContainer"><!-- generado por navigation.js --></div>
         </section>
 
         <section class="view documents-view" id="view-documentos">
@@ -204,7 +212,6 @@
             <div>
               <span class="eyebrow">Acceso restringido</span>
               <h1>Panel administrativo</h1>
-              <p>Gestiona los permisos de acceso al panel sin modificar el acceso normal al manual.</p>
             </div>
           </div>
           <div class="admin-tabs" role="tablist" aria-label="Secciones administrativas">
@@ -214,7 +221,7 @@
           </div>
           <div class="admin-card admin-tab-panel" id="admin-panel-users" data-admin-panel="users">
             <div class="admin-card__header">
-              <div><h2>Usuarios y permisos</h2><p>El contenido del manual sigue disponible para todos los usuarios.</p></div>
+              <div><h2>Usuarios y permisos</h2></div>
               <button class="notes-button notes-button--secondary" id="adminRefreshUsers" type="button">Actualizar</button>
             </div>
             <p class="admin-status" id="adminStatus" role="status"></p>
@@ -291,7 +298,7 @@
           <button class="back-link" onclick="showView('home')">
             ← Volver al menú
           </button>
-          <div id="cardDetailContainer"><!-- generado por JS --></div>
+          <div id="cardDetailContainer"><!-- generado por card-details.js --></div>
         </section>
 
         
@@ -304,7 +311,7 @@
                 <span class="profiling-beta-tag">Fase de prueba</span>
               </div>
               <h1>Perfilamiento de Cliente</h1>
-              <p>Herramienta para asesores de venta: ingresa los datos del cliente para obtener la mejor tarjeta Banamex recomendada, evaluar su límite crediticio y utilizar los argumentos comerciales clave listos para el cliente.</p>
+              <p>Ingresa los datos del cliente para obtener la mejor tarjeta Banamex recomendada y utilizar los argumentos comerciales clave listos para el cliente.</p>
             </div>
           </div>
           <div class="profiling-beta-banner" role="alert">
@@ -438,7 +445,7 @@
             </div>
           </div>
           <div class="digitos-grid" id="digitosContainer">
-            <!-- generado por JS -->
+            <!-- generado por navigation.js -->
           </div>
         </section>
 
@@ -500,7 +507,7 @@
           <button class="back-link" onclick="showView('digitos')">
             ← Volver a Dígitos
           </button>
-          <div id="digitoDetailContainer"><!-- generado por JS --></div>
+          <div id="digitoDetailContainer"><!-- generado por navigation.js --></div>
         </section>
       </main>
     </div>

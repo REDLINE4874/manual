@@ -7,9 +7,48 @@ if (typeof initProfilingModule === "function") { initProfilingModule(); }
 showView("home");
 
 const utilityLinks = document.getElementById("utilityLinks");
+const utilityNav = document.querySelector(".utility-nav");
+const utilityActions = utilityNav?.querySelector(".utility-nav__actions");
 document
   .querySelectorAll('.utility-nav__actions .utility-action[data-view="documentos"]')
   .forEach((button) => button.remove());
+
+function fitUtilityActions() {
+  if (!utilityNav || !utilityActions) return;
+  utilityNav.classList.remove("utility-nav--icons");
+  utilityNav.classList.remove("utility-nav--actions-inline");
+
+  const items = [...utilityActions.children];
+  const actionGap = Number.parseFloat(getComputedStyle(utilityActions).columnGap) || 0;
+  const navGap = Number.parseFloat(getComputedStyle(utilityNav).columnGap) || 0;
+  const brand = utilityNav.querySelector(".utility-brand");
+  const brandLogo = brand?.querySelector("img");
+  const updated = utilityNav.querySelector(".utility-nav__updated");
+  const appearance = utilityNav.querySelector(".utility-nav__appearance");
+  const actionWidth = () => items.reduce((width, item) => width + item.getBoundingClientRect().width, 0)
+    + Math.max(0, items.length - 1) * actionGap;
+  const fixedWidth = () => (brandLogo?.getBoundingClientRect().width || brand?.scrollWidth || 0)
+    + (updated?.scrollWidth || 0)
+    + (appearance?.scrollWidth || 0)
+    + navGap * 3;
+  const fitsInline = () => fixedWidth() + actionWidth() <= utilityNav.clientWidth + 1;
+
+  if (window.innerWidth <= 1300 || !fitsInline()) {
+    utilityNav.classList.add("utility-nav--icons");
+  }
+  utilityNav.classList.toggle("utility-nav--actions-inline", fitsInline());
+}
+
+if (utilityActions) {
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(fitUtilityActions).observe(utilityActions);
+  }
+  window.addEventListener("resize", fitUtilityActions);
+  window.addEventListener("load", fitUtilityActions);
+  document.fonts?.ready.then(fitUtilityActions);
+  requestAnimationFrame(fitUtilityActions);
+}
+
 const utilityLinksTrigger = utilityLinks?.querySelector(".utility-links__trigger");
 utilityLinksTrigger?.addEventListener("click", (event) => {
   event.stopPropagation();

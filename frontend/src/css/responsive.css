@@ -28,6 +28,7 @@
   .utility-nav__actions{grid-area:actions;justify-content:flex-start;gap:8px;flex-wrap:wrap;}
   .utility-nav__updated{grid-area:updated;justify-self:end;text-align:right;}
   .utility-links{margin-left:0;}
+  .utility-nav.utility-nav--actions-inline{grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"brand actions updated appearance";}
 }
 @media(max-width:900px){
   .sidebar::before{top:62px;}

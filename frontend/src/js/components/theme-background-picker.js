@@ -126,29 +126,51 @@ class ThemeBackgroundPicker extends HTMLElement {
           gap: 7px;
           color: var(--text, var(--ink, #12232c));
           font: 600 12px var(--font-body, Inter, sans-serif);
-          cursor: pointer;
         }
         .color-input {
-          width: 28px;
-          height: 28px;
-          padding: 2px;
-          border: 1px solid var(--border, rgba(15, 23, 42, .2));
-          border-radius: 8px;
+          display: grid;
+          width: 30px;
+          height: 30px;
+          padding: 3px;
+          place-items: center;
+          border: 1px solid var(--input-border, var(--border, rgba(15, 23, 42, .2)));
+          border-radius: 9px;
           background: var(--bg, #fff);
           cursor: pointer;
         }
+        .color-preview { width: 100%; height: 100%; border: 1px solid rgba(100,116,139,.38); border-radius: 5px; background: #f4f2ec; }
+        .color-input:focus-visible, .spectrum:focus-visible, .hue-input:focus-visible, .rgb-input:focus-visible { outline: 2px solid var(--brand-teal, #008ca1); outline-offset: 2px; }
+        .color-editor { margin-top: 12px; padding: 12px; border: 1px solid var(--border, rgba(15,23,42,.16)); border-radius: 12px; background: var(--bg-2, var(--bg, #fff)); }
+        .color-editor[hidden] { display: none; }
+        .spectrum { position: relative; height: 132px; overflow: hidden; border: 1px solid rgba(100,116,139,.4); border-radius: 8px; background-color: hsl(var(--picker-hue, 0), 100%, 50%); background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent); cursor: crosshair; touch-action: none; }
+        .spectrum-marker { position: absolute; left: 100%; top: 0; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px #0009; transform: translate(-50%, -50%); pointer-events: none; }
+        .hue-row { display: flex; align-items: center; gap: 9px; margin-top: 11px; }
+        .hue-label { color: var(--text-muted, #56636b); font: 600 11px var(--font-body, Inter, sans-serif); }
+        .hue-input { flex: 1; width: 100%; height: 14px; margin: 0; appearance: none; border: 0; border-radius: 99px; background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); cursor: pointer; }
+        .hue-input::-webkit-slider-thumb { width: 16px; height: 16px; appearance: none; border: 2px solid white; border-radius: 50%; background: #26343a; box-shadow: 0 1px 4px #0008; }
+        .hue-input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid white; border-radius: 50%; background: #26343a; box-shadow: 0 1px 4px #0008; }
+        .rgb-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 11px; }
+        .rgb-field { display: grid; gap: 4px; color: var(--text-muted, #56636b); text-align: center; font: 700 10px var(--font-body, Inter, sans-serif); }
+        .rgb-input { width: 100%; height: 32px; box-sizing: border-box; border: 1px solid var(--input-border, var(--border, rgba(15,23,42,.2))); border-radius: 8px; background: var(--input-bg, #fff); color: var(--text, #12232c); text-align: center; font: 600 12px var(--font-body, Inter, sans-serif); }
         .hex-input {
-          width: 76px;
-          height: 30px;
+          width: 90px;
+          height: 36px;
           box-sizing: border-box;
-          padding: 0 7px;
-          border: 1px solid var(--border, rgba(15, 23, 42, .2));
-          border-radius: 7px;
+          padding: 0 11px;
+          border: 1px solid var(--input-border, var(--border, rgba(15, 23, 42, .2)));
+          border-radius: 10px;
           background: var(--input-bg, #fff);
           color: var(--text, var(--ink, #12232c));
-          font: 12px var(--font-body, Inter, sans-serif);
+          font: 700 13px/1 var(--font-body, Inter, sans-serif);
+          letter-spacing: .45px;
           text-transform: uppercase;
+          text-align: center;
+          box-shadow: inset 0 1px 2px rgba(15, 23, 42, .06);
+          transition: border-color .16s ease, box-shadow .16s ease;
         }
+        .hex-input:hover { border-color: var(--brand-teal, #003848); }
+        .hex-input:focus-visible { outline: 0; border-color: var(--brand-teal, #003848); box-shadow: 0 0 0 3px var(--input-focus-ring, rgba(17, 17, 17, .16)); }
+        .hex-input[aria-invalid="true"] { border-color: #c2413b; box-shadow: 0 0 0 3px rgba(194, 65, 59, .14); }
         .reset {
           margin-left: auto;
           padding: 5px 0;
@@ -185,13 +207,22 @@ class ThemeBackgroundPicker extends HTMLElement {
           <div class="saved-colors"></div>
         </section>
         <div class="custom-row">
-          <label class="custom-color">
-            <input class="color-input" type="color" aria-label="Elegir otro color" />
+          <div class="custom-color">
+            <button class="color-input" type="button" aria-label="Abrir selector personalizado" aria-expanded="false" aria-controls="custom-color-editor"><span class="color-preview"></span></button>
             <span>Personalizar</span>
-          </label>
+          </div>
           <input class="hex-input" type="text" value="#F4F2EC" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="Código hexadecimal del color" />
           <button class="reset" type="button">Restablecer</button>
         </div>
+        <section class="color-editor" id="custom-color-editor" aria-label="Selector de color" hidden>
+          <div class="spectrum" role="slider" tabindex="0" aria-label="Saturación y luminosidad" aria-valuemin="0" aria-valuemax="100"><span class="spectrum-marker"></span></div>
+          <div class="hue-row"><span class="hue-label">Tono</span><input class="hue-input" type="range" min="0" max="360" value="0" aria-label="Tono de color" /></div>
+          <div class="rgb-row" aria-label="Valores RGB">
+            <label class="rgb-field">R<input class="rgb-input" type="number" min="0" max="255" aria-label="Rojo" /></label>
+            <label class="rgb-field">G<input class="rgb-input" type="number" min="0" max="255" aria-label="Verde" /></label>
+            <label class="rgb-field">B<input class="rgb-input" type="number" min="0" max="255" aria-label="Azul" /></label>
+          </div>
+        </section>
         <button class="save-color" type="button">Guardar este color</button>
       </section>
     `;
@@ -199,6 +230,13 @@ class ThemeBackgroundPicker extends HTMLElement {
     this.trigger = this.shadowRoot.querySelector(".picker");
     this.panel = this.shadowRoot.querySelector(".popover");
     this.colorInput = this.shadowRoot.querySelector(".color-input");
+    this.colorPreview = this.shadowRoot.querySelector(".color-preview");
+    this.colorEditor = this.shadowRoot.querySelector(".color-editor");
+    this.spectrum = this.shadowRoot.querySelector(".spectrum");
+    this.spectrumMarker = this.shadowRoot.querySelector(".spectrum-marker");
+    this.hueInput = this.shadowRoot.querySelector(".hue-input");
+    this.rgbInputs = [...this.shadowRoot.querySelectorAll(".rgb-input")];
+    this.pickerHue = 0;
     this.hexInput = this.shadowRoot.querySelector(".hex-input");
     this.swatch = this.shadowRoot.querySelector(".swatch");
     this.savedColorsSection = this.shadowRoot.querySelector(".saved-section");
@@ -213,8 +251,37 @@ class ThemeBackgroundPicker extends HTMLElement {
     if (savedColor) this._applyColor(initialColor, false);
 
     this.trigger.addEventListener("click", () => this._setOpen(this.panel.hidden));
-    this.colorInput.addEventListener("input", () => this._applySelectedColor(this.colorInput.value));
-    this.colorInput.addEventListener("change", () => this._applySelectedColor(this.colorInput.value));
+    this.colorInput.addEventListener("click", () => {
+      this.colorEditor.hidden = !this.colorEditor.hidden;
+      this.colorInput.setAttribute("aria-expanded", String(!this.colorEditor.hidden));
+    });
+    this.hueInput.addEventListener("input", () => {
+      this.pickerHue = Number(this.hueInput.value);
+      this.spectrum.style.setProperty("--picker-hue", this.pickerHue);
+    });
+    this.hueInput.addEventListener("input", () => this._applySpectrumPoint());
+    this.spectrum.addEventListener("pointerdown", (event) => {
+      this.spectrum.setPointerCapture(event.pointerId);
+      this._updateSpectrumFromPointer(event);
+    });
+    this.spectrum.addEventListener("pointermove", (event) => {
+      if (this.spectrum.hasPointerCapture(event.pointerId)) this._updateSpectrumFromPointer(event);
+    });
+    this.spectrum.addEventListener("keydown", (event) => {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      event.preventDefault();
+      const rect = this.spectrum.getBoundingClientRect();
+      const currentLeft = parseFloat(this.spectrumMarker.style.left);
+      const currentTop = parseFloat(this.spectrumMarker.style.top);
+      const x = (Number.isFinite(currentLeft) ? currentLeft : 50) / 100 * rect.width;
+      const y = (Number.isFinite(currentTop) ? currentTop : 50) / 100 * rect.height;
+      const step = event.shiftKey ? 10 : 2;
+      this._updateSpectrumPosition(x + (event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : 0), y + (event.key === "ArrowDown" ? step : event.key === "ArrowUp" ? -step : 0), rect.width, rect.height);
+    });
+    this.rgbInputs.forEach((input) => input.addEventListener("change", () => {
+      const values = this.rgbInputs.map((field) => Math.max(0, Math.min(255, Number(field.value) || 0)));
+      if (this.rgbInputs.every((field) => field.value !== "")) this._applySelectedColor(this._rgbToHex(...values));
+    }));
     this.hexInput.addEventListener("input", () => {
       const color = this.hexInput.value.trim();
       const isValid = /^#[0-9a-f]{6}$/i.test(color);
@@ -264,13 +331,29 @@ class ThemeBackgroundPicker extends HTMLElement {
   _setOpen(isOpen) {
     this.panel.hidden = !isOpen;
     this.trigger.setAttribute("aria-expanded", String(isOpen));
+    if (!isOpen) {
+      this.colorEditor.hidden = true;
+      this.colorInput.setAttribute("aria-expanded", "false");
+    }
   }
 
   _syncColorControls(color) {
-    this.colorInput.value = color;
+    this.colorPreview.style.background = color;
     this.hexInput.value = color.toUpperCase();
     this.hexInput.setAttribute("aria-invalid", "false");
     this.swatch.style.background = color;
+    const { red, green, blue } = this._hexToRgb(color);
+    this.rgbInputs?.forEach((input, index) => { input.value = [red, green, blue][index]; });
+    const hsv = this._rgbToHsv(red, green, blue);
+    this.pickerHue = hsv.hue;
+    if (this.hueInput) this.hueInput.value = hsv.hue;
+    if (this.spectrum) this.spectrum.style.setProperty("--picker-hue", hsv.hue);
+    if (this.spectrumMarker) {
+      this.spectrumMarker.style.left = `${hsv.saturation}%`;
+      this.spectrumMarker.style.top = `${100 - hsv.value}%`;
+      this.spectrum.setAttribute("aria-valuenow", String(Math.round(hsv.value)));
+      this.spectrum.setAttribute("aria-valuetext", `${Math.round(hsv.saturation)}% de saturación, ${Math.round(hsv.value)}% de luminosidad`);
+    }
     this.savedColorsContainer?.querySelectorAll(".saved-option").forEach((option) => {
       option.setAttribute("aria-pressed", String(option.dataset.color === color.toLowerCase()));
     });
@@ -374,6 +457,54 @@ class ThemeBackgroundPicker extends HTMLElement {
     return { red: parseInt(value.slice(0, 2), 16), green: parseInt(value.slice(2, 4), 16), blue: parseInt(value.slice(4, 6), 16) };
   }
 
+  _rgbToHex(red, green, blue) {
+    return `#${[red, green, blue].map((value) => Math.round(value).toString(16).padStart(2, "0")).join("")}`;
+  }
+
+  _rgbToHsv(red, green, blue) {
+    const r = red / 255, g = green / 255, b = blue / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), delta = max - min;
+    let hue = 0;
+    if (delta) {
+      if (max === r) hue = 60 * (((g - b) / delta) % 6);
+      else if (max === g) hue = 60 * ((b - r) / delta + 2);
+      else hue = 60 * ((r - g) / delta + 4);
+    }
+    return { hue: (hue + 360) % 360, saturation: max ? delta / max * 100 : 0, value: max * 100 };
+  }
+
+  _hsvToHex(hue, saturation, value) {
+    const s = saturation / 100, v = value / 100;
+    const chroma = v * s, x = chroma * (1 - Math.abs((hue / 60) % 2 - 1)), m = v - chroma;
+    let rgb = [0, 0, 0];
+    if (hue < 60) rgb = [chroma, x, 0]; else if (hue < 120) rgb = [x, chroma, 0];
+    else if (hue < 180) rgb = [0, chroma, x]; else if (hue < 240) rgb = [0, x, chroma];
+    else if (hue < 300) rgb = [x, 0, chroma]; else rgb = [chroma, 0, x];
+    return this._rgbToHex(...rgb.map((channel) => (channel + m) * 255));
+  }
+
+  _updateSpectrumFromPointer(event) {
+    const rect = this.spectrum.getBoundingClientRect();
+    this._updateSpectrumPosition(event.clientX - rect.left, event.clientY - rect.top, rect.width, rect.height);
+  }
+
+  _updateSpectrumPosition(x, y, width, height) {
+    const saturation = Math.max(0, Math.min(100, x / width * 100));
+    const value = 100 - Math.max(0, Math.min(100, y / height * 100));
+    this.spectrumMarker.style.left = `${saturation}%`;
+    this.spectrumMarker.style.top = `${100 - value}%`;
+    this.spectrum.setAttribute("aria-valuenow", String(Math.round(value)));
+    this.spectrum.setAttribute("aria-valuetext", `${Math.round(saturation)}% de saturación, ${Math.round(value)}% de luminosidad`);
+    this._applySelectedColor(this._hsvToHex(this.pickerHue, saturation, value));
+  }
+
+  _applySpectrumPoint() {
+    const rect = this.spectrum.getBoundingClientRect();
+    const saturation = parseFloat(this.spectrumMarker.style.left) || 0;
+    const top = parseFloat(this.spectrumMarker.style.top) || 0;
+    this._updateSpectrumPosition(saturation / 100 * rect.width, top / 100 * rect.height, rect.width, rect.height);
+  }
+
   _mix(hex, target, amount) {
     const sourceRgb = this._hexToRgb(hex);
     const targetRgb = this._hexToRgb(target);
@@ -392,11 +523,21 @@ class ThemeBackgroundPicker extends HTMLElement {
   }
 
   _applyColor(color, persist) {
+    const themeToggle = document.querySelector("theme-toggle");
+    if (typeof themeToggle?.setTheme === "function") {
+      themeToggle.setTheme("light", { persist: true });
+    } else {
+      document.body.classList.remove("dark");
+      try { localStorage.setItem("theme", "light"); } catch (error) { /* El fondo personalizado sigue aplicándose. */ }
+    }
     const root = document.documentElement;
     const surface = this._mix(color, "#000000", .14);
     const surfaceAlt = this._mix(color, "#000000", .22);
     const inputSurface = this._mix(color, "#000000", .1);
     const isDarkSurface = this._luminance(surface) < .52;
+    const controlBackground = this._mix(color, "#000000", isDarkSurface ? .32 : .12);
+    const controlHover = this._mix(controlBackground, "#000000", .08);
+    const controlText = this._luminance(controlBackground) > .179 ? "#101828" : "#ffffff";
     const accentText = isDarkSurface ? "#ffffff" : "#003848";
     const goldText = isDarkSurface ? "#f6d98b" : "#75570d";
     const notesSurface = isDarkSurface ? this._mix(color, "#000000", .22) : this._mix(color, "#ffffff", .14);
@@ -407,6 +548,9 @@ class ThemeBackgroundPicker extends HTMLElement {
     root.style.setProperty("--page-background", color);
     root.style.setProperty("--custom-navbar-background", color);
     root.style.setProperty("--custom-sidebar-background", surface);
+    root.style.setProperty("--custom-control-background", controlBackground);
+    root.style.setProperty("--custom-control-hover", controlHover);
+    root.style.setProperty("--custom-control-text", controlText);
     root.style.setProperty("--custom-accent-text", accentText);
     root.style.setProperty("--custom-gold-text", goldText);
     root.style.setProperty("--bg-2", color);
@@ -432,7 +576,7 @@ class ThemeBackgroundPicker extends HTMLElement {
 
   _clearCustomBackground() {
     const root = document.documentElement;
-    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-accent-text", "--custom-gold-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--notes-surface", "--notes-editor-surface", "--notes-text", "--notes-muted", "--shadow"].forEach((property) => root.style.removeProperty(property));
+    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-control-background", "--custom-control-hover", "--custom-control-text", "--custom-accent-text", "--custom-gold-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--notes-surface", "--notes-editor-surface", "--notes-text", "--notes-muted", "--shadow"].forEach((property) => root.style.removeProperty(property));
     document.body.classList.remove("custom-background", "custom-background-dark");
   }
 }
