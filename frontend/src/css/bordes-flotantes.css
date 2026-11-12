@@ -38,7 +38,7 @@
 .modal-box {
   border-color: var(--elevation-border);
   border-style: solid;
-  border-width: 2px;
+  border-width: 2.5px;
   box-shadow: var(--elevation-shadow);
 }
 
@@ -63,7 +63,7 @@ body.dark-mode .waiver-block,
 body.dark-mode .modal-box {
   border-color: var(--elevation-border);
   border-style: solid;
-  border-width: 2px;
+  border-width: 2.5px;
   box-shadow: var(--elevation-shadow);
 }
 
@@ -94,7 +94,7 @@ body.custom-background .waiver-block,
 body.custom-background .modal-box {
   border-color: var(--elevation-border);
   border-style: solid;
-  border-width: 2px;
+  border-width: 2.5px;
   box-shadow: var(--elevation-shadow);
 }
 
@@ -102,4 +102,6 @@ body.custom-background .modal-box {
 body.dark-mode .stat,
 body.custom-background .stat {
   border-width: 1px;
+  
+  
 }
