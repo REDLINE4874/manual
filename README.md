@@ -16,13 +16,29 @@ local.
 │   │   └── images/      # Imágenes de tarjetas, bancos y favicon
 │   └── src/
 │       ├── css/
-│       │   ├── styles.css             # Punto de entrada; importa los módulos CSS
-│       │   ├── foundation.css         # Variables, temas y estilos base
-│       │   ├── layout.css             # Estructura, navegación y vista principal
-│       │   ├── card-details.css       # Detalles y beneficios de tarjetas
-│       │   ├── dark-theme.css         # Acabados del tema oscuro
-│       │   ├── calculator-modals.css  # Calculadora y ventanas modales
-│       │   └── responsive.css         # Ajustes para pantallas pequeñas
+│       │   ├── estilos.css                 # Punto de entrada de los módulos CSS
+│       │   ├── fundamentos.css             # Variables, temas y estilos base
+│       │   ├── estructura.css              # Contenedor y contenido compartido
+│       │   ├── menu-lateral.css            # Navegación lateral
+│       │   ├── barra-movil.css             # Barra superior móvil
+│       │   ├── pestanas-internas.css       # Pestañas de navegación
+│       │   ├── inicio.css                  # Inicio y tarjetas
+│       │   ├── validacion-tarjetas.css     # Tabla de validación
+│       │   ├── comision.css                # Vista de comisión
+│       │   ├── documentos.css              # Documentos, guía y contenido externo
+│       │   ├── digitos.css                 # Consulta de dígitos bancarios
+│       │   ├── detalle-tarjetas.css        # Detalles y beneficios de tarjetas
+│       │   ├── calculadoras-y-modales.css  # Calculadora y ventanas modales
+│       │   ├── notas.css                   # Vista de notas
+│       │   ├── perfilamiento.css           # Vista de perfilamiento
+│       │   ├── panel-administrativo.css    # Panel administrativo
+│       │   ├── autenticacion.css           # Inicio de sesión
+│       │   ├── tema-oscuro.css             # Ajustes del tema oscuro
+│       │   ├── fondo-personalizado.css     # Fondos personalizados
+│       │   ├── ajustes-fondo.css           # Ajustes de controles sobre fondos
+│       │   ├── ajustes-indice.css          # Iconos y ajustes del índice
+│       │   ├── adaptable.css               # Ajustes responsivos
+│       │   └── bordes-flotantes.css        # Bordes de navegación y paneles elevados
 │       └── js/
 │           ├── cards/                 # Datos de cada tarjeta
 │           ├── components/            # Componentes reutilizables
@@ -42,11 +58,28 @@ local.
 La interfaz, los estilos, la lógica de navegación, las calculadoras y los datos
 de las tarjetas están en `frontend/`.
 
-Los estilos se organizan en módulos dentro de `frontend/src/css/`. El archivo
-`styles.css`, enlazado desde `frontend/index.html`, importa los módulos en el
-orden necesario: estilos base, estructura, detalles de tarjetas, tema oscuro,
-calculadora y modales, y ajustes responsivos. Para agregar o reorganizar estilos,
-edita el módulo correspondiente y conserva el orden de importación.
+Los estilos se organizan en módulos dentro de `frontend/src/css/`, con un archivo
+por vista o área de la interfaz. `estilos.css`, enlazado desde
+`frontend/index.html`, importa los módulos en el orden necesario. Para mantener
+una sección, edita su archivo (por ejemplo, `inicio.css`, `notas.css` o
+`comision.css`); deja en `fundamentos.css` los tokens y estilos globales. Al
+agregar o reorganizar módulos, actualiza el orden de importación en `estilos.css`.
+
+Los fondos principales y las superficies de panel usan HSL. El selector
+personalizado limita el fondo a una luminosidad de 15% como mínimo y los
+paneles a 20%; los colores cromáticos tienen un máximo de 30%, y los neutros
+(saturación HSL de hasta 30%) pueden llegar a 93%. El tema oscuro fijo es una
+excepción: usa HSL(0 0% 16.08%) para el fondo (#292929) y HSL(0 0% 21.18%)
+para los paneles (#363636). Las sombras y los colores semánticos de estados,
+etiquetas y notas también quedan fuera de estos límites.
+Los textos principales, secundarios y semánticos usan colores de alto contraste
+en ambos temas; en fondos personalizados el color de texto se elige según la
+luminancia real de las superficies. Los estados de Perfilamiento conservan
+contraste en ambos temas y ajustan texto y fondo al usar colores personalizados.
+Los paneles y la navegación usan un contorno de 2px y un desplazamiento sólido
+de 6px, sin desenfoque, en `#171717` para darles un aspecto neobrutalista,
+también en el tema oscuro y los fondos personalizados. Las sombras pequeñas de
+interacción y enfoque se conservan.
 
 ### Inicio de sesión local
 

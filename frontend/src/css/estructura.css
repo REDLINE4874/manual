@@ -1,0 +1,61 @@
+/* ---------- Contenedor principal ---------- */
+.app{ display:flex; min-height:100vh;}
+
+/* ---------- Barra de herramientas ---------- */
+.utility-nav{
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:10px 18px;
+  min-height:0;
+  padding:12px 28px;
+  background:var(--sidebar-bg);
+  color:var(--sidebar-text);
+  border-bottom:0;
+  box-shadow:none;
+  position:sticky;
+  top:12px;
+  z-index:35;
+  margin:12px 20px 0;
+  border:1px solid var(--sidebar-border);
+  border-radius:18px;
+  box-shadow:var(--shadow-nav);
+}
+.utility-nav--scrollable{overflow-x:auto;scrollbar-width:thin;}
+.utility-nav__actions{display:flex;align-items:center;justify-content:flex-start;gap:10px;min-width:0;flex:0 0 auto;flex-wrap:nowrap;}
+.utility-nav__actions .utility-action,.utility-nav__actions .utility-links__trigger{flex:0 0 auto;}
+.utility-nav__appearance{display:flex;align-items:center;gap:18px;flex:0 0 auto;}
+.utility-nav .utility-nav__updated{margin-inline-start:auto;flex:0 0 auto;white-space:nowrap;background:hsl(0 0% 93% / .08);border-color:var(--sidebar-border);color:var(--sidebar-text-soft);box-shadow:none;font-size:11px;padding:7px 11px;}
+.utility-nav__updated time{color:var(--sidebar-text);font-weight:700;}
+.utility-control,.utility-action,.utility-links__trigger{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;}
+.utility-control__label{font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--sidebar-muted);}
+.utility-action,.utility-links__trigger{min-height:42px;border:1px solid transparent;border-radius:12px;padding:9px 11px;background:transparent;color:var(--sidebar-item);font:500 13px var(--font-body);cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease;}
+.utility-action:hover,.utility-links__trigger:hover{background:var(--sidebar-hover);border-color:var(--sidebar-border);transform:translateY(-1px);}
+.utility-action.active{background:var(--sidebar-active);border-color:color-mix(in srgb,var(--brand-teal) 14%,transparent);color:var(--brand-teal-text);font-weight:700;box-shadow:inset 3px 0 0 var(--brand-teal),0 4px 12px rgba(0,0,0,.10);}
+.utility-action.active:hover{background:var(--sidebar-active);border-color:color-mix(in srgb,var(--brand-teal) 14%,transparent);}
+.utility-action:focus-visible,.utility-links__trigger:focus-visible{outline:2px solid color-mix(in srgb,var(--sidebar-text) 78%,transparent);outline-offset:2px;}
+.utility-action__icon{display:inline-block;width:20px;height:20px;background:currentColor;flex:0 0 20px;transition:transform .18s ease;}
+.utility-nav--icons .utility-action > span:not(.utility-action__icon),
+.utility-nav--icons .utility-links__trigger > span:not(.utility-action__icon){display:none;}
+.utility-nav--icons .utility-action,
+.utility-nav--icons .utility-links__trigger{justify-content:center;gap:0;padding-inline:10px;}
+.notes-action__icon{display:block;width:20px;height:20px;flex:0 0 20px;color:currentColor;}
+.utility-action:hover .notes-action__icon{transform:scale(1.08);}
+.utility-action:hover .utility-action__icon,.utility-links__trigger:hover .utility-action__icon{transform:scale(1.08);}
+.utility-action.active .utility-action__icon{background:currentColor;}
+.utility-links{position:relative;flex-shrink:0;}
+.utility-links__caret{font-size:13px;transition:transform .2s ease;}
+.utility-links.is-open .utility-links__caret{transform:rotate(180deg);}
+.utility-links__menu{display:none;position:absolute;right:0;top:calc(100% + 8px);width:220px;padding:7px;background:var(--sidebar-bg);border:1px solid var(--sidebar-border);border-radius:12px;box-shadow:var(--shadow);z-index:100;}
+.utility-links.is-open .utility-links__menu{display:block;}
+.utility-links__menu a{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;color:var(--sidebar-text);font-size:12px;text-decoration:none;}
+.utility-links__menu a:hover{background:var(--sidebar-hover);}
+.utility-links__menu a .ico{display:inline-block;width:17px;height:17px;background:currentColor;flex:0 0 17px;}
+.utility-links__menu a span:last-child{margin-left:auto;}
+/* ---------- Área de contenido ---------- */
+.main{flex:1; min-width:0; padding:0;}
+.main > .view{margin:16px 20px 24px;padding:30px;border:0;background:transparent;box-shadow:none;}
+.view{ display:none; animation:fade .35s ease; }
+.view.active{ display:block; }
+@keyframes fade{ from{ opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+

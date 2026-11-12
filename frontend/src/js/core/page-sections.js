@@ -168,7 +168,7 @@ if (!ENABLE_NOTES) {
   notesView?.remove();
 } else {
   document.getElementById("internalTabs")?.insertAdjacentHTML("beforeend", `
-    <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" draggable="true">
+    <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" aria-label="Notas" title="Notas" draggable="true">
       <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M4 20h4L19 9l-4-4L4 16v4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
         <path d="m13.5 6.5 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>

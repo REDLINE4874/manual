@@ -80,7 +80,7 @@ function renderNav() {
   const utilityLinks = document.getElementById("utilityLinks");
   if (utilityLinks) {
     utilityLinks.innerHTML = `
-      <button class="utility-links__trigger" type="button" aria-expanded="false" title="Enlaces">
+      <button class="utility-links__trigger" type="button" aria-label="Enlaces" aria-expanded="false" title="Enlaces">
         <span class="utility-action__icon ico" data-icon="link"></span>
         <span>Enlaces</span><span class="utility-links__caret">▾</span>
       </button>

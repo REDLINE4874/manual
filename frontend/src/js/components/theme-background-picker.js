@@ -2,6 +2,11 @@ class ThemeBackgroundPicker extends HTMLElement {
   static PROFILE_STORAGE_KEY = "agenda_profile";
   static BACKGROUND_PROFILE_KEY = "backgroundColor";
   static SAVED_COLORS_PROFILE_KEY = "backgroundColors";
+  static BACKGROUND_MIN_LIGHTNESS = 15;
+  static PANEL_MIN_LIGHTNESS = 20;
+  static MAX_LIGHTNESS = 30;
+  static NEUTRAL_SATURATION_LIMIT = 30;
+  static MAX_NEUTRAL_LIGHTNESS = 93;
 
   constructor() {
     super();
@@ -22,7 +27,7 @@ class ThemeBackgroundPicker extends HTMLElement {
           padding: 0;
           border: 1px solid rgba(148, 163, 184, .35);
           border-radius: 999px;
-          background: var(--bg, #fff);
+          background: var(--bg, hsl(0 0% 93%));
           cursor: pointer;
           box-shadow: 0 3px 10px rgba(15, 23, 42, .12);
           transition: transform .2s ease, border-color .2s ease;
@@ -33,7 +38,7 @@ class ThemeBackgroundPicker extends HTMLElement {
           width: 16px;
           height: 16px;
           border-radius: 5px;
-          background: var(--page-background, #f2f2f2);
+          background: var(--page-background, hsl(0 0% 93%));
           border: 1px solid rgba(100, 116, 139, .45);
           box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7), 0 1px 3px rgba(0, 0, 0, .2);
         }
@@ -46,12 +51,20 @@ class ThemeBackgroundPicker extends HTMLElement {
           padding: 16px;
           border: 1px solid var(--sidebar-border, rgba(15, 23, 42, .14));
           border-radius: 14px;
-          background: var(--bg, #fff);
+          background: var(--bg, hsl(0 0% 93%));
           color: var(--text, var(--ink, #12232c));
           box-shadow: 0 14px 34px rgba(15, 23, 42, .2);
           font: 13px var(--font-body, Inter, sans-serif);
         }
         .popover[hidden] { display: none; }
+        @media (max-width: 900px) {
+          .popover {
+            position: fixed;
+            top: auto;
+            right: 12px;
+            bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+          }
+        }
         .popover-title {
           margin: 0 0 12px;
           color: var(--custom-accent-text, var(--ink, #12232c));
@@ -135,23 +148,26 @@ class ThemeBackgroundPicker extends HTMLElement {
           place-items: center;
           border: 1px solid var(--input-border, var(--border, rgba(15, 23, 42, .2)));
           border-radius: 9px;
-          background: var(--bg, #fff);
+          background: var(--bg, hsl(0 0% 93%));
           cursor: pointer;
         }
-        .color-preview { width: 100%; height: 100%; border: 1px solid rgba(100,116,139,.38); border-radius: 5px; background: #f4f2ec; }
-        .color-input:focus-visible, .spectrum:focus-visible, .hue-input:focus-visible, .rgb-input:focus-visible { outline: 2px solid var(--brand-teal, #008ca1); outline-offset: 2px; }
-        .color-editor { margin-top: 12px; padding: 12px; border: 1px solid var(--border, rgba(15,23,42,.16)); border-radius: 12px; background: var(--bg-2, var(--bg, #fff)); }
+        .color-preview { width: 100%; height: 100%; border: 1px solid rgba(100,116,139,.38); border-radius: 5px; background: hsl(40 25% 93%); }
+        .color-input:focus-visible, .hsl-slider:focus-visible, .hsl-input:focus-visible { outline: 2px solid var(--brand-teal, #008ca1); outline-offset: 2px; }
+        .color-editor { display: grid; gap: 12px; margin-top: 12px; padding: 12px; border: 1px solid var(--border, rgba(15,23,42,.16)); border-radius: 12px; background: var(--bg-2, var(--bg, hsl(0 0% 93%))); }
         .color-editor[hidden] { display: none; }
-        .spectrum { position: relative; height: 132px; overflow: hidden; border: 1px solid rgba(100,116,139,.4); border-radius: 8px; background-color: hsl(var(--picker-hue, 0), 100%, 50%); background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent); cursor: crosshair; touch-action: none; }
-        .spectrum-marker { position: absolute; left: 100%; top: 0; width: 14px; height: 14px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 1px 4px #0009; transform: translate(-50%, -50%); pointer-events: none; }
-        .hue-row { display: flex; align-items: center; gap: 9px; margin-top: 11px; }
-        .hue-label { color: var(--text-muted, #56636b); font: 600 11px var(--font-body, Inter, sans-serif); }
-        .hue-input { flex: 1; width: 100%; height: 14px; margin: 0; appearance: none; border: 0; border-radius: 99px; background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); cursor: pointer; }
-        .hue-input::-webkit-slider-thumb { width: 16px; height: 16px; appearance: none; border: 2px solid white; border-radius: 50%; background: #26343a; box-shadow: 0 1px 4px #0008; }
-        .hue-input::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid white; border-radius: 50%; background: #26343a; box-shadow: 0 1px 4px #0008; }
-        .rgb-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 11px; }
-        .rgb-field { display: grid; gap: 4px; color: var(--text-muted, #56636b); text-align: center; font: 700 10px var(--font-body, Inter, sans-serif); }
-        .rgb-input { width: 100%; height: 32px; box-sizing: border-box; border: 1px solid var(--input-border, var(--border, rgba(15,23,42,.2))); border-radius: 8px; background: var(--input-bg, #fff); color: var(--text, #12232c); text-align: center; font: 600 12px var(--font-body, Inter, sans-serif); }
+        .color-result { display: flex; align-items: center; gap: 10px; }
+        .result-preview { width: 48px; height: 48px; flex: none; border: 1px solid rgba(100,116,139,.45); border-radius: 9px; background: hsl(40 25% 93%); box-shadow: 0 2px 6px rgba(15,23,42,.16); }
+        .result-details { display: grid; gap: 3px; }
+        .result-label { color: var(--text-muted, #56636b); font: 600 10px var(--font-body, Inter, sans-serif); }
+        .result-hex { color: var(--text, #12232c); font: 700 12px var(--font-body, Inter, sans-serif); letter-spacing: .35px; }
+        .hsl-row { display: grid; gap: 9px; }
+        .hsl-field { display: grid; grid-template-columns: 16px minmax(0, 1fr) 48px; align-items: center; gap: 8px; color: var(--text-muted, #56636b); font: 700 10px var(--font-body, Inter, sans-serif); }
+        .hsl-slider { --slider-track: hsl(0 0% 70%); --slider-thumb-color: hsl(200 21% 20%); width: 100%; min-width: 0; height: 24px; margin: 0; padding: 0; appearance: none; border: 0; background: transparent; cursor: pointer; touch-action: pan-y; }
+        .hsl-slider::-webkit-slider-runnable-track { height: 6px; border-radius: 99px; background: var(--slider-track); }
+        .hsl-slider::-webkit-slider-thumb { width: 16px; height: 16px; margin-top: -5px; appearance: none; border: 2px solid #fff; border-radius: 50%; background: var(--slider-thumb-color); box-shadow: 0 1px 4px #0008; }
+        .hsl-slider::-moz-range-track { height: 6px; border: 0; border-radius: 99px; background: var(--slider-track); }
+        .hsl-slider::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid #fff; border-radius: 50%; background: var(--slider-thumb-color); box-shadow: 0 1px 4px #0008; }
+        .hsl-input { width: 48px; height: 30px; box-sizing: border-box; border: 1px solid var(--input-border, var(--border, rgba(15,23,42,.2))); border-radius: 8px; background: var(--input-bg, hsl(0 0% 93%)); color: var(--text, #12232c); text-align: center; font: 600 11px var(--font-body, Inter, sans-serif); }
         .hex-input {
           width: 90px;
           height: 36px;
@@ -159,7 +175,7 @@ class ThemeBackgroundPicker extends HTMLElement {
           padding: 0 11px;
           border: 1px solid var(--input-border, var(--border, rgba(15, 23, 42, .2)));
           border-radius: 10px;
-          background: var(--input-bg, #fff);
+          background: var(--input-bg, hsl(0 0% 93%));
           color: var(--text, var(--ink, #12232c));
           font: 700 13px/1 var(--font-body, Inter, sans-serif);
           letter-spacing: .45px;
@@ -186,16 +202,13 @@ class ThemeBackgroundPicker extends HTMLElement {
           padding: 8px 10px;
           border: 1px solid var(--border, rgba(15, 23, 42, .2));
           border-radius: 8px;
-          background: var(--bg, #fff);
+          background: var(--bg, hsl(0 0% 93%));
           color: var(--custom-accent-text, var(--ink, #12232c));
           font: 600 12px var(--font-body, Inter, sans-serif);
           cursor: pointer;
         }
-        .save-color:hover { background: var(--bg-3, #f4f2ec); }
+        .save-color:hover { background: var(--bg-3, hsl(40 20% 90%)); }
         .save-color:disabled { cursor: default; opacity: .6; }
-        @media (max-width: 420px) {
-          .popover { right: -56px; }
-        }
       </style>
       <button class="picker" type="button" aria-label="Elegir color de fondo" aria-expanded="false" aria-controls="background-picker-panel" title="Elegir color de fondo">
         <span class="swatch" aria-hidden="true"></span>
@@ -215,12 +228,14 @@ class ThemeBackgroundPicker extends HTMLElement {
           <button class="reset" type="button">Restablecer</button>
         </div>
         <section class="color-editor" id="custom-color-editor" aria-label="Selector de color" hidden>
-          <div class="spectrum" role="slider" tabindex="0" aria-label="Saturación y luminosidad" aria-valuemin="0" aria-valuemax="100"><span class="spectrum-marker"></span></div>
-          <div class="hue-row"><span class="hue-label">Tono</span><input class="hue-input" type="range" min="0" max="360" value="0" aria-label="Tono de color" /></div>
-          <div class="rgb-row" aria-label="Valores RGB">
-            <label class="rgb-field">R<input class="rgb-input" type="number" min="0" max="255" aria-label="Rojo" /></label>
-            <label class="rgb-field">G<input class="rgb-input" type="number" min="0" max="255" aria-label="Verde" /></label>
-            <label class="rgb-field">B<input class="rgb-input" type="number" min="0" max="255" aria-label="Azul" /></label>
+          <div class="color-result">
+            <span class="result-preview" role="img" aria-label="Color resultante"></span>
+            <span class="result-details"><span class="result-label">Color resultante</span><strong class="result-hex">#F4F2EC</strong></span>
+          </div>
+          <div class="hsl-row" aria-label="Valores HSL">
+            <label class="hsl-field"><span>H</span><input class="hsl-slider" type="range" min="0" max="360" step="1" aria-label="Tono HSL" /><input class="hsl-input" type="number" min="0" max="360" aria-label="Valor de tono HSL" /></label>
+            <label class="hsl-field"><span>S</span><input class="hsl-slider" type="range" min="0" max="100" step="1" aria-label="Saturación HSL" /><input class="hsl-input" type="number" min="0" max="100" aria-label="Valor de saturación HSL" /></label>
+            <label class="hsl-field"><span>L</span><input class="hsl-slider" type="range" min="15" max="93" step="1" aria-label="Luminosidad HSL" /><input class="hsl-input" type="number" min="15" max="93" aria-label="Valor de luminosidad HSL" /></label>
           </div>
         </section>
         <button class="save-color" type="button">Guardar este color</button>
@@ -232,11 +247,10 @@ class ThemeBackgroundPicker extends HTMLElement {
     this.colorInput = this.shadowRoot.querySelector(".color-input");
     this.colorPreview = this.shadowRoot.querySelector(".color-preview");
     this.colorEditor = this.shadowRoot.querySelector(".color-editor");
-    this.spectrum = this.shadowRoot.querySelector(".spectrum");
-    this.spectrumMarker = this.shadowRoot.querySelector(".spectrum-marker");
-    this.hueInput = this.shadowRoot.querySelector(".hue-input");
-    this.rgbInputs = [...this.shadowRoot.querySelectorAll(".rgb-input")];
-    this.pickerHue = 0;
+    this.resultPreview = this.shadowRoot.querySelector(".result-preview");
+    this.resultHex = this.shadowRoot.querySelector(".result-hex");
+    this.hslSliders = [...this.shadowRoot.querySelectorAll(".hsl-slider")];
+    this.hslInputs = [...this.shadowRoot.querySelectorAll(".hsl-input")];
     this.hexInput = this.shadowRoot.querySelector(".hex-input");
     this.swatch = this.shadowRoot.querySelector(".swatch");
     this.savedColorsSection = this.shadowRoot.querySelector(".saved-section");
@@ -246,6 +260,7 @@ class ThemeBackgroundPicker extends HTMLElement {
     const savedColor = this._getSavedColor();
     const initialColor = this._normalizeColor(savedColor || "#f4f2ec");
     this._lastAppliedColor = initialColor;
+    if (typeof savedColor === "string" && savedColor.toLowerCase() !== initialColor) this._saveColor(initialColor);
     this._syncColorControls(initialColor);
     this._renderSavedColors();
     if (savedColor) this._applyColor(initialColor, false);
@@ -255,33 +270,11 @@ class ThemeBackgroundPicker extends HTMLElement {
       this.colorEditor.hidden = !this.colorEditor.hidden;
       this.colorInput.setAttribute("aria-expanded", String(!this.colorEditor.hidden));
     });
-    this.hueInput.addEventListener("input", () => {
-      this.pickerHue = Number(this.hueInput.value);
-      this.spectrum.style.setProperty("--picker-hue", this.pickerHue);
-    });
-    this.hueInput.addEventListener("input", () => this._applySpectrumPoint());
-    this.spectrum.addEventListener("pointerdown", (event) => {
-      this.spectrum.setPointerCapture(event.pointerId);
-      this._updateSpectrumFromPointer(event);
-    });
-    this.spectrum.addEventListener("pointermove", (event) => {
-      if (this.spectrum.hasPointerCapture(event.pointerId)) this._updateSpectrumFromPointer(event);
-    });
-    this.spectrum.addEventListener("keydown", (event) => {
-      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
-      event.preventDefault();
-      const rect = this.spectrum.getBoundingClientRect();
-      const currentLeft = parseFloat(this.spectrumMarker.style.left);
-      const currentTop = parseFloat(this.spectrumMarker.style.top);
-      const x = (Number.isFinite(currentLeft) ? currentLeft : 50) / 100 * rect.width;
-      const y = (Number.isFinite(currentTop) ? currentTop : 50) / 100 * rect.height;
-      const step = event.shiftKey ? 10 : 2;
-      this._updateSpectrumPosition(x + (event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : 0), y + (event.key === "ArrowDown" ? step : event.key === "ArrowUp" ? -step : 0), rect.width, rect.height);
-    });
-    this.rgbInputs.forEach((input) => input.addEventListener("change", () => {
-      const values = this.rgbInputs.map((field) => Math.max(0, Math.min(255, Number(field.value) || 0)));
-      if (this.rgbInputs.every((field) => field.value !== "")) this._applySelectedColor(this._rgbToHex(...values));
+    this.hslSliders.forEach((slider, index) => slider.addEventListener("input", () => {
+      this.hslInputs[index].value = slider.value;
+      this._applyHslControls();
     }));
+    this.hslInputs.forEach((input) => input.addEventListener("change", () => this._applyHslControls()));
     this.hexInput.addEventListener("input", () => {
       const color = this.hexInput.value.trim();
       const isValid = /^#[0-9a-f]{6}$/i.test(color);
@@ -313,7 +306,7 @@ class ThemeBackgroundPicker extends HTMLElement {
       if (event.detail?.theme !== "dark") return;
       this._saveColor("");
       this._clearCustomBackground();
-      this._lastAppliedColor = "#f4f2ec";
+      this._lastAppliedColor = this._normalizeColor("#f4f2ec");
       this._syncColorControls(this._lastAppliedColor);
       this._setOpen(false);
     };
@@ -338,22 +331,38 @@ class ThemeBackgroundPicker extends HTMLElement {
   }
 
   _syncColorControls(color) {
-    this.colorPreview.style.background = color;
+    const hsl = this._clampHsl(this._hexToHsl(color));
+    const colorCss = this._hslToCss(hsl);
+    const values = [hsl.hue, hsl.saturation, hsl.lightness];
+    const maxLightness = hsl.saturation <= ThemeBackgroundPicker.NEUTRAL_SATURATION_LIMIT
+      ? ThemeBackgroundPicker.MAX_NEUTRAL_LIGHTNESS
+      : ThemeBackgroundPicker.MAX_LIGHTNESS;
+    const sliderTracks = [
+      "linear-gradient(to right, hsl(0 100% 50%), hsl(60 100% 50%), hsl(120 100% 50%), hsl(180 100% 50%), hsl(240 100% 50%), hsl(300 100% 50%), hsl(360 100% 50%))",
+      `linear-gradient(to right, hsl(${hsl.hue} 0% ${hsl.lightness}%), hsl(${hsl.hue} 100% ${hsl.lightness}%))`,
+      `linear-gradient(to right, hsl(${hsl.hue} ${hsl.saturation}% ${ThemeBackgroundPicker.BACKGROUND_MIN_LIGHTNESS}%), hsl(${hsl.hue} ${hsl.saturation}% ${maxLightness}%))`,
+    ];
+    this.colorPreview.style.background = colorCss;
     this.hexInput.value = color.toUpperCase();
     this.hexInput.setAttribute("aria-invalid", "false");
-    this.swatch.style.background = color;
-    const { red, green, blue } = this._hexToRgb(color);
-    this.rgbInputs?.forEach((input, index) => { input.value = [red, green, blue][index]; });
-    const hsv = this._rgbToHsv(red, green, blue);
-    this.pickerHue = hsv.hue;
-    if (this.hueInput) this.hueInput.value = hsv.hue;
-    if (this.spectrum) this.spectrum.style.setProperty("--picker-hue", hsv.hue);
-    if (this.spectrumMarker) {
-      this.spectrumMarker.style.left = `${hsv.saturation}%`;
-      this.spectrumMarker.style.top = `${100 - hsv.value}%`;
-      this.spectrum.setAttribute("aria-valuenow", String(Math.round(hsv.value)));
-      this.spectrum.setAttribute("aria-valuetext", `${Math.round(hsv.saturation)}% de saturación, ${Math.round(hsv.value)}% de luminosidad`);
+    this.swatch.style.background = colorCss;
+    this.resultPreview.style.background = colorCss;
+    this.resultHex.textContent = color.toUpperCase();
+    this.hslInputs?.forEach((input, index) => {
+      input.value = String(Math.round(values[index]));
+    });
+    if (this.hslInputs?.[2]) {
+      this.hslInputs[2].max = String(maxLightness);
     }
+    this.hslSliders?.forEach((slider, index) => {
+      if (index === 2) slider.max = String(maxLightness);
+      slider.value = String(Math.round(values[index]));
+      slider.style.setProperty("--slider-track", sliderTracks[index]);
+      slider.style.setProperty("--slider-thumb-color", colorCss);
+      slider.setAttribute("aria-valuetext", index === 0
+        ? `${Math.round(values[index])} grados`
+        : `${Math.round(values[index])}%`);
+    });
     this.savedColorsContainer?.querySelectorAll(".saved-option").forEach((option) => {
       option.setAttribute("aria-pressed", String(option.dataset.color === color.toLowerCase()));
     });
@@ -371,7 +380,7 @@ class ThemeBackgroundPicker extends HTMLElement {
       option.className = "saved-option";
       option.type = "button";
       option.dataset.color = color;
-      option.style.backgroundColor = color;
+      option.style.backgroundColor = this._hslToCss(this._hexToHsl(color));
       option.setAttribute("aria-label", `Usar color guardado ${color.toUpperCase()}`);
       option.setAttribute("aria-pressed", String(color === this._lastAppliedColor));
       option.title = color.toUpperCase();
@@ -402,9 +411,17 @@ class ThemeBackgroundPicker extends HTMLElement {
     try {
       const profile = JSON.parse(localStorage.getItem(ThemeBackgroundPicker.PROFILE_STORAGE_KEY) || "{}");
       const colors = profile[ThemeBackgroundPicker.SAVED_COLORS_PROFILE_KEY];
-      return Array.isArray(colors)
-        ? [...new Set(colors.filter((color) => typeof color === "string" && /^#[0-9a-f]{6}$/i.test(color)).map((color) => color.toLowerCase()))]
-        : [];
+      if (!Array.isArray(colors)) return [];
+      const normalizedColors = [...new Set(
+        colors
+          .filter((color) => typeof color === "string" && /^#[0-9a-f]{6}$/i.test(color))
+          .map((color) => this._normalizeColor(color))
+      )];
+      if (JSON.stringify(colors) !== JSON.stringify(normalizedColors)) {
+        profile[ThemeBackgroundPicker.SAVED_COLORS_PROFILE_KEY] = normalizedColors;
+        localStorage.setItem(ThemeBackgroundPicker.PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      }
+      return normalizedColors;
     } catch (error) {
       return [];
     }
@@ -426,7 +443,11 @@ class ThemeBackgroundPicker extends HTMLElement {
     this._applyColor(normalizedColor, true);
   }
 
-  _normalizeColor(value) { return /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : "#f4f2ec"; }
+  _normalizeColor(value) {
+    if (!/^#[0-9a-f]{6}$/i.test(value)) value = "#f0eee8";
+    const hsl = this._clampHsl(this._hexToHsl(value));
+    return this._hslToHex(hsl.hue, hsl.saturation, hsl.lightness);
+  }
 
   _getSavedColor() {
     try {
@@ -457,69 +478,106 @@ class ThemeBackgroundPicker extends HTMLElement {
     return { red: parseInt(value.slice(0, 2), 16), green: parseInt(value.slice(2, 4), 16), blue: parseInt(value.slice(4, 6), 16) };
   }
 
-  _rgbToHex(red, green, blue) {
-    return `#${[red, green, blue].map((value) => Math.round(value).toString(16).padStart(2, "0")).join("")}`;
-  }
-
-  _rgbToHsv(red, green, blue) {
+  _hexToHsl(hex) {
+    const { red, green, blue } = this._hexToRgb(hex);
     const r = red / 255, g = green / 255, b = blue / 255;
     const max = Math.max(r, g, b), min = Math.min(r, g, b), delta = max - min;
-    let hue = 0;
+    const lightness = (max + min) / 2;
+    let hue = 0, saturation = 0;
     if (delta) {
+      saturation = delta / (1 - Math.abs(2 * lightness - 1));
       if (max === r) hue = 60 * (((g - b) / delta) % 6);
       else if (max === g) hue = 60 * ((b - r) / delta + 2);
       else hue = 60 * ((r - g) / delta + 4);
     }
-    return { hue: (hue + 360) % 360, saturation: max ? delta / max * 100 : 0, value: max * 100 };
+    return {
+      hue: (hue + 360) % 360,
+      saturation: saturation * 100,
+      lightness: lightness * 100,
+    };
   }
 
-  _hsvToHex(hue, saturation, value) {
-    const s = saturation / 100, v = value / 100;
-    const chroma = v * s, x = chroma * (1 - Math.abs((hue / 60) % 2 - 1)), m = v - chroma;
+  _rgbToHex(red, green, blue) {
+    return `#${[red, green, blue].map((value) => Math.round(value).toString(16).padStart(2, "0")).join("")}`;
+  }
+
+  _hslToHex(hue, saturation, lightness) {
+    const h = ((hue % 360) + 360) % 360 / 60;
+    const s = saturation / 100, l = lightness / 100;
+    const chroma = (1 - Math.abs(2 * l - 1)) * s;
+    const x = chroma * (1 - Math.abs(h % 2 - 1));
+    const m = l - chroma / 2;
     let rgb = [0, 0, 0];
-    if (hue < 60) rgb = [chroma, x, 0]; else if (hue < 120) rgb = [x, chroma, 0];
-    else if (hue < 180) rgb = [0, chroma, x]; else if (hue < 240) rgb = [0, x, chroma];
-    else if (hue < 300) rgb = [x, 0, chroma]; else rgb = [chroma, 0, x];
+    if (h < 1) rgb = [chroma, x, 0];
+    else if (h < 2) rgb = [x, chroma, 0];
+    else if (h < 3) rgb = [0, chroma, x];
+    else if (h < 4) rgb = [0, x, chroma];
+    else if (h < 5) rgb = [x, 0, chroma];
+    else rgb = [chroma, 0, x];
     return this._rgbToHex(...rgb.map((channel) => (channel + m) * 255));
   }
 
-  _updateSpectrumFromPointer(event) {
-    const rect = this.spectrum.getBoundingClientRect();
-    this._updateSpectrumPosition(event.clientX - rect.left, event.clientY - rect.top, rect.width, rect.height);
+  _hslToCss(hsl) {
+    return `hsl(${hsl.hue.toFixed(1)} ${hsl.saturation.toFixed(1)}% ${hsl.lightness.toFixed(1)}%)`;
   }
 
-  _updateSpectrumPosition(x, y, width, height) {
-    const saturation = Math.max(0, Math.min(100, x / width * 100));
-    const value = 100 - Math.max(0, Math.min(100, y / height * 100));
-    this.spectrumMarker.style.left = `${saturation}%`;
-    this.spectrumMarker.style.top = `${100 - value}%`;
-    this.spectrum.setAttribute("aria-valuenow", String(Math.round(value)));
-    this.spectrum.setAttribute("aria-valuetext", `${Math.round(saturation)}% de saturación, ${Math.round(value)}% de luminosidad`);
-    this._applySelectedColor(this._hsvToHex(this.pickerHue, saturation, value));
+  _clampHsl(hsl, minimumLightness = ThemeBackgroundPicker.BACKGROUND_MIN_LIGHTNESS) {
+    const hueValue = Number(hsl.hue);
+    const saturationValue = Number(hsl.saturation);
+    const lightnessValue = Number(hsl.lightness);
+    const hue = ((Number.isFinite(hueValue) ? hueValue : 0) % 360 + 360) % 360;
+    const saturation = Math.max(0, Math.min(100, Number.isFinite(saturationValue) ? saturationValue : 0));
+    const maxLightness = saturation <= ThemeBackgroundPicker.NEUTRAL_SATURATION_LIMIT
+      ? ThemeBackgroundPicker.MAX_NEUTRAL_LIGHTNESS
+      : ThemeBackgroundPicker.MAX_LIGHTNESS;
+    const lightness = Math.max(
+      minimumLightness,
+      Math.min(maxLightness, Number.isFinite(lightnessValue) ? lightnessValue : minimumLightness)
+    );
+    return { hue, saturation, lightness };
   }
 
-  _applySpectrumPoint() {
-    const rect = this.spectrum.getBoundingClientRect();
-    const saturation = parseFloat(this.spectrumMarker.style.left) || 0;
-    const top = parseFloat(this.spectrumMarker.style.top) || 0;
-    this._updateSpectrumPosition(saturation / 100 * rect.width, top / 100 * rect.height, rect.width, rect.height);
+  _applyHslControls() {
+    if (this.hslInputs.some((input) => input.value === "")) return;
+    const values = this.hslInputs.map((input) => Number(input.value));
+    const hsl = this._clampHsl({
+      hue: values[0],
+      saturation: values[1],
+      lightness: values[2],
+    });
+    const color = this._hslToHex(hsl.hue, hsl.saturation, hsl.lightness);
+    this._syncColorControls(color);
+    this._applySelectedColor(color);
   }
 
-  _mix(hex, target, amount) {
-    const sourceRgb = this._hexToRgb(hex);
-    const targetRgb = this._hexToRgb(target);
-    const channel = (source, destination) => Math.round(source + (destination - source) * amount);
-    const toHex = (value) => value.toString(16).padStart(2, "0");
-    return `#${toHex(channel(sourceRgb.red, targetRgb.red))}${toHex(channel(sourceRgb.green, targetRgb.green))}${toHex(channel(sourceRgb.blue, targetRgb.blue))}`;
+  _surfaceHsl(baseHsl, lightness) {
+    return this._hslToCss(this._clampHsl({ ...baseHsl, lightness }, ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS));
   }
 
-  _luminance(hex) {
+  _relativeLuminance(hex) {
     const { red, green, blue } = this._hexToRgb(hex);
     const values = [red, green, blue].map((value) => {
       const channel = value / 255;
-      return channel <= .03928 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
+      return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
     });
     return .2126 * values[0] + .7152 * values[1] + .0722 * values[2];
+  }
+
+  _minimumContrast(foreground, backgrounds) {
+    const foregroundLuminance = this._relativeLuminance(foreground);
+    return Math.min(...backgrounds.map((background) => {
+      const backgroundLuminance = this._relativeLuminance(background);
+      return (Math.max(foregroundLuminance, backgroundLuminance) + .05)
+        / (Math.min(foregroundLuminance, backgroundLuminance) + .05);
+    }));
+  }
+
+  _highContrastText(backgrounds) {
+    const darkText = "#000000";
+    const lightText = "#ffffff";
+    return this._minimumContrast(lightText, backgrounds) > this._minimumContrast(darkText, backgrounds)
+      ? lightText
+      : darkText;
   }
 
   _applyColor(color, persist) {
@@ -531,52 +589,104 @@ class ThemeBackgroundPicker extends HTMLElement {
       try { localStorage.setItem("theme", "light"); } catch (error) { /* El fondo personalizado sigue aplicándose. */ }
     }
     const root = document.documentElement;
-    const surface = this._mix(color, "#000000", .14);
-    const surfaceAlt = this._mix(color, "#000000", .22);
-    const inputSurface = this._mix(color, "#000000", .1);
-    const isDarkSurface = this._luminance(surface) < .52;
-    const controlBackground = this._mix(color, "#000000", isDarkSurface ? .32 : .12);
-    const controlHover = this._mix(controlBackground, "#000000", .08);
-    const controlText = this._luminance(controlBackground) > .179 ? "#101828" : "#ffffff";
-    const accentText = isDarkSurface ? "#ffffff" : "#003848";
-    const goldText = isDarkSurface ? "#f6d98b" : "#75570d";
-    const notesSurface = isDarkSurface ? this._mix(color, "#000000", .22) : this._mix(color, "#ffffff", .14);
-    const notesEditorSurface = isDarkSurface ? this._mix(color, "#000000", .12) : this._mix(color, "#ffffff", .22);
-    const notesText = isDarkSurface ? "#f5f7fa" : "#101828";
-    const notesMuted = isDarkSurface ? "#cbd5e1" : "#3f4652";
+    const backgroundHsl = this._clampHsl(this._hexToHsl(color));
+    const isNeutralBackground = backgroundHsl.saturation <= ThemeBackgroundPicker.NEUTRAL_SATURATION_LIMIT;
+    const panelBaseLightness = isNeutralBackground
+      ? backgroundHsl.lightness
+      : backgroundHsl.lightness >= ThemeBackgroundPicker.MAX_LIGHTNESS
+        ? ThemeBackgroundPicker.MAX_LIGHTNESS + 2
+        : Math.max(20, backgroundHsl.lightness - 3);
+    let surface = this._surfaceHsl(backgroundHsl, panelBaseLightness);
+    let surfaceAlt = this._surfaceHsl(backgroundHsl, panelBaseLightness - 2);
+    let inputSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 1);
+    const controlBackground = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 27 : 25);
+    const controlHover = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 24 : 22);
+    let notesSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 1);
+    let notesEditorSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 2);
+    const renderedHex = (hsl) => this._hslToHex(
+      Number(hsl.hue.toFixed(1)),
+      Number(hsl.saturation.toFixed(1)),
+      Number(hsl.lightness.toFixed(1))
+    );
+    const backgroundColor = renderedHex(backgroundHsl);
+    const surfaceHexAt = (lightness) => {
+      const surfaceHsl = this._clampHsl(
+        { ...backgroundHsl, lightness },
+        ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS
+      );
+      return renderedHex(surfaceHsl);
+    };
+    let textBackgrounds = [
+      backgroundColor,
+      surfaceHexAt(panelBaseLightness),
+      surfaceHexAt(panelBaseLightness - 2),
+      surfaceHexAt(panelBaseLightness - 1),
+    ];
+    let textColor = this._highContrastText(textBackgrounds);
+    if (this._minimumContrast(textColor, textBackgrounds) < 4.5) {
+      surface = this._hslToCss(backgroundHsl);
+      surfaceAlt = surface;
+      inputSurface = surface;
+      notesSurface = surface;
+      notesEditorSurface = surface;
+      textBackgrounds = [backgroundColor];
+      textColor = this._highContrastText(textBackgrounds);
+    }
+    const isDarkSurface = textColor === "#ffffff";
+    const controlHsl = this._clampHsl(
+      { ...backgroundHsl, lightness: isNeutralBackground ? 27 : 25 },
+      ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS
+    );
+    const controlText = this._highContrastText([renderedHex(controlHsl)]);
+    const accentCandidate = isDarkSurface ? "#ffffff" : "#003848";
+    const goldCandidate = isDarkSurface ? "#f6d98b" : "#75570d";
+    const dangerCandidate = isDarkSurface ? "#ff8da3" : "#b4234d";
+    const accentText = this._minimumContrast(accentCandidate, textBackgrounds) >= 4.5 ? accentCandidate : textColor;
+    const goldText = this._minimumContrast(goldCandidate, textBackgrounds) >= 4.5 ? goldCandidate : textColor;
+    const dangerText = this._minimumContrast(dangerCandidate, textBackgrounds) >= 4.5 ? dangerCandidate : textColor;
+    const notesText = textColor;
+    const notesMuted = textColor;
 
-    root.style.setProperty("--page-background", color);
-    root.style.setProperty("--custom-navbar-background", color);
+    root.style.setProperty("--page-background", this._hslToCss(backgroundHsl));
+    root.style.setProperty("--custom-navbar-background", surface);
     root.style.setProperty("--custom-sidebar-background", surface);
+    root.style.setProperty("--custom-panel-background", surface);
+    root.style.setProperty("--custom-panel-alt-background", surfaceAlt);
     root.style.setProperty("--custom-control-background", controlBackground);
     root.style.setProperty("--custom-control-hover", controlHover);
     root.style.setProperty("--custom-control-text", controlText);
     root.style.setProperty("--custom-accent-text", accentText);
     root.style.setProperty("--custom-gold-text", goldText);
-    root.style.setProperty("--bg-2", color);
+    root.style.setProperty("--custom-danger-text", dangerText);
+    root.style.setProperty("--bg-2", surface);
     root.style.setProperty("--bg", surface);
     root.style.setProperty("--bg-3", surfaceAlt);
-    root.style.setProperty("--text", isDarkSurface ? "#f5f7fa" : "#101828");
-    root.style.setProperty("--text-muted", isDarkSurface ? "#e2e8f0" : "#3f4652");
-    root.style.setProperty("--border", isDarkSurface ? "rgba(255, 255, 255, .24)" : "rgba(15, 23, 42, .2)");
+    root.style.setProperty("--text", textColor);
+    root.style.setProperty("--text-muted", textColor);
+    root.style.setProperty("--border", isDarkSurface ? "hsl(0 0% 93% / .24)" : "hsl(215 50% 20% / .2)");
     root.style.setProperty("--input-bg", inputSurface);
-    root.style.setProperty("--input-border", isDarkSurface ? "rgba(255, 255, 255, .26)" : "rgba(15, 23, 42, .22)");
-    root.style.setProperty("--input-text", isDarkSurface ? "#f5f7fa" : "#101828");
+    root.style.setProperty("--input-border", isDarkSurface ? "hsl(0 0% 93% / .26)" : "hsl(215 50% 20% / .22)");
+    root.style.setProperty("--input-text", textColor);
     root.style.setProperty("--notes-surface", notesSurface);
     root.style.setProperty("--notes-editor-surface", notesEditorSurface);
     root.style.setProperty("--notes-text", notesText);
     root.style.setProperty("--notes-muted", notesMuted);
-    root.style.setProperty("--shadow", isDarkSurface ? "0 16px 36px rgba(0, 0, 0, .42)" : "0 3px 14px rgba(15, 23, 42, .18)");
+    root.style.setProperty("--shadow", isDarkSurface
+      ? "0 16px 36px rgba(0, 0, 0, .42), 0 4px 12px rgba(0, 0, 0, .30)"
+      : "0 16px 34px rgba(0, 0, 0, .20), 0 4px 10px rgba(0, 0, 0, .14)");
+    root.style.setProperty("--shadow-nav", isDarkSurface
+      ? "0 20px 46px rgba(0, 0, 0, .55), 0 6px 16px rgba(0, 0, 0, .40)"
+      : "0 20px 44px rgba(0, 0, 0, .34), 0 6px 16px rgba(0, 0, 0, .22)");
     document.body.classList.add("custom-background");
     document.body.classList.toggle("custom-background-dark", isDarkSurface);
     document.body.classList.remove("dark-mode");
     this._syncColorControls(this._normalizeColor(color));
-    if (persist) this._saveColor(color);
+    if (persist) this._saveColor(this._normalizeColor(color));
   }
 
   _clearCustomBackground() {
     const root = document.documentElement;
-    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-control-background", "--custom-control-hover", "--custom-control-text", "--custom-accent-text", "--custom-gold-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--notes-surface", "--notes-editor-surface", "--notes-text", "--notes-muted", "--shadow"].forEach((property) => root.style.removeProperty(property));
+    ["--page-background", "--custom-navbar-background", "--custom-sidebar-background", "--custom-panel-background", "--custom-panel-alt-background", "--custom-control-background", "--custom-control-hover", "--custom-control-text", "--custom-accent-text", "--custom-gold-text", "--custom-danger-text", "--bg", "--bg-2", "--bg-3", "--text", "--text-muted", "--border", "--input-bg", "--input-border", "--input-text", "--notes-surface", "--notes-editor-surface", "--notes-text", "--notes-muted", "--shadow", "--shadow-nav"].forEach((property) => root.style.removeProperty(property));
     document.body.classList.remove("custom-background", "custom-background-dark");
   }
 }

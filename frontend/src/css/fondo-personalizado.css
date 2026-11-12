@@ -1,12 +1,15 @@
 body.custom-background {
-  --bg: var(--page-background);
+  --bg: var(--custom-panel-background);
   --paper: var(--bg);
-  --surface: var(--bg-3);
-  --surface-soft: var(--bg-3);
-  --surface-gold: var(--bg-3);
+  --surface: var(--custom-panel-alt-background);
+  --surface-soft: var(--custom-panel-alt-background);
+  --surface-gold: var(--custom-panel-alt-background);
   --ink: var(--text);
   --ink-soft: var(--text-muted);
   --ink-muted: var(--text-muted);
+  --brand-red-text: var(--custom-accent-text);
+  --brand-teal-text: var(--custom-accent-text);
+  --gold-text: var(--custom-gold-text);
   --line: var(--border);
   --line-strong: var(--border);
   --card-border: var(--border);
@@ -30,7 +33,7 @@ body.custom-background .utility-nav {
   background: var(--custom-sidebar-background);
   color: var(--text);
   border-color: transparent;
-  box-shadow: none;
+  box-shadow: var(--shadow-nav);
 }
 
 body.custom-background .sidebar {
@@ -58,9 +61,9 @@ body.custom-background .utility-links__menu a:hover {
 /* Mantiene visible el indicador de sección activa con cualquier fondo elegido. */
 body.custom-background .utility-action.active,
 body.custom-background .utility-action.active:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--custom-sidebar-background));
+  background: var(--custom-control-background);
   border-color: color-mix(in srgb, var(--custom-accent-text) 20%, transparent);
-  color: var(--custom-accent-text);
+  color: var(--custom-control-text);
   box-shadow: inset 3px 0 0 var(--custom-accent-text), 0 4px 12px rgba(0, 0, 0, .14);
 }
 
@@ -123,40 +126,40 @@ body.custom-background .nav-item:hover .ico {
 
 body.custom-background .nav-item.active,
 body.custom-background .nav-item.active:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--custom-sidebar-background));
+  background: var(--custom-control-background);
   border-color: color-mix(in srgb, var(--custom-accent-text) 20%, transparent);
-  color: var(--custom-accent-text);
+  color: var(--custom-control-text);
   box-shadow: inset 3px 0 0 var(--custom-accent-text), 0 4px 12px rgba(0, 0, 0, .14);
 }
 
 body.custom-background .internal-tab:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 7%, var(--custom-sidebar-background));
-  color: var(--custom-accent-text);
+  background: var(--custom-control-hover);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .internal-tab.is-active,
 body.custom-background .internal-tab.is-active:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 12%, var(--custom-sidebar-background));
+  background: var(--custom-control-background);
   border-color: color-mix(in srgb, var(--custom-accent-text) 20%, transparent);
-  color: var(--custom-accent-text);
+  color: var(--custom-control-text);
   box-shadow: inset 0 3px 0 var(--custom-accent-text), 0 4px 12px rgba(0, 0, 0, .14);
 }
 
 body.custom-background .documents-view__external,
 body.custom-background .detail-header .stat-button,
 body.custom-background .open-script {
-  background: color-mix(in srgb, var(--custom-accent-text) 12%, var(--custom-sidebar-background));
+  background: var(--custom-control-background);
   border-color: color-mix(in srgb, var(--custom-accent-text) 35%, transparent);
-  color: var(--custom-accent-text);
+  color: var(--custom-control-text);
   box-shadow: inset 3px 0 0 var(--custom-accent-text), 0 4px 12px rgba(0, 0, 0, .12);
 }
 
 body.custom-background .documents-view__external:hover,
 body.custom-background .detail-header .stat-button:hover,
 body.custom-background .open-script:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 20%, var(--custom-sidebar-background));
+  background: var(--custom-control-hover);
   border-color: var(--custom-accent-text);
-  color: var(--custom-accent-text);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .tcard,
@@ -189,9 +192,6 @@ body.custom-background-dark .header-logo { filter: brightness(0) invert(1); }
 
 /* ---------- Notas: superficie legible sobre cualquier fondo personalizado ---------- */
 body.custom-background .main > .view.notes-view {
-  background: var(--page-background);
-  border-color: transparent;
-  box-shadow: none;
   color: var(--notes-text, var(--text));
 }
 
@@ -203,10 +203,10 @@ body.custom-background .notes-view > .back-link {
 
 body.custom-background .notes-auth,
 body.custom-background .notes-app {
-  background: var(--notes-surface, color-mix(in srgb, var(--page-background) 86%, #ffffff));
+  background: var(--notes-surface, hsl(0 0% 93%));
   border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
   color: var(--text);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  box-shadow: var(--shadow);
 }
 
 body.custom-background .notes-auth h2,
@@ -217,7 +217,7 @@ body.custom-background .notes-status {
 }
 
 body.custom-background .note-editor {
-  background: var(--notes-editor-surface, color-mix(in srgb, var(--page-background) 78%, #ffffff));
+  background: var(--notes-editor-surface, hsl(0 0% 93%));
   border-color: color-mix(in srgb, var(--custom-accent-text) 22%, transparent);
   box-shadow: 0 3px 12px rgba(0, 0, 0, .10);
 }
@@ -227,7 +227,29 @@ body.custom-background .note-editor textarea {
   background: transparent;
   color: var(--notes-text, var(--text));
   font-weight: 600;
-  border-color: transparent;
+  border-color: var(--notes-text, var(--text));
+  box-shadow: 3px 3px 0 var(--notes-text, var(--text));
+}
+
+body.custom-background .note-editor__actions {
+  border-top-color: var(--notes-text, var(--text));
+}
+
+body.custom-background .note-editor__close {
+  border-color: var(--notes-text, var(--text));
+  box-shadow: 3px 3px 0 var(--notes-text, var(--text));
+}
+
+body.custom-background .note-editor__close:hover:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--notes-text, var(--text));
+}
+
+body.custom-background .note-editor__close:active:not(:disabled) {
+  box-shadow: 0 0 0 var(--notes-text, var(--text));
+}
+
+body.custom-background .note-editor__close:disabled {
+  box-shadow: 2px 2px 0 var(--notes-text, var(--text));
 }
 
 body.custom-background .note-editor input::placeholder,
@@ -239,14 +261,15 @@ body.custom-background .note-editor textarea::placeholder {
 
 body.custom-background .note-editor input:focus,
 body.custom-background .note-editor textarea:focus {
-  background: color-mix(in srgb, var(--notes-editor-surface, #ffffff) 88%, var(--custom-accent-text));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .note-card {
   background: var(--note-background);
   border-color: transparent;
   color: var(--note-ink);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, .14);
+  box-shadow: var(--shadow);
 }
 
 body.custom-background .note-card h2,
@@ -262,7 +285,7 @@ body.custom-background .notes-filter .notes-calendar__trigger,
 body.custom-background .notes-filter>button,
 body.custom-background .notes-calendar__popup {
   border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
-  background: #ffffff;
+  background: hsl(0 0% 93%);
   color: var(--notes-text, var(--text));
 }
 
@@ -274,22 +297,22 @@ body.custom-background .notes-filter .notes-calendar__trigger:hover,
 body.custom-background .notes-filter>button:hover,
 body.custom-background .notes-filter .notes-calendar__trigger.is-selected {
   border-color: var(--custom-accent-text);
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
-  color: var(--custom-accent-text);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .notes-filter .notes-calendar__nav {
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
-  color: var(--custom-accent-text);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .notes-filter .notes-calendar__nav:hover {
-  background: var(--custom-accent-text);
-  color: #ffffff;
+  background: var(--custom-control-hover);
+  color: var(--custom-control-text);
 }
 
 body.custom-background-dark .notes-filter .notes-calendar__nav:hover {
-  color: #003848;
+  color: var(--custom-control-text);
 }
 
 body.custom-background .notes-calendar__weekdays span {
@@ -303,8 +326,8 @@ body.custom-background .notes-filter .notes-calendar__day {
 body.custom-background .notes-filter .notes-calendar__day:hover,
 body.custom-background .notes-filter .notes-calendar__day:focus-visible {
   border-color: var(--custom-accent-text);
-  background: color-mix(in srgb, var(--custom-accent-text) 12%, var(--notes-surface, #ffffff));
-  color: var(--custom-accent-text);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .notes-filter .notes-calendar__day.is-today {
@@ -314,26 +337,26 @@ body.custom-background .notes-filter .notes-calendar__day.is-today {
 body.custom-background .notes-filter .notes-calendar__day.is-selected,
 body.custom-background .notes-filter .notes-calendar__day.is-selected:hover {
   border-color: var(--custom-accent-text);
-  background: var(--custom-accent-text);
-  color: #ffffff;
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background-dark .notes-filter .notes-calendar__day.is-selected,
 body.custom-background-dark .notes-filter .notes-calendar__day.is-selected:hover {
-  color: #003848;
+  color: var(--custom-control-text);
 }
 
 body.custom-background .note-expanded-card .note-expanded-title,
 body.custom-background .note-expanded-card .note-expanded-content {
   border-color: color-mix(in srgb, var(--note-ink) 24%, transparent);
-  background: color-mix(in srgb, var(--note-background) 88%, #ffffff);
+  background: hsl(0 0% 93%);
   color: var(--note-ink);
 }
 
 body.custom-background .note-expanded-card .note-expanded-title:focus,
 body.custom-background .note-expanded-card .note-expanded-content:focus {
   border-color: var(--custom-accent-text);
-  background: color-mix(in srgb, var(--note-background) 80%, #ffffff);
+  background: hsl(0 0% 93%);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--custom-accent-text) 20%, transparent);
 }
 
@@ -344,35 +367,35 @@ body.custom-background .note-card__shared-access {
 body.custom-background .note-card__shared-access li button,
 body.custom-background .note-card__toolbar .note-card__leave-share {
   border-color: color-mix(in srgb, var(--custom-accent-text) 26%, transparent);
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, var(--notes-surface, #ffffff));
-  color: var(--custom-accent-text);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background .note-card__shared-access li button:hover,
 body.custom-background .note-card__toolbar .note-card__leave-share:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 18%, var(--notes-surface, #ffffff));
+  background: var(--custom-control-hover);
 }
 
 body.custom-background .note-card .note-tool::after {
   border-color: color-mix(in srgb, var(--custom-accent-text) 34%, transparent);
-  background: var(--custom-accent-text);
-  color: #ffffff;
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
   box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
 }
 
 body.custom-background-dark .note-card .note-tool::after {
-  color: #003848;
+  color: var(--custom-control-text);
 }
 
 body.custom-background .note-prompt {
-  background: rgba(8, 15, 20, .68);
+  background: hsl(202 32% 20% / .68);
   backdrop-filter: blur(3px);
 }
 
 body.custom-background .note-prompt__card {
   border-color: color-mix(in srgb, var(--custom-accent-text) 34%, transparent);
   border-radius: 22px;
-  background: #ffffff;
+  background: hsl(0 0% 93%);
   color: #101828;
   box-shadow: 0 22px 60px rgba(0, 0, 0, .38);
 }
@@ -381,7 +404,7 @@ body.custom-background-dark .notes-filter .notes-calendar__trigger,
 body.custom-background-dark .notes-filter>button,
 body.custom-background-dark .notes-calendar__popup,
 body.custom-background-dark .note-prompt__card {
-  background: #172329;
+  background: var(--custom-panel-background);
   color: #f5f7fa;
 }
 
@@ -399,7 +422,7 @@ body.custom-background .note-prompt[data-note-tool="delete"] .note-prompt__card 
 }
 
 body.custom-background .note-prompt[data-note-tool="delete"] .note-prompt__card h2 {
-  color: #b4234d;
+  color: var(--custom-danger-text);
 }
 
 body.custom-background .note-prompt[data-note-tool="revoke-share"] .note-prompt__card {
@@ -407,7 +430,7 @@ body.custom-background .note-prompt[data-note-tool="revoke-share"] .note-prompt_
 }
 
 body.custom-background .note-prompt[data-note-tool="revoke-share"] .note-prompt__card h2 {
-  color: #b4234d;
+  color: var(--custom-danger-text);
 }
 
 body.custom-background .note-prompt__input,
@@ -417,7 +440,7 @@ body.custom-background .note-prompt .calculator-select__trigger,
 body.custom-background .note-format-options button {
   border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
   border-radius: 14px;
-  background: #f7f9fb;
+  background: hsl(0 0% 93%);
   color: #101828;
 }
 
@@ -426,7 +449,7 @@ body.custom-background-dark .note-prompt__select,
 body.custom-background-dark .note-prompt__textarea,
 body.custom-background-dark .note-prompt .calculator-select__trigger,
 body.custom-background-dark .note-format-options button {
-  background: #101b20;
+  background: var(--custom-panel-background);
   color: #f5f7fa;
 }
 
@@ -443,12 +466,12 @@ body.custom-background .note-prompt .calculator-select__menu,
 body.custom-background .note-prompt .note-user-results {
   border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--border));
   border-radius: 14px;
-  background: #ffffff;
+  background: hsl(0 0% 93%);
 }
 
 body.custom-background-dark .note-prompt .calculator-select__menu,
 body.custom-background-dark .note-prompt .note-user-results {
-  background: #172329;
+  background: var(--custom-panel-background);
 }
 
 body.custom-background .note-prompt .calculator-select__option,
@@ -468,8 +491,8 @@ body.custom-background .note-prompt .note-user-option:hover,
 body.custom-background .note-prompt .note-user-option:focus-visible,
 body.custom-background .note-format-options button:hover,
 body.custom-background .note-format-options button.is-active {
-  background: color-mix(in srgb, var(--custom-accent-text) 14%, #ffffff);
-  color: var(--custom-accent-text) !important;
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
 }
 
 body.custom-background-dark .note-prompt .calculator-select__option:hover,
@@ -478,14 +501,14 @@ body.custom-background-dark .note-prompt .note-user-option:hover,
 body.custom-background-dark .note-prompt .note-user-option:focus-visible,
 body.custom-background-dark .note-format-options button:hover,
 body.custom-background-dark .note-format-options button.is-active {
-  background: color-mix(in srgb, var(--custom-accent-text) 18%, #172329);
-  color: var(--custom-accent-text) !important;
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
 }
 
 body.custom-background .note-prompt__close {
   border-radius: 12px;
-  background: var(--custom-accent-text);
-  color: #ffffff;
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
 }
 
 body.custom-background-dark .note-prompt__close {
@@ -499,7 +522,7 @@ body.custom-background .note-prompt__secondary {
 }
 
 body.custom-background .note-prompt__secondary:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, #ffffff);
+  background: var(--custom-control-hover);
 }
 
 body.custom-background-dark .note-prompt__secondary {
@@ -507,7 +530,7 @@ body.custom-background-dark .note-prompt__secondary {
 }
 
 body.custom-background-dark .note-prompt__secondary:hover {
-  background: color-mix(in srgb, var(--custom-accent-text) 10%, #172329);
+  background: var(--custom-control-hover);
 }
 
 body.custom-background .note-prompt__danger {
@@ -517,19 +540,19 @@ body.custom-background .note-prompt__danger {
 body.custom-background .note-card__edit-area,
 body.custom-background .note-card__share input,
 body.custom-background .note-card__share select {
-  background: rgba(255, 255, 255, .62);
+  background: hsl(0 0% 93% / .62);
   color: #17202a;
   border-color: rgba(23, 32, 42, .22);
 }
 
 body.custom-background .note-card__share .calculator-select__trigger {
-  background: rgba(255, 255, 255, .62);
+  background: hsl(0 0% 93% / .62);
   color: #17202a !important;
   border-color: rgba(23, 32, 42, .22);
 }
 
 body.custom-background .note-card__share .calculator-select__menu {
-  background: #ffffff;
+  background: hsl(0 0% 93%);
   border-color: rgba(23, 32, 42, .22);
   box-shadow: 0 10px 24px rgba(0, 0, 0, .28);
   z-index: 60;
@@ -537,7 +560,7 @@ body.custom-background .note-card__share .calculator-select__menu {
 
 body.custom-background .note-card__share .calculator-select__option {
   color: #17202a !important;
-  background: #ffffff !important;
+  background: hsl(0 0% 93%) !important;
   font-weight: 600;
 }
 
@@ -547,14 +570,14 @@ body.custom-background .note-card__share .calculator-select__option:hover {
 }
 
 body.custom-background .note-user-results {
-  background: #ffffff;
+  background: hsl(0 0% 93%);
   border-color: rgba(23, 32, 42, .22);
   box-shadow: 0 -10px 24px rgba(0, 0, 0, .28);
 }
 
 body.custom-background .note-user-option {
   color: #17202a;
-  background: #ffffff;
+  background: hsl(0 0% 93%);
 }
 
 body.custom-background .note-user-option:hover,
@@ -564,7 +587,7 @@ body.custom-background .note-user-option:focus-visible {
 }
 
 body.custom-background .note-card__share .calculator-select__option[aria-selected="true"] {
-  background: #e8f1f4 !important;
+  background: hsl(192 27% 93%) !important;
   color: #006b78 !important;
 }
 
@@ -586,7 +609,7 @@ body.custom-background .note-card__edit:hover {
 }
 
 body.custom-background .note-card__delete {
-  color: #b4234d;
+  color: var(--custom-danger-text);
 }
 
 body.custom-background .note-card::before {

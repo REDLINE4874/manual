@@ -74,6 +74,16 @@ function getCardMinimumIncome(card) {
 function getProfileCardId(segmentId) {
   return { clasico: "clasica", oro: "oro", platinum: "platinum" }[segmentId] || "";
 }
+function getContrastTextColor(hex) {
+  const value = hex.replace("#", "");
+  const channels = [0, 2, 4].map((index) => parseInt(value.slice(index, index + 2), 16) / 255);
+  const luminance = channels
+    .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
+  const darkContrast = (luminance + 0.05) / 0.05;
+  const lightContrast = 1.05 / (luminance + 0.05);
+  return lightContrast > darkContrast ? "#FFFFFF" : "#101828";
+}
 function getPreferredCardId(segmentId, interestId) {
   if (interestId === "cero_anualidad" && segmentId === "clasico") return "joy";
   if (interestId === "puntos_cotidianos" && ["clasico", "oro"].includes(segmentId)) {
@@ -391,7 +401,7 @@ function renderProfilingUI() {
   // Segment metadata
   const currentSegMeta = (typeof SEGMENTS !== "undefined" ? SEGMENTS : []).find(
     (s) => s.id === recommendationSegment
-  ) || { label: "Segmento " + recommendationSegment, bar: "#009cc6" };
+  ) || { label: "Segmento " + recommendationSegment, bar: "#007b98" };
   container.innerHTML = `
     <div class="profiling-layout">
       <div class="profiling-recommendation-column">
@@ -403,7 +413,7 @@ function renderProfilingUI() {
           </div>
           <div class="profiling-badge-group">
             <span class="profiling-priority-badge">Prioridad</span>
-            <span class="profiling-segment-badge profiling-segment-badge--${recommendationSegment}" style="background:${currentSegMeta.bar}">${currentSegMeta.label}</span>
+            <span class="profiling-segment-badge profiling-segment-badge--${recommendationSegment}" style="background:${currentSegMeta.bar};color:${getContrastTextColor(currentSegMeta.bar)}">${currentSegMeta.label}</span>
           </div>
         </div>
       <section class="profiling-feedback-section">

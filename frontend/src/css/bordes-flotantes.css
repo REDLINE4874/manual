@@ -1,0 +1,105 @@
+.utility-nav,
+.utility-links__menu,
+.sidebar,
+.topbar,
+.tcard,
+.tcard:hover,
+.digito-card,
+.costos-panel,
+.extra-block,
+.calc-card,
+.stat,
+.detail-segment-tag,
+.updated-badge,
+.notes-auth,
+.notes-app,
+.note-editor,
+.note-editor:focus-within,
+.note-card,
+.note-card:hover,
+.admin-card,
+.validation-column,
+.commission-summary__item,
+.commission-step,
+.commission-month,
+.calculator-select__menu,
+.document-frame-wrap,
+.floating-window,
+.site-auth-card,
+.profiling-card,
+.profiling-options-section,
+.profiling-suggested-card,
+.profiling-alt-card,
+.profiling-alt-card:hover,
+.redencion-container,
+.redencion-card,
+.redencion-card:hover,
+.waiver-block,
+.modal-box {
+  border-color: var(--elevation-border);
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: var(--elevation-shadow);
+}
+
+.sidebar {
+  border: 2px solid var(--elevation-border);
+}
+
+.topbar {
+  border: 2px solid var(--elevation-border);
+}
+
+body.dark-mode .tcard,
+body.dark-mode .tcard:hover,
+body.dark-mode .digito-card,
+body.dark-mode .costos-panel,
+body.dark-mode .extra-block,
+body.dark-mode .calc-card,
+body.dark-mode .stat,
+body.dark-mode .updated-badge,
+body.dark-mode .detail-segment-tag,
+body.dark-mode .waiver-block,
+body.dark-mode .modal-box {
+  border-color: var(--elevation-border);
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: var(--elevation-shadow);
+}
+
+body.custom-background .utility-nav,
+body.custom-background .utility-links__menu,
+body.custom-background .sidebar,
+body.custom-background .tcard,
+body.custom-background .digito-card,
+body.custom-background .costos-panel,
+body.custom-background .extra-block,
+body.custom-background .calc-card,
+body.custom-background .stat,
+body.custom-background .updated-badge,
+body.custom-background .detail-segment-tag,
+body.custom-background .notes-auth,
+body.custom-background .notes-app,
+body.custom-background .note-editor,
+body.custom-background .note-editor:focus-within,
+body.custom-background .note-card,
+body.custom-background .admin-card,
+body.custom-background .validation-column,
+body.custom-background .commission-summary__item,
+body.custom-background .commission-step,
+body.custom-background .commission-month,
+body.custom-background .calculator-select__menu,
+body.custom-background .notes-calendar__popup,
+body.custom-background .waiver-block,
+body.custom-background .modal-box {
+  border-color: var(--elevation-border);
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: var(--elevation-shadow);
+}
+
+.stat,
+body.dark-mode .stat,
+body.custom-background .stat {
+  border-width: 1px;
+}

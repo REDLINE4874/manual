@@ -111,18 +111,26 @@ document
   sidebar.addEventListener("scroll", hideTooltip);
 
   const utilityNav = document.getElementById("utilityNav");
-  utilityNav?.querySelectorAll(".utility-action, .utility-links__trigger").forEach((item) => {
-    const text = item.getAttribute("title") || item.getAttribute("aria-label");
+  const utilityNavItems = ".utility-action, .utility-links__trigger, .internal-tab";
+  utilityNav?.querySelectorAll(utilityNavItems).forEach((item) => {
+    const text = item.getAttribute("aria-label") || item.getAttribute("title");
     if (!text) return;
     item.setAttribute("data-tooltip", text);
     item.setAttribute("aria-label", text);
     item.removeAttribute("title");
   });
   utilityNav?.addEventListener("mouseenter", (e) => {
-    const item = e.target.closest?.(".utility-action, .utility-links__trigger");
+    const item = e.target.closest?.(utilityNavItems);
     if (item) showTooltip(item, true);
   }, true);
   utilityNav?.addEventListener("mouseleave", (e) => {
-    if (e.target.closest?.(".utility-action, .utility-links__trigger")) hideTooltip();
+    if (e.target.closest?.(utilityNavItems)) hideTooltip();
+  }, true);
+  utilityNav?.addEventListener("focusin", (e) => {
+    const item = e.target.closest?.(utilityNavItems);
+    if (item) showTooltip(item, true);
+  });
+  utilityNav?.addEventListener("focusout", (e) => {
+    if (e.target.closest?.(utilityNavItems)) hideTooltip();
   }, true);
 })();

@@ -5,7 +5,7 @@ const CARDS = Object.values(window.CARD_DATA || {});
 
 /* Segmentos usados para agrupar las tarjetas en la navegación y la página de inicio. */
 const SEGMENTS = [
-  { id: "clasico", label: "Segmento Clásico", bar: "#009CC6" },
+  { id: "clasico", label: "Segmento Clásico", bar: "#007B98" },
   { id: "oro", label: "Segmento Oro", bar: "#A9863B" },
   { id: "platinum", label: "Segmento Platinum", bar: "#5B6367" },
 ];

@@ -1,0 +1,190 @@
+.profiling-recommendation-eyebrow,
+.profiling-reasons__item--competitive strong,
+.profiling-lim-badge--adecuado,
+.profiling-lim-notice--adecuado {
+  color: var(--status-info-text);
+}
+
+.profiling-modifier-alert,
+.profiling-income-recommendation__warning,
+.profiling-lim-badge--bajo,
+.profiling-lim-notice--bajo,
+.profiling-lim-badge--demasiado-alto,
+.profiling-lim-notice--demasiado-alto,
+.profiling-alt-card__badge--warning,
+.profiling-beta-tag {
+  color: var(--status-warning-text);
+}
+
+.profiling-profile-section .profiling-section__title,
+.profiling-profile-section .profiling-section__subtitle {
+  color: var(--gold-text);
+}
+
+.profiling-lim-badge--alto,
+.profiling-lim-notice--alto,
+.profiling-alt-card--aligned .profiling-alt-card__segment,
+.profiling-alt-card__badge,
+.profiling-alt-card--aligned .profiling-alt-card__badge,
+.profiling-priority-badge,
+.profiling-eligibility-alert--valid,
+.profiling-auth-level--bancarias {
+  color: var(--status-success-text);
+}
+
+.profiling-eligibility-alert,
+.profiling-auth-level--fintech {
+  color: var(--status-danger-text);
+}
+
+.profiling-auth-level--departamentales {
+  color: var(--status-warning-text);
+}
+
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-option-btn.is-selected,
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-interest-chip.is-selected {
+  color: #F7FCFD;
+}
+
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-eligibility-alert--valid,
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-priority-badge {
+  border-color: #59D98A;
+  background: color-mix(in srgb, #155B32 45%, var(--surface));
+  color: var(--status-success-text);
+}
+
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-eligibility-alert--valid .profiling-eligibility-alert__icon {
+  background: #75E9A0;
+  color: #102619;
+}
+
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-beta-banner {
+  background: color-mix(in srgb, #754000 45%, var(--surface));
+  color: var(--status-warning-text);
+}
+
+:is(body.dark-mode, body.dark, body.dark-theme, html.dark, html[data-theme="dark"], body[data-theme="dark"])
+  .profiling-beta-banner__content strong {
+  color: var(--status-warning-text);
+}
+
+body.custom-background .profiling-profile-section .profiling-section__title,
+body.custom-background .profiling-profile-section .profiling-section__subtitle {
+  color: var(--custom-gold-text);
+}
+
+body.custom-background .profiling-view :is(
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  label,
+  button,
+  a,
+  time,
+  td,
+  th,
+  small,
+  strong,
+  em,
+  span
+) {
+  color: var(--text) !important;
+}
+
+body.custom-background .profiling-view :is(
+  .profiling-modifier-alert,
+  .profiling-card-question-alert,
+  .profiling-lim-badge,
+  .profiling-lim-notice,
+  .profiling-income-recommendation__warning,
+  .profiling-eligibility-alert,
+  .profiling-auth-level,
+  .profiling-alt-card__badge,
+  .profiling-beta-banner,
+  .profiling-beta-tag,
+  .profiling-priority-badge,
+  .profiling-segment-badge
+) {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-control-background) !important;
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-view :is(
+  .profiling-modifier-alert,
+  .profiling-card-question-alert,
+  .profiling-lim-badge,
+  .profiling-lim-notice,
+  .profiling-income-recommendation__warning,
+  .profiling-eligibility-alert,
+  .profiling-auth-level,
+  .profiling-alt-card__badge,
+  .profiling-beta-banner,
+  .profiling-beta-tag,
+  .profiling-priority-badge,
+  .profiling-segment-badge
+) :is(h1, h2, h3, h4, p, li, label, button, a, time, td, th, small, strong, em, span) {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-view :is(
+  .profiling-btn,
+  .notes-button,
+  .profiling-step-badge,
+  .profiling-option-btn.is-selected,
+  .profiling-interest-chip.is-selected,
+  .profiling-card-chip.is-selected
+) {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-control-background) !important;
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-view :is(
+  .profiling-btn,
+  .notes-button,
+  .profiling-step-badge,
+  .profiling-option-btn.is-selected,
+  .profiling-interest-chip.is-selected,
+  .profiling-card-chip.is-selected
+) :is(h1, h2, h3, h4, p, li, label, button, a, time, td, th, small, strong, em, span) {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-view .profiling-beta-banner__content,
+body.custom-background .profiling-view .profiling-beta-banner__content strong {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-view .profiling-card-question-alert > span:first-child {
+  border: 1px solid var(--custom-control-text);
+  background: var(--custom-control-background) !important;
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-option-btn.is-selected,
+body.custom-background .profiling-interest-chip.is-selected,
+body.custom-background .profiling-card-chip.is-selected {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .profiling-option-btn.is-selected .profiling-option-btn__sub {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .utility-nav__updated,
+body.custom-background .utility-nav__updated time {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
+}

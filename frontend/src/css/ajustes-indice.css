@@ -1,4 +1,4 @@
-/* Presentación específica de elementos declarativos del index. */
+/* Presentación específica de elementos declarativos del índice. */
 
 .ico[data-icon] {
   -webkit-mask: var(--icon-mask) center / contain no-repeat;
@@ -18,7 +18,7 @@
 .profiling-launcher { gap: 8px; }
 .profiling-launcher .ico { width: 16px; height: 16px; background: currentColor; display: inline-block; }
 .profiling-beta-tag--compact {
-  background: var(--custom-control-background, #fff);
+  background: var(--custom-control-background, hsl(0.00 100.00% 93.00%));
   color: var(--custom-control-text, #003848);
   border: 0;
   margin-left: 4px;

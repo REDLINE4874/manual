@@ -8,46 +8,177 @@ showView("home");
 
 const utilityLinks = document.getElementById("utilityLinks");
 const utilityNav = document.querySelector(".utility-nav");
-const utilityActions = utilityNav?.querySelector(".utility-nav__actions");
 document
   .querySelectorAll('.utility-nav__actions .utility-action[data-view="documentos"]')
   .forEach((button) => button.remove());
 
-function fitUtilityActions() {
-  if (!utilityNav || !utilityActions) return;
-  utilityNav.classList.remove("utility-nav--icons");
-  utilityNav.classList.remove("utility-nav--actions-inline");
-
-  const items = [...utilityActions.children];
-  const actionGap = Number.parseFloat(getComputedStyle(utilityActions).columnGap) || 0;
-  const navGap = Number.parseFloat(getComputedStyle(utilityNav).columnGap) || 0;
-  const brand = utilityNav.querySelector(".utility-brand");
-  const brandLogo = brand?.querySelector("img");
-  const updated = utilityNav.querySelector(".utility-nav__updated");
-  const appearance = utilityNav.querySelector(".utility-nav__appearance");
-  const actionWidth = () => items.reduce((width, item) => width + item.getBoundingClientRect().width, 0)
-    + Math.max(0, items.length - 1) * actionGap;
-  const fixedWidth = () => (brandLogo?.getBoundingClientRect().width || brand?.scrollWidth || 0)
-    + (updated?.scrollWidth || 0)
-    + (appearance?.scrollWidth || 0)
-    + navGap * 3;
-  const fitsInline = () => fixedWidth() + actionWidth() <= utilityNav.clientWidth + 1;
-
-  if (window.innerWidth <= 1300 || !fitsInline()) {
-    utilityNav.classList.add("utility-nav--icons");
-  }
-  utilityNav.classList.toggle("utility-nav--actions-inline", fitsInline());
+function updateUtilityNavOverflow() {
+  if (!utilityNav) return;
+  utilityNav.classList.toggle(
+    "utility-nav--scrollable",
+    utilityNav.scrollWidth > utilityNav.clientWidth + 1
+  );
 }
 
-if (utilityActions) {
+if (utilityNav) {
   if ("ResizeObserver" in window) {
-    new ResizeObserver(fitUtilityActions).observe(utilityActions);
+    const navResizeObserver = new ResizeObserver(updateUtilityNavOverflow);
+    [utilityNav, ...utilityNav.children].forEach((item) => navResizeObserver.observe(item));
   }
-  window.addEventListener("resize", fitUtilityActions);
-  window.addEventListener("load", fitUtilityActions);
-  document.fonts?.ready.then(fitUtilityActions);
-  requestAnimationFrame(fitUtilityActions);
+  window.addEventListener("resize", updateUtilityNavOverflow);
+  window.addEventListener("load", updateUtilityNavOverflow);
+  document.fonts?.ready.then(updateUtilityNavOverflow);
+  requestAnimationFrame(updateUtilityNavOverflow);
 }
+
+const mobileNavigationMedia = window.matchMedia("(max-width: 900px)");
+const mobileNavigationActions = utilityNav?.querySelector(".utility-nav__actions");
+const mobileNavigationContainer = document.getElementById("navContainer");
+const mobileHomeButton = mobileNavigationContainer?.querySelector('.nav-item[data-view="home"]');
+const mobileHomeLabel = mobileHomeButton?.querySelector(".nav-label");
+const originalMobileHomeLabel = mobileHomeLabel?.textContent ?? "";
+const mobileInternalTabs = document.getElementById("internalTabs");
+const mobileMoreButton = document.createElement("button");
+mobileMoreButton.className = "mobile-navigation-more-toggle";
+mobileMoreButton.type = "button";
+mobileMoreButton.setAttribute("aria-controls", "mobileNavigationMore");
+mobileMoreButton.setAttribute("aria-expanded", "false");
+mobileMoreButton.setAttribute("aria-label", "Más opciones");
+mobileMoreButton.innerHTML = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <circle cx="5" cy="12" r="1.6" fill="currentColor"></circle>
+    <circle cx="12" cy="12" r="1.6" fill="currentColor"></circle>
+    <circle cx="19" cy="12" r="1.6" fill="currentColor"></circle>
+  </svg>
+  <span>Más</span>`;
+
+const mobileMorePanel = document.createElement("section");
+mobileMorePanel.className = "mobile-navigation-more";
+mobileMorePanel.id = "mobileNavigationMore";
+mobileMorePanel.setAttribute("aria-labelledby", "mobileNavigationMoreTitle");
+mobileMorePanel.hidden = true;
+
+const mobileMoreTitle = document.createElement("h2");
+mobileMoreTitle.id = "mobileNavigationMoreTitle";
+mobileMoreTitle.textContent = "Más opciones";
+
+const mobileMoreSections = document.createElement("div");
+mobileMoreSections.className = "mobile-navigation-more__sections";
+const mobileCardSection = document.createElement("section");
+mobileCardSection.className = "mobile-navigation-more__cards";
+const mobileCardHeading = document.createElement("h3");
+mobileCardHeading.textContent = "Tarjetas";
+mobileCardSection.append(mobileCardHeading);
+
+const mobileToolsSection = document.createElement("section");
+mobileToolsSection.className = "mobile-navigation-more__tools";
+const mobileToolsHeading = document.createElement("h3");
+mobileToolsHeading.textContent = "Herramientas y preferencias";
+const mobileToolsItems = document.createElement("div");
+mobileToolsItems.className = "mobile-navigation-more__items";
+mobileToolsSection.append(mobileToolsHeading, mobileToolsItems);
+mobileMoreSections.append(mobileCardSection, mobileToolsSection);
+mobileMorePanel.append(mobileMoreTitle, mobileMoreSections);
+mobileMoreButton.addEventListener("click", () => {
+  const isOpen = mobileMorePanel.hidden;
+  mobileMorePanel.hidden = !isOpen;
+  mobileMoreButton.setAttribute("aria-expanded", String(isOpen));
+});
+mobileMorePanel.addEventListener("click", (event) => {
+  const action = event.target.closest(
+    'a[href], .nav-item[data-card], .nav-item[data-view], .internal-tab, .utility-action[data-view], #adminNavButton, #authButton',
+  );
+  if (action) {
+    mobileMorePanel.hidden = true;
+    mobileMoreButton.setAttribute("aria-expanded", "false");
+    mobileMoreButton.focus();
+  }
+});
+document.addEventListener("click", (event) => {
+  if (
+    !mobileMorePanel.hidden &&
+    !mobileMorePanel.contains(event.target) &&
+    !mobileMoreButton.contains(event.target)
+  ) {
+    mobileMorePanel.hidden = true;
+    mobileMoreButton.setAttribute("aria-expanded", "false");
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !mobileMorePanel.hidden) {
+    mobileMorePanel.hidden = true;
+    mobileMoreButton.setAttribute("aria-expanded", "false");
+    mobileMoreButton.focus();
+  }
+});
+
+utilityNav?.append(mobileMoreButton);
+utilityNav?.after(mobileMorePanel);
+
+const mobileNavigationItems = [
+  { element: mobileNavigationContainer, target: mobileCardSection },
+  { element: mobileHomeButton, target: utilityNav },
+  { element: mobileInternalTabs, target: mobileToolsItems },
+  { element: utilityLinks, target: mobileToolsItems },
+  { element: utilityNav?.querySelector(".utility-nav__updated"), target: mobileToolsItems },
+  { element: utilityNav?.querySelector(".utility-nav__appearance"), target: mobileToolsItems },
+  { element: document.getElementById("adminNavButton"), target: mobileToolsItems },
+  { element: document.getElementById("authButton"), target: mobileToolsItems },
+]
+  .filter((item) => item.element)
+  .map((item) => ({ ...item, placeholder: null }));
+
+function updateMobileMoreButtonState() {
+  const hasActiveItem = mobileMorePanel.querySelector(
+    ".nav-item.active, .internal-tab.is-active, .utility-action.active",
+  );
+  mobileMoreButton.classList.toggle("active", Boolean(hasActiveItem));
+}
+
+const mobileMoreObserver = new MutationObserver(updateMobileMoreButtonState);
+mobileMoreObserver.observe(mobileMorePanel, {
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["class"],
+});
+
+function updateMobileNavigation() {
+  if (!utilityNav || !mobileNavigationActions) return;
+
+  const isMobile = mobileNavigationMedia.matches;
+  utilityNav.classList.toggle("utility-nav--mobile", isMobile);
+
+  if (isMobile) {
+    if (!mobileNavigationItems[0].placeholder) {
+      if (typeof closeSidebar === "function") closeSidebar();
+      mobileNavigationItems.forEach((item) => {
+        item.placeholder = document.createComment("");
+        item.element.before(item.placeholder);
+        if (item.element === mobileHomeButton) utilityNav.prepend(item.element);
+        else item.target.append(item.element);
+      });
+    }
+    if (mobileHomeLabel) mobileHomeLabel.textContent = "Inicio";
+    mobileHomeButton?.setAttribute("aria-label", "Inicio");
+    utilityNav.setAttribute("aria-label", "Navegación principal");
+  } else {
+    mobileMorePanel.hidden = true;
+    mobileMoreButton.setAttribute("aria-expanded", "false");
+    mobileNavigationItems.forEach((item) => {
+      if (item.placeholder?.isConnected) item.placeholder.replaceWith(item.element);
+      item.placeholder = null;
+    });
+    if (mobileHomeLabel) mobileHomeLabel.textContent = originalMobileHomeLabel;
+    mobileHomeButton?.removeAttribute("aria-label");
+    utilityNav.setAttribute("aria-label", "Herramientas del manual");
+  }
+
+  updateMobileMoreButtonState();
+  updateUtilityNavOverflow();
+}
+
+window.addEventListener("resize", updateMobileNavigation);
+updateMobileNavigation();
 
 const utilityLinksTrigger = utilityLinks?.querySelector(".utility-links__trigger");
 utilityLinksTrigger?.addEventListener("click", (event) => {

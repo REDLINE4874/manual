@@ -18,10 +18,10 @@
       rel="stylesheet"
     />
     <!-- CSS -->
-    <link rel="stylesheet" href="src/css/styles.css" />
-    <link rel="stylesheet" href="src/css/admin-panel.css" />
-    <link rel="stylesheet" href="src/css/custom-background-overrides.css" />
-    <link rel="stylesheet" href="src/css/index-overrides.css" />
+    <link rel="stylesheet" href="src/css/estilos.css" />
+    <link rel="stylesheet" href="src/css/panel-administrativo.css" />
+    <link rel="stylesheet" href="src/css/ajustes-fondo.css" />
+    <link rel="stylesheet" href="src/css/ajustes-indice.css" />
     <!-- JS -->
     <script src="src/js/core/page-sections.js" defer></script>
     <script
@@ -129,63 +129,155 @@
 
       <main class="main">
         <nav
-          class="utility-nav"
+          class="utility-nav utility-nav--icons"
           id="utilityNav"
           aria-label="Herramientas del manual"
         >
-          <a
-            class="utility-brand"
-            href="#"
-            data-view="home"
-            aria-label="Inicio Banamex"
-          >
-            <img src="assets/images/Banamex.svg" alt="Banamex" />
-          </a>
           <div class="utility-nav__actions">
             <button
               class="utility-action"
               data-view="perfilamiento"
+              aria-label="Perfilamiento"
               title="Perfilamiento de cliente"
             >
               <span
                 class="utility-action__icon ico"
                 data-icon="profile"
+                aria-hidden="true"
               ></span>
               <span>Perfilamiento</span>
             </button>
             <button
               class="utility-action"
               data-view="puntos"
+              aria-label="Calculadora"
               title="Calculadora de puntos"
             >
               <span
                 class="utility-action__icon ico"
                 data-icon="calculator"
+                aria-hidden="true"
               ></span>
               <span>Calculadora</span>
             </button>
             <button
               class="utility-action"
               data-view="digitos"
+              aria-label="Dígitos"
               title="Dígitos"
             >
               <span
                 class="utility-action__icon ico"
                 data-icon="digits"
+                aria-hidden="true"
               ></span>
               <span>Dígitos</span>
             </button>
             <button
               class="utility-action"
               data-view="documentos"
+              aria-label="Formalización"
               title="Formalización"
             >
               <span
                 class="utility-action__icon ico"
                 data-icon="drive"
+                aria-hidden="true"
               ></span>
               <span>Formalización</span>
             </button>
+            <div
+              class="internal-tabs"
+              id="internalTabs"
+              role="tablist"
+              aria-label="Pestañas internas"
+            >
+              <button
+                class="internal-tab"
+                type="button"
+                role="tab"
+                data-view="documentos"
+                aria-label="Formalización"
+                title="Formalización"
+                draggable="true"
+              >
+                <svg
+                  class="internal-tab__icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M6 3.75h8l4 4V20a1.25 1.25 0 0 1-1.25 1.25h-9.5A1.25 1.25 0 0 1 6 20V5a1.25 1.25 0 0 1 1.25-1.25Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M14 4v4h4M9 13h6m-6 3h6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>Formalización</span>
+              </button>
+              <button
+                class="internal-tab"
+                type="button"
+                role="tab"
+                data-view="guia"
+                aria-label="Script"
+                title="Script"
+                draggable="true"
+              >
+                <svg
+                  class="internal-tab__icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2.5-13-3 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>Script</span>
+              </button>
+              <button
+                class="internal-tab"
+                type="button"
+                role="tab"
+                data-view="comision"
+                aria-label="Comisión"
+                title="Comisión"
+                draggable="true"
+              >
+                <svg
+                  class="internal-tab__icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M12 3v18m4-14.5c-.8-1-2.1-1.5-4-1.5-2.5 0-4 1.2-4 3s1.4 2.7 4 3.2 4 1.4 4 3.3-1.6 3.2-4 3.2c-1.8 0-3.4-.7-4.3-1.9"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>Comisión</span>
+              </button>
+            </div>
             <div class="utility-links" id="utilityLinks"></div>
           </div>
           <div class="updated-badge utility-nav__updated">
@@ -205,92 +297,6 @@
             </div>
           </div>
         </nav>
-        <div
-          class="internal-tabs"
-          id="internalTabs"
-          role="tablist"
-          aria-label="Pestañas internas"
-        >
-          <button
-            class="internal-tab"
-            type="button"
-            role="tab"
-            data-view="documentos"
-            draggable="true"
-          >
-            <svg
-              class="internal-tab__icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M6 3.75h8l4 4V20a1.25 1.25 0 0 1-1.25 1.25h-9.5A1.25 1.25 0 0 1 6 20V5a1.25 1.25 0 0 1 1.25-1.25Z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 4v4h4M9 13h6m-6 3h6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Formalización</span>
-          </button>
-          <button
-            class="internal-tab"
-            type="button"
-            role="tab"
-            data-view="guia"
-            draggable="true"
-          >
-            <svg
-              class="internal-tab__icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="m8.5 7-5 5 5 5m7-10 5 5-5 5m-2.5-13-3 16"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Script</span>
-          </button>
-          <button
-            class="internal-tab"
-            type="button"
-            role="tab"
-            data-view="comision"
-            draggable="true"
-          >
-            <svg
-              class="internal-tab__icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M12 3v18m4-14.5c-.8-1-2.1-1.5-4-1.5-2.5 0-4 1.2-4 3s1.4 2.7 4 3.2 4 1.4 4 3.3-1.6 3.2-4 3.2c-1.8 0-3.4-.7-4.3-1.9"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>Comisi&#243;n</span>
-          </button>
-        </div>
         <section class="view active" id="view-home">
           <div class="hero">
             <div>

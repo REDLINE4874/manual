@@ -64,6 +64,56 @@ body.custom-background .admin-view .admin-users-table__actions .notes-button:dis
   opacity: .82;
 }
 
+body.custom-background .validation-column .validation-column-header,
+body.custom-background .validation-column.is-invalid .validation-column-header {
+  background: var(--custom-panel-background);
+}
+
+body.custom-background .validation-column-header h3 {
+  color: var(--text) !important;
+}
+
+body.custom-background .validation-column .validation-status,
+body.custom-background .validation-column.is-invalid .validation-status {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .validation-column .validation-card-list li,
+body.custom-background .validation-column.is-invalid .validation-card-list li {
+  background: var(--custom-panel-background);
+  color: var(--text) !important;
+}
+
+body.custom-background .validation-column .validation-card-logo--initials,
+body.custom-background .validation-column.is-invalid .validation-card-logo--initials {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .validation-warning {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .validation-warning strong {
+  color: var(--custom-control-text) !important;
+}
+
+body.custom-background .commission-note {
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .commission-note strong {
+  color: var(--custom-control-text);
+}
+
+body.custom-background .profiling-alt-card,
+body.custom-background .profiling-alt-card--aligned {
+  background: var(--custom-panel-background);
+}
+
 body.custom-background .profiling-beta-tag {
   border-color: color-mix(in srgb, var(--custom-control-text) 20%, transparent);
   background: var(--custom-control-background);
