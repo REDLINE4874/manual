@@ -22,16 +22,22 @@ const EXTERNAL_LINKS = [
     url: "https://www.gob.mx/curp",
     icon: "assets/icons/curp.svg",
   },
+  // {
+  //   name: "Vicidial Respaldo",
+  //   url: "https://aliadosmedb.directo.com/agc/vicidial.php",
+  //   icon: "assets/icons/dial.svg",
+  // },
+  // {
+  //   name: "CRM Respaldo",
+  //   url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
+  //   icon: "assets/icons/crm.svg",
+  // },
   {
-    name: "Vicidial Respaldo",
-    url: "https://aliadosmedb.directo.com/agc/vicidial.php",
-    icon: "assets/icons/dial.svg",
+    name: "Sucursales",
+    url: "https://www.banamex.com/localizador-de-sucursales?lid=MX|index-H4-Information-IrLocalizadorSucursales-ES",
+    icon: "assets/icons/sucursales.svg",
   },
-  {
-    name: "CRM Respaldo",
-    url: "http://aliados.medc.com.mx:7070/MA_ALIADOS",
-    icon: "assets/icons/crm.svg",
-  },
+
 
 ];
 
