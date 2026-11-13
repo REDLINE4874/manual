@@ -115,8 +115,11 @@ function openCard(id) {
           <div class="stat"><div class="label">Tasa de interés anual</div><div class="value">${c.rate}</div></div>
           <div class="stat"><div class="label">Administración mensual</div><div class="value">${c.admin}</div></div>
           <div class="stat"><div class="label">Adicional</div><div class="value">${c.additional}</div></div>
-          <div class="stat stat-button" onclick="openScript()">
-          <div class="script-icon"></div><div class="label">Script de venta</div><div class="value">Haz clic para visualizar →</div></div></div>
+          <button class="stat stat-button" type="button" onclick="openScript()">
+            <span class="label">Script de venta</span>
+            <span class="value">Ver guion de venta <span aria-hidden="true">→</span></span>
+          </button>
+        </div>
         </div>
       </div>
     </div>

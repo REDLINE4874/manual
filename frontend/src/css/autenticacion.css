@@ -127,7 +127,7 @@ body.dark-theme .site-auth-logo {
   border-radius: 7px;
   background: var(--auth-field);
   color: var(--auth-ink);
-  font: 16px var(--font-body);
+  font: 500 16px var(--font-body);
   box-shadow: 3px 3px 0 var(--auth-outline);
   transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }

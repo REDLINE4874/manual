@@ -17,7 +17,7 @@ siteAuthScreen.innerHTML = `
       <img class="site-auth-logo" src="assets/icons/talent.svg" alt="Talent Group" />
     </div>
     <h1 id="siteAuthTitle">Iniciar sesión</h1>
-    <div class="site-auth-kicker">Agendas</div>
+    <div class="site-auth-kicker">Manual</div>
 
     <div id="siteAuthLoginPanel">
       

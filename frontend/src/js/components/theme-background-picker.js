@@ -4,6 +4,7 @@ class ThemeBackgroundPicker extends HTMLElement {
   static SAVED_COLORS_PROFILE_KEY = "backgroundColors";
   static BACKGROUND_MIN_LIGHTNESS = 15;
   static PANEL_MIN_LIGHTNESS = 20;
+  static PANEL_LIGHTNESS_DIFFERENCE = 15;
   static MAX_LIGHTNESS = 30;
   static NEUTRAL_SATURATION_LIMIT = 30;
   static MAX_NEUTRAL_LIGHTNESS = 93;
@@ -580,6 +581,34 @@ class ThemeBackgroundPicker extends HTMLElement {
       : darkText;
   }
 
+  _panelSurface(baseHsl, additionalBackgrounds = []) {
+    const renderHex = (hsl) => this._hslToHex(
+      Number(hsl.hue.toFixed(1)),
+      Number(hsl.saturation.toFixed(1)),
+      Number(hsl.lightness.toFixed(1))
+    );
+    const backgroundHex = renderHex(baseHsl);
+    const preferredDirection = baseHsl.lightness >= 50 ? -1 : 1;
+    const candidates = [preferredDirection, -preferredDirection].map((direction) => {
+      const hsl = {
+        ...baseHsl,
+        lightness: Math.max(0, Math.min(100,
+          baseHsl.lightness + direction * ThemeBackgroundPicker.PANEL_LIGHTNESS_DIFFERENCE
+        )),
+      };
+      const textBackgrounds = [backgroundHex, ...additionalBackgrounds, renderHex(hsl)];
+      const textColor = this._highContrastText(textBackgrounds);
+      return {
+        hsl,
+        textBackgrounds,
+        textColor,
+        contrast: this._minimumContrast(textColor, textBackgrounds),
+      };
+    });
+    return candidates.find((candidate) => candidate.contrast >= 4.5)
+      || candidates.reduce((best, candidate) => candidate.contrast > best.contrast ? candidate : best);
+  }
+
   _applyColor(color, persist) {
     const themeToggle = document.querySelector("theme-toggle");
     if (typeof themeToggle?.setTheme === "function") {
@@ -596,42 +625,25 @@ class ThemeBackgroundPicker extends HTMLElement {
       : backgroundHsl.lightness >= ThemeBackgroundPicker.MAX_LIGHTNESS
         ? ThemeBackgroundPicker.MAX_LIGHTNESS + 2
         : Math.max(20, backgroundHsl.lightness - 3);
-    let surface = this._surfaceHsl(backgroundHsl, panelBaseLightness);
-    let surfaceAlt = this._surfaceHsl(backgroundHsl, panelBaseLightness - 2);
-    let inputSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 1);
-    const controlBackground = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 27 : 25);
-    const controlHover = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 24 : 22);
-    let notesSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 1);
-    let notesEditorSurface = this._surfaceHsl(backgroundHsl, panelBaseLightness - 2);
+    const inputSurfaceHsl = this._clampHsl(
+      { ...backgroundHsl, lightness: panelBaseLightness - 1 },
+      ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS
+    );
     const renderedHex = (hsl) => this._hslToHex(
       Number(hsl.hue.toFixed(1)),
       Number(hsl.saturation.toFixed(1)),
       Number(hsl.lightness.toFixed(1))
     );
-    const backgroundColor = renderedHex(backgroundHsl);
-    const surfaceHexAt = (lightness) => {
-      const surfaceHsl = this._clampHsl(
-        { ...backgroundHsl, lightness },
-        ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS
-      );
-      return renderedHex(surfaceHsl);
-    };
-    let textBackgrounds = [
-      backgroundColor,
-      surfaceHexAt(panelBaseLightness),
-      surfaceHexAt(panelBaseLightness - 2),
-      surfaceHexAt(panelBaseLightness - 1),
-    ];
-    let textColor = this._highContrastText(textBackgrounds);
-    if (this._minimumContrast(textColor, textBackgrounds) < 4.5) {
-      surface = this._hslToCss(backgroundHsl);
-      surfaceAlt = surface;
-      inputSurface = surface;
-      notesSurface = surface;
-      notesEditorSurface = surface;
-      textBackgrounds = [backgroundColor];
-      textColor = this._highContrastText(textBackgrounds);
-    }
+    const panelSurface = this._panelSurface(backgroundHsl, [renderedHex(inputSurfaceHsl)]);
+    const surface = this._hslToCss(panelSurface.hsl);
+    const surfaceAlt = surface;
+    const inputSurface = this._hslToCss(inputSurfaceHsl);
+    const controlBackground = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 27 : 25);
+    const controlHover = this._surfaceHsl(backgroundHsl, isNeutralBackground ? 24 : 22);
+    const notesSurface = surface;
+    const notesEditorSurface = surface;
+    const textBackgrounds = panelSurface.textBackgrounds;
+    const textColor = panelSurface.textColor;
     const isDarkSurface = textColor === "#ffffff";
     const controlHsl = this._clampHsl(
       { ...backgroundHsl, lightness: isNeutralBackground ? 27 : 25 },
