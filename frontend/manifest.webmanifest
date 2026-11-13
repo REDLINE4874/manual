@@ -11,19 +11,13 @@
   "theme_color": "#003da5",
   "icons": [
     {
-      "src": "assets/icons/favicon_Banamex.svg?v=2",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/icons/icon-192.png",
+      "src": "assets/icons/app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/icons/icon-512.png",
+      "src": "assets/icons/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

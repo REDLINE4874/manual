@@ -63,12 +63,19 @@
   --scrollbar-thumb: color-mix(in srgb, var(--brand-teal) 55%, var(--bg));
   --scrollbar-thumb-hover: color-mix(in srgb, var(--brand-teal) 74%, var(--bg));
 
-  --radius-lg: 20px;
-  --radius-md: 14px;
+  --radius-lg: 11px;
+  --radius-md: 11px;
   --radius-sm: 8px;
 
-  --font-display: 'Space Grotesk', 'Arial Narrow', sans-serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-display: var(--font-body);
+  --font-size-body: 16px;
+  --font-size-page-title: clamp(20px, 2.2vw, 28px);
+  --font-size-subtitle: 13px;
+  --font-size-navigation: 15px;
+  --font-size-table: 14px;
+  --font-size-table-heading: 15px;
+  --font-size-field-label: 11px;
   --sidebar-w: 280px;
   --sidebar-w-collapsed: 76px;
 
@@ -181,7 +188,7 @@ html{
   background:transparent;
 }
 
-body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:var(--font-size-body); font-weight:400; line-height:1.5; -webkit-font-smoothing:antialiased;}
 body, .sidebar, .topbar, .tcard, .digito-btn, .digito-card, .costos-panel, .extra-block, .calc-card, .stat, .updated-badge, .detail-segment-tag, .field select, .field input, .formula-note, .validity-note, .waiver-block, .modal-box{ transition:background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease; }
 img{ max-width:100%; display:block; }
 button{ font-family:inherit; cursor:pointer; }

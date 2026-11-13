@@ -166,7 +166,7 @@ body.dark-theme .detail-action-btn{
 .explora-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 11px;
 }
 
 .explora-benefits-table {
@@ -283,7 +283,7 @@ body.dark-theme .detail-action-btn{
   gap: 16px;
   background: var(--surface-soft);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 11px;
   padding: 18px 20px;
   min-height: 170px;
 }
@@ -394,7 +394,7 @@ body.dark-theme .detail-action-btn{
 .redencion-card {
   background: var(--surface-soft);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 11px;
   padding: 24px 16px 20px;
   display: flex;
   flex-direction: column;

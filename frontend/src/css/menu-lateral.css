@@ -5,7 +5,7 @@
 
 /* ---------- Sidebar ---------- */
 .sidebar{ width:var(--sidebar-w); flex-shrink:0; background:var(--sidebar-bg); color:var(--sidebar-text); padding:24px 18px 28px; position:sticky;
-  top:12px; height:calc(100vh - 24px); margin:12px 0 12px 12px; overflow-y:auto;overflow-x:hidden; display:flex; flex-direction:column; gap:22px; border-radius:22px; box-shadow:var(--shadow-nav); transition:width .22s ease, padding .22s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease;}
+  top:12px; height:calc(100vh - 24px); margin:12px 0 12px 12px; overflow-y:auto;overflow-x:hidden; display:flex; flex-direction:column; gap:22px; border-radius:11px; box-shadow:var(--shadow-nav); transition:width .22s ease, padding .22s ease, background-color .25s ease, color .25s ease, box-shadow .25s ease;}
 .sidebar::before{display:none;}
 .sidebar{ scrollbar-color:color-mix(in srgb, var(--sidebar-text) 55%, var(--sidebar-bg)) var(--sidebar-bg); }
 .sidebar::-webkit-scrollbar{ width:7px; }

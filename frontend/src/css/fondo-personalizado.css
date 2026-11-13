@@ -394,7 +394,7 @@ body.custom-background .note-prompt {
 
 body.custom-background .note-prompt__card {
   border-color: color-mix(in srgb, var(--custom-accent-text) 34%, transparent);
-  border-radius: 22px;
+  border-radius: 11px;
   background: hsl(0 0% 93%);
   color: #101828;
   box-shadow: 0 22px 60px rgba(0, 0, 0, .38);

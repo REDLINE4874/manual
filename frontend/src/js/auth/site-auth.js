@@ -14,10 +14,10 @@ siteAuthScreen.setAttribute("aria-labelledby", "siteAuthTitle");
 siteAuthScreen.innerHTML = `
   <div class="site-auth-card">
     <div class="site-auth-brand">
-      <img class="site-auth-logo" src="assets/icons/talent.svg" alt="Talent" />
-     
+      <img class="site-auth-logo" src="assets/icons/talent.svg" alt="Talent Group" />
     </div>
-    <h1 id="siteAuthTitle">Iniciar sesion</h1>
+    <h1 id="siteAuthTitle">Iniciar sesión</h1>
+    <div class="site-auth-kicker">Agendas</div>
 
     <div id="siteAuthLoginPanel">
       
@@ -25,35 +25,35 @@ siteAuthScreen.innerHTML = `
         <label>Usuario
           <input id="siteAuthLoginUsername" type="text" autocomplete="username" minlength="3" required />
         </label>
-        <label>Contrasena
+        <label>Contraseña
           <input id="siteAuthLoginPassword" type="password" autocomplete="off" required />
         </label>
-        <button class="site-auth-submit" type="submit">Iniciar sesion</button>
+        <button class="site-auth-submit" type="submit">Iniciar sesión</button>
       </form>
-      <button class="site-auth-link" id="siteAuthForgot" type="button">Olvide mi contrasena</button>
+      <button class="site-auth-link" id="siteAuthForgot" type="button">Olvidé mi contraseña</button>
     </div>
 
     <div id="siteAuthRequestPanel" hidden>
-      <p>Escribe tu correo y te enviaremos un enlace para cambiar la contrasena.</p>
+      <p>Escribe tu correo y te enviaremos un enlace para cambiar la contraseña.</p>
       <form class="site-auth-form" id="siteAuthRequestForm" autocomplete="off">
-        <label>Correo electronico
+        <label>Correo electrónico
           <input id="siteAuthRequestEmail" type="email" autocomplete="off" required />
         </label>
         <button class="site-auth-submit" type="submit">Enviar enlace</button>
       </form>
-      <button class="site-auth-link" id="siteAuthRequestBack" type="button">Volver al inicio de sesion</button>
+      <button class="site-auth-link" id="siteAuthRequestBack" type="button">Volver al inicio de sesión</button>
     </div>
 
     <div id="siteAuthUpdatePanel" hidden>
-      <p>Escribe y confirma tu nueva contrasena.</p>
+      <p>Escribe y confirma tu nueva contraseña.</p>
       <form class="site-auth-form" id="siteAuthUpdateForm" autocomplete="off">
-        <label>Contrasena nueva
+          <label>Contraseña nueva
           <input id="siteAuthNewPassword" type="password" autocomplete="off" required />
         </label>
-        <label>Confirmar contrasena
+          <label>Confirmar contraseña
           <input id="siteAuthConfirmPassword" type="password" autocomplete="off" required />
         </label>
-        <button class="site-auth-submit" type="submit">Guardar contrasena</button>
+          <button class="site-auth-submit" type="submit">Guardar contraseña</button>
       </form>
     </div>
 
@@ -95,10 +95,10 @@ function showSiteAuthPanel(panel) {
   siteAuthRequestPanel.hidden = panel !== "request";
   siteAuthUpdatePanel.hidden = panel !== "update";
   siteAuthTitle.textContent = panel === "update"
-    ? "Cambiar contrasena"
+    ? "Cambiar contraseña"
     : panel === "request"
-      ? "Recuperar contrasena"
-      : "Iniciar sesion";
+      ? "Recuperar contraseña"
+      : "Iniciar sesión";
   setSiteAuthStatus("");
 
   if (panel === "login") siteAuthLoginUsername.focus();
