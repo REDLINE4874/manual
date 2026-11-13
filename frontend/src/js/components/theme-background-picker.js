@@ -33,8 +33,8 @@ class ThemeBackgroundPicker extends HTMLElement {
           box-shadow: 0 3px 10px rgba(15, 23, 42, .12);
           transition: transform .2s ease, border-color .2s ease;
         }
-        .picker:hover { transform: translateY(-1px); border-color: var(--accent-color, #111); }
-        .picker:focus-visible { outline: 3px solid var(--input-focus-ring, rgba(17, 17, 17, .16)); outline-offset: 2px; }
+        .picker:hover { transform: translateY(-1px); border-color: var(--custom-accent-text, var(--accent-color, #111)); }
+        .picker:focus-visible { outline: 3px solid var(--custom-accent-text, var(--input-focus-ring, rgba(17, 17, 17, .16))); outline-offset: 2px; }
         .swatch {
           width: 16px;
           height: 16px;
@@ -61,9 +61,13 @@ class ThemeBackgroundPicker extends HTMLElement {
         @media (max-width: 900px) {
           .popover {
             position: fixed;
-            top: auto;
+            top: calc(72px + env(safe-area-inset-top, 0px));
             right: 12px;
-            bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+            bottom: auto;
+            box-sizing: border-box;
+            max-height: calc(100dvh - 96px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            overflow-y: auto;
+            overscroll-behavior: contain;
           }
         }
         .popover-title {
@@ -124,7 +128,7 @@ class ThemeBackgroundPicker extends HTMLElement {
         .custom-color:focus-within,
         .hex-input:focus-visible,
         .reset:focus-visible {
-          outline: 2px solid var(--brand-teal, #003848);
+          outline: 2px solid var(--custom-accent-text, var(--brand-teal, #003848));
           outline-offset: 2px;
         }
         .custom-row {
@@ -153,7 +157,7 @@ class ThemeBackgroundPicker extends HTMLElement {
           cursor: pointer;
         }
         .color-preview { width: 100%; height: 100%; border: 1px solid rgba(100,116,139,.38); border-radius: 5px; background: hsl(40 25% 93%); }
-        .color-input:focus-visible, .hsl-slider:focus-visible, .hsl-input:focus-visible { outline: 2px solid var(--brand-teal, #008ca1); outline-offset: 2px; }
+        .color-input:focus-visible, .hsl-slider:focus-visible, .hsl-input:focus-visible { outline: 2px solid var(--custom-accent-text, var(--brand-teal, #008ca1)); outline-offset: 2px; }
         .color-editor { display: grid; gap: 12px; margin-top: 12px; padding: 12px; border: 1px solid var(--border, rgba(15,23,42,.16)); border-radius: 12px; background: var(--bg-2, var(--bg, hsl(0 0% 93%))); }
         .color-editor[hidden] { display: none; }
         .color-result { display: flex; align-items: center; gap: 10px; }
@@ -185,15 +189,15 @@ class ThemeBackgroundPicker extends HTMLElement {
           box-shadow: inset 0 1px 2px rgba(15, 23, 42, .06);
           transition: border-color .16s ease, box-shadow .16s ease;
         }
-        .hex-input:hover { border-color: var(--brand-teal, #003848); }
-        .hex-input:focus-visible { outline: 0; border-color: var(--brand-teal, #003848); box-shadow: 0 0 0 3px var(--input-focus-ring, rgba(17, 17, 17, .16)); }
+        .hex-input:hover { border-color: var(--custom-accent-text, var(--brand-teal, #003848)); }
+        .hex-input:focus-visible { outline: 0; border-color: var(--custom-accent-text, var(--brand-teal, #003848)); box-shadow: 0 0 0 3px var(--input-focus-ring, rgba(17, 17, 17, .16)); }
         .hex-input[aria-invalid="true"] { border-color: #c2413b; box-shadow: 0 0 0 3px rgba(194, 65, 59, .14); }
         .reset {
           margin-left: auto;
           padding: 5px 0;
           border: 0;
           background: transparent;
-          color: var(--brand-teal, #003848);
+          color: var(--custom-accent-text, var(--brand-teal, #003848));
           font: 600 11px var(--font-body, Inter, sans-serif);
           cursor: pointer;
         }

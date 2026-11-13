@@ -132,3 +132,77 @@ body.custom-background .profiling-interest-chip.is-selected {
 body.custom-background .profiling-option-btn.is-selected .profiling-option-btn__sub {
   color: color-mix(in srgb, var(--custom-control-text) 82%, transparent);
 }
+
+body.custom-background:not(.custom-background-dark) {
+  color-scheme: light;
+}
+
+body.custom-background-dark {
+  color-scheme: dark;
+}
+
+body.custom-background .mobile-preferences-bar,
+body.custom-background #utilityNav.utility-nav--mobile {
+  border-color: color-mix(in srgb, var(--custom-accent-text) 24%, var(--custom-control-background));
+  background: var(--custom-sidebar-background);
+  color: var(--text);
+  box-shadow: var(--shadow-nav);
+}
+
+body.custom-background .mobile-preferences-bar .utility-control__label {
+  color: var(--text-muted);
+}
+
+body.custom-background .mobile-preferences-bar > .nav-item {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, var(--custom-control-background));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .mobile-preferences-bar > .nav-item:hover,
+body.custom-background .mobile-preferences-bar > .nav-item:focus-visible {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-control-hover);
+  color: var(--custom-control-text);
+}
+
+body.custom-background #utilityNav.utility-nav--mobile .mobile-navigation-category-toggle {
+  color: var(--text);
+}
+
+body.custom-background #utilityNav.utility-nav--mobile .mobile-navigation-category-toggle.active,
+body.custom-background #utilityNav.utility-nav--mobile .mobile-navigation-category-toggle.is-open {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, var(--custom-control-background));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+  box-shadow: inset 0 -3px 0 var(--custom-accent-text);
+}
+
+body.custom-background .mobile-navigation-more {
+  border-color: var(--border);
+  background: var(--custom-panel-background);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+body.custom-background .mobile-navigation-more :is(
+  .nav-item,
+  .utility-action,
+  .internal-tab,
+  .utility-links__trigger
+) {
+  border-color: color-mix(in srgb, var(--custom-control-text) 20%, var(--custom-control-background));
+  background: var(--custom-control-background);
+  color: var(--custom-control-text);
+}
+
+body.custom-background .mobile-navigation-more :is(
+  .nav-item,
+  .utility-action,
+  .internal-tab,
+  .utility-links__trigger
+):is(:hover, :focus-visible) {
+  border-color: var(--custom-accent-text);
+  background: var(--custom-control-hover);
+  color: var(--custom-control-text);
+}

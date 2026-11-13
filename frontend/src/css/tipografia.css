@@ -60,9 +60,7 @@ table {
 }
 
 @media (max-width: 900px) {
-  #utilityNav.utility-nav--mobile .utility-action,
-  #utilityNav.utility-nav--mobile .nav-item,
-  #utilityNav.utility-nav--mobile .mobile-navigation-more-toggle {
+  #utilityNav.utility-nav--mobile .mobile-navigation-category-toggle {
     font-size: clamp(11px, 3vw, var(--font-size-navigation));
     font-weight: 700;
   }
