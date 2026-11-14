@@ -95,7 +95,7 @@ function openCard(id) {
     : '<p class="script-text">Sin información de vigencia.</p>';
 
   const extraContentHtml = c.extraImage
-      ? `<div class="extra-block" style="margin-top:22px;"><h2>${c.extraTitle}</h2><img src="${c.extraImage}" alt="Beneficios ${c.name}"></div>`
+      ? `<div class="extra-block" style="margin-top:22px;"><h1>${c.extraTitle}</h1><img src="${c.extraImage}" alt="Beneficios ${c.name}"></div>`
       : "";
 
   cont.innerHTML = `
@@ -128,8 +128,8 @@ function openCard(id) {
           ${bonifHtml}</div>
      
     <div class="detail-two-col">
-      <div class="extra-block"><h2>Beneficios</h2>${benefitsHtml}</div>
-      <div class="extra-block validity-block"><h2>Vigencias</h2>${vigenciasHtml}</div>
+      <div class="extra-block"><h1>Beneficios</h1>${benefitsHtml}</div>
+      <div class="extra-block validity-block"><h1>Vigencias</h1>${vigenciasHtml}</div>
     </div>
 
     ${extraContentHtml}

@@ -1,3 +1,8 @@
+code,
+pre {
+  font-family: var(--font-body);
+}
+
 .main .view h1,
 .main .view .detail-page-title,
 .site-auth-card h1 {
@@ -6,6 +11,15 @@
   font-weight: 700;
   line-height: 1.2;
   font-size-adjust: from-font;
+}
+
+.extra-block h1:not(.explora-certificate-title),
+.main .view .extra-block h1:not(.explora-certificate-title) {
+  margin: 14px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .main .view :is(h2, h3, .subtitle, .sub, .section-subtitle) {
@@ -59,7 +73,7 @@ table {
   font-weight: 700;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 999px) {
   #utilityNav.utility-nav--mobile .mobile-navigation-category-toggle {
     font-size: clamp(11px, 3vw, var(--font-size-navigation));
     font-weight: 700;

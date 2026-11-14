@@ -31,7 +31,7 @@ if (utilityNav) {
   requestAnimationFrame(updateUtilityNavOverflow);
 }
 
-const mobileNavigationMedia = window.matchMedia("(max-width: 900px)");
+const mobileNavigationMedia = window.matchMedia("(max-width: 999px)");
 const mobileNavigationActions = utilityNav?.querySelector(".utility-nav__actions");
 const mobileNavigationContainer = document.getElementById("navContainer");
 const mobileHomeButton = mobileNavigationContainer?.querySelector('.nav-item[data-view="home"]');
@@ -53,7 +53,7 @@ const mobilePreferencesBar = document.createElement("div");
 mobilePreferencesBar.className = "mobile-preferences-bar";
 mobilePreferencesBar.id = "mobilePreferencesBar";
 mobilePreferencesBar.setAttribute("role", "group");
-mobilePreferencesBar.setAttribute("aria-label", "Preferencias y cuenta");
+mobilePreferencesBar.setAttribute("aria-label", "Navegación superior");
 
 const mobileMoreSections = document.createElement("div");
 mobileMoreSections.className = "mobile-navigation-more__sections";
@@ -212,12 +212,12 @@ const mobileNavigationItems = [
   { element: mobileNavigationContainer, target: mobileCardContent },
   ...Array.from(mobileNavigationActions?.querySelectorAll(".utility-action") ?? [])
     .map((element) => ({ element, target: mobileToolsItems })),
-  { element: utilityLinks, target: mobileToolsItems },
   { element: mobileHomeButton, target: mobilePagesItems },
   { element: mobileInternalTabs, target: mobilePagesItems },
   { element: utilityNav?.querySelector(".utility-nav__updated"), target: mobilePreferencesBar },
+  { element: utilityLinks, target: mobilePreferencesBar },
   { element: utilityNav?.querySelector(".utility-nav__appearance"), target: mobilePreferencesBar },
-  { element: document.getElementById("authButton"), target: mobilePreferencesBar },
+  { element: document.getElementById("authButton"), target: utilityNav },
   { element: document.getElementById("adminNavButton"), target: mobilePagesItems },
 ]
   .filter((item) => item.element)

@@ -108,20 +108,20 @@ function renderExploraBenefitsTable(data) {
       <div class="extra-block explora-table-block">
         <div class="explora-destinations-grid">
           <div class="explora-destination-group">
-            <h2>Destinos a EEUU</h2>
+            <h1>Destinos a EEUU</h1>
             <ul class="explora-destination-list">
               ${usList.map((item) => `<li>${item}</li>`).join("")}
             </ul>
           </div>
           <div class="explora-destination-group">
-            <h2>Destinos nacionales</h2>
+            <h1>Destinos nacionales</h1>
             <ul class="explora-destination-list">
               ${nationalList.map((item) => `<li>${item}</li>`).join("")}
             </ul>
           </div>
         </div>
 
-        <h2 class="explora-certificate-title">Obtén tu certificado 2x1 al cumplir con los requisitos</h2>
+        <h1 class="explora-certificate-title">Obtén tu certificado 2x1 al cumplir con los requisitos</h1>
 
         <div class="explora-certificate-grid">
           ${certificateCards}
@@ -133,7 +133,7 @@ function renderExploraBenefitsTable(data) {
   if (rows.length) {
     return `
       <div class="extra-block explora-table-block">
-        <h2>Destinos y certificado 2x1 (beneficios de viaje)</h2>
+        <h1>Destinos y certificado 2x1 (beneficios de viaje)</h1>
         <div class="explora-table-wrap">
           <table class="explora-benefits-table">
             <thead>

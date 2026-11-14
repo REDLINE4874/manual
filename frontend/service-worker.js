@@ -1,4 +1,4 @@
-const CACHE_NAME = 'manual-banamex-shell-v1';
+const CACHE_NAME = 'manual-banamex-shell-v5';
 const APP_SHELL = new URL('./', self.location.href).toString();
 
 self.addEventListener('install', (event) => {
