@@ -12,9 +12,17 @@ class ThemeBackgroundPicker extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
+    this._initialized = false;
   }
 
   connectedCallback() {
+    if (this._initialized) {
+      document.addEventListener("click", this._handleDocumentClick);
+      document.addEventListener("keydown", this._handleKeydown);
+      document.addEventListener("theme-change", this._handleThemeChange);
+      return;
+    }
+
     this.shadowRoot.innerHTML = `
       <style>
         :host { position: relative; display: inline-flex; }
@@ -315,6 +323,7 @@ class ThemeBackgroundPicker extends HTMLElement {
       this._syncColorControls(this._lastAppliedColor);
       this._setOpen(false);
     };
+    this._initialized = true;
     document.addEventListener("click", this._handleDocumentClick);
     document.addEventListener("keydown", this._handleKeydown);
     document.addEventListener("theme-change", this._handleThemeChange);

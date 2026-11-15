@@ -38,9 +38,12 @@ class ThemeToggle extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this._initialized = false;
   }
 
   connectedCallback() {
+    if (this._initialized) return;
+
     this.shadowRoot.innerHTML = `
       <style>
         :host{
@@ -355,6 +358,7 @@ class ThemeToggle extends HTMLElement {
     const initialDark = saved ? saved === 'dark' : prefersDark;
 
     this._setTheme(initialDark, { persist: false });
+    this._initialized = true;
   }
 
   toggle() {
