@@ -1,9 +1,6 @@
 /* Vistas estáticas que no necesitan lógica propia en el documento principal. */
 
-// Cambia a true para volver a mostrar la sección de Notas y su pestaña.
-const ENABLE_NOTES = true;
-
-const staticPageSectionIds = ["documentos", "guia", "puntos", "digitos", "external", "digito-detail", "notas", "perfilamiento", "comision", "admin"];
+const staticPageSectionIds = ["documentos", "guia", "puntos", "digitos", "external", "digito-detail", "perfilamiento", "comision", "admin"];
 staticPageSectionIds.forEach((id) => document.getElementById(`view-${id}`)?.remove());
 
 const staticPageSections = `
@@ -61,34 +58,6 @@ const staticPageSections = `
   </section>
 
   <section class="view" id="view-digito-detail"><button class="back-link" data-view="digitos">&#8592; Volver a D&#237;gitos</button><div id="digitoDetailContainer"><!-- generado por navigation.js --></div></section>
-
-  <section class="view notes-view" id="view-notas">
-    <button class="back-link" data-view="home">&#8592; Volver al men&#250;</button>
-    <div class="hero notes-view__hero"><div><h1>Mis notas</h1></div></div>
-    <div class="notes-auth" id="notesAuthState">
-      <h2>Inicia sesi&#243;n para ver tus notas</h2>
-      <p>Tus notas quedan separadas de las de los dem&#225;s usuarios.</p>
-      <p class="notes-status" id="notesStatus" role="status"></p>
-    </div>
-    <div class="notes-app" id="notesApp" hidden>
-      <div class="notes-app__toolbar"><span id="notesUserLabel"></span></div>
-      <form class="note-editor" id="noteForm" autocomplete="off">
-        <input id="noteTitle" type="text" autocomplete="off" maxlength="120" placeholder="Crear una nota..." aria-label="T&#237;tulo de la nota" />
-        <textarea id="noteContent" maxlength="5000" placeholder="Escribe una nota..." aria-label="Contenido de la nota"></textarea>
-        <div class="note-editor__actions"><span class="notes-status" id="noteSaveStatus" role="status"></span><button class="note-editor__close" type="submit">Cerrar</button></div>
-      </form>
-      <div class="notes-filter">
-        <span id="noteDateFilterLabel">Ver notas de la fecha</span>
-        <input id="noteDateFilter" type="hidden" />
-        <div class="notes-calendar">
-          <button id="noteDateFilterTrigger" class="notes-calendar__trigger" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="noteDateCalendar">Elegir fecha</button>
-          <div id="noteDateCalendar" class="notes-calendar__popup" role="dialog" aria-label="Calendario para filtrar notas" hidden></div>
-        </div>
-        <button id="clearNoteDateFilter" type="button">Todas las fechas</button>
-      </div>
-      <div class="notes-grid" id="notesList"></div>
-    </div>
-  </section>
 
   <section class="view profiling-view" id="view-perfilamiento">
     <button class="back-link" data-view="home">&#8592; Volver al men&#250;</button>
@@ -162,18 +131,3 @@ const staticPageSections = `
 const pageSectionsHost = document.getElementById("pageSections");
 pageSectionsHost.insertAdjacentHTML("beforebegin", staticPageSections);
 pageSectionsHost.remove();
-
-const notesView = document.getElementById("view-notas");
-if (!ENABLE_NOTES) {
-  notesView?.remove();
-} else {
-  document.getElementById("internalTabs")?.insertAdjacentHTML("beforeend", `
-    <button class="internal-tab internal-tab--notes" type="button" role="tab" data-view="notas" aria-label="Notas" title="Notas" draggable="true">
-      <svg class="internal-tab__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M4 20h4L19 9l-4-4L4 16v4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
-        <path d="m13.5 6.5 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-      </svg>
-      <span>Notas</span>
-    </button>
-  `);
-}

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <meta name="description" content="Tus notas personales, siempre sincronizadas." />
+    <title>Notas</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="app.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="supabase-config.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
+      <button class="theme-toggle auth-theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
+        <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
+        <span data-theme-label>Claro</span>
+      </button>
+      <div class="auth-card">
+      <a class="brand brand--auth" href="./" aria-label="Notas, inicio">
+        <span class="brand__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.75h7l4 4v12.5h-11z" /><path d="M13.5 3.75v4h4M9.5 12h5M9.5 15.5h5" /></svg></span>
+      </a>
+        <h1 id="authTitle">Inicia sesión</h1>
+        <p class="auth-intro">Entra con el mismo usuario y contraseña del Manual.</p>
+
+        <form id="loginForm" class="auth-form" autocomplete="on">
+          <label for="username">Usuario</label>
+          <input id="username" name="username" type="text" autocomplete="username" minlength="3" required />
+          <label for="password">Contraseña</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button class="button button--primary" type="submit">Iniciar sesión</button>
+        </form>
+        <button class="text-button" id="forgotPassword" type="button">Olvidé mi contraseña</button>
+
+        <form id="recoveryForm" class="auth-form" hidden>
+          <p>Escribe el correo asociado a tu cuenta y te enviaremos un enlace.</p>
+          <label for="recoveryEmail">Correo electrónico</label>
+          <input id="recoveryEmail" type="email" autocomplete="email" required />
+          <button class="button button--primary" type="submit">Enviar enlace</button>
+          <button class="text-button" id="backToLogin" type="button">Volver a iniciar sesión</button>
+        </form>
+
+        <form id="updatePasswordForm" class="auth-form" hidden>
+          <p>Elige tu nueva contraseña.</p>
+          <label for="newPassword">Contraseña nueva</label>
+          <input id="newPassword" type="password" autocomplete="new-password" required />
+          <label for="confirmPassword">Confirmar contraseña</label>
+          <input id="confirmPassword" type="password" autocomplete="new-password" required />
+          <button class="button button--primary" type="submit">Guardar contraseña</button>
+        </form>
+        <p class="status auth-status" id="authStatus" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <main class="app-shell" id="appShell" hidden>
+      <header class="app-header">
+        <div class="app-header__top">
+          <a class="brand" href="./" aria-label="Notas, inicio">
+            <span class="brand__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.75h7l4 4v12.5h-11z" /><path d="M13.5 3.75v4h4M9.5 12h5M9.5 15.5h5" /></svg></span>
+          </a>
+          <div class="app-header__controls">
+            <button class="button button--quiet section-nav-button" id="openEditor" type="button" aria-current="page" aria-controls="workspace">
+              <span>Lienzo</span>
+            </button>
+            <button class="button button--quiet my-notes-button section-nav-button" id="openMyNotes" type="button" aria-controls="libraryView">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM8 9h8M8 12h8M8 15h5" /></svg>
+              <span>Mis notas</span>
+              <span class="my-notes-count" id="myNotesCount">0</span>
+            </button>
+            <button class="button button--quiet shared-notes-button section-nav-button" id="openSharedNotes" type="button" aria-controls="libraryView">
+              <span>Compartidas</span>
+              <span class="my-notes-count" id="sharedNotesCount">0</span>
+            </button>
+            <button class="button button--quiet install-button" id="installApp" type="button" hidden>Instalar app</button>
+            <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+          </div>
+          <div class="app-header__user-tools">
+            <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
+              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
+              <span data-theme-label>Claro</span>
+            </button>
+            <div class="account-menu">
+              <button class="account-avatar" id="accountToggle" type="button" aria-label="Mostrar nombre de usuario" aria-expanded="false" aria-controls="accountPopover">U</button>
+              <div class="account-popover" id="accountPopover" role="dialog" aria-labelledby="accountPopoverName" tabindex="-1" hidden>
+                <span id="accountPopoverName"></span>
+              </div>
+              <button class="icon-button icon-button--small" id="signOut" type="button" aria-label="Cerrar sesión" title="Cerrar sesión">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M21 3v18" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="note-tabbar">
+          <div class="note-tabbar__label">
+            <span>Pestañas abiertas</span>
+            <span class="note-tabbar__count" id="noteCount"></span>
+          </div>
+          <div class="note-tabbar__content">
+            <button class="icon-button icon-button--small tab-scroll" id="scrollTabsLeft" type="button" aria-label="Desplazar pestañas a la izquierda" aria-controls="notesList" title="Pestañas anteriores" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <nav class="notes-list" id="notesList" role="tablist" aria-label="Pestañas de notas"></nav>
+            <p class="tabs-empty" id="notesEmpty" role="status" hidden></p>
+            <button class="icon-button icon-button--small tab-scroll" id="scrollTabsRight" type="button" aria-label="Desplazar pestañas a la derecha" aria-controls="notesList" title="Pestañas siguientes" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+            <button class="icon-button tab-create" id="createNote" type="button" aria-label="Crear nota nueva" title="Crear nota nueva">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            </button>
+            <button class="icon-button tab-import" id="importTextFile" type="button" aria-label="Importar un archivo TXT como nota nueva" title="Importar archivo TXT">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.75h8l4 4v12.5H6zM14 3.75v4h4" /><path d="M12 17v-6m-2.5 2.5L12 11l2.5 2.5" /></svg>
+            </button>
+            <input id="textFileInput" type="file" accept=".txt,text/plain" hidden />
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace" id="workspace" aria-label="Lienzo de escritura">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-state__icon" aria-hidden="true">✎</div>
+          <h1>Un espacio para tus ideas</h1>
+          <p>Crea una nota y empieza a escribir. Tus cambios se guardan automáticamente.</p>
+          <button class="button button--primary" id="emptyCreateNote" type="button">Crear una nota</button>
+        </div>
+
+        <article class="note-editor" id="noteEditor" role="tabpanel" tabindex="0" hidden>
+          <div class="draft-notice" id="draftNotice" hidden>
+            <span>Hay cambios locales que todavía no se sincronizaron.</span>
+            <button class="text-button" id="restoreDraft" type="button">Restaurar</button>
+            <button class="text-button" id="discardDraft" type="button">Descartar</button>
+          </div>
+          <div class="note-editor__toolbar">
+            <time class="note-date" id="noteDate"></time>
+            <div class="note-actions">
+              <button class="button button--quiet" id="shareNote" type="button" hidden>Compartir</button>
+              <button class="button button--quiet button--danger" id="deleteNote" type="button" hidden>Eliminar</button>
+              <button class="button button--quiet button--danger" id="leaveSharedNote" type="button" hidden>Dejar de ver</button>
+            </div>
+          </div>
+          <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" />
+          <textarea class="note-content" id="noteContent" maxlength="5000" placeholder="Empieza a escribir..." aria-label="Contenido de la nota"></textarea>
+          <details class="sharing-section" id="sharingSection" hidden>
+            <summary>Compartida con <span id="sharedUserCount"></span></summary>
+            <ul id="sharedUsers"></ul>
+          </details>
+          <p class="editor-hint" id="editorHint"></p>
+        </article>
+      </section>
+
+      <section class="library-view" id="libraryView" aria-labelledby="libraryTitle" hidden>
+        <header class="library-view__header">
+          <h1 id="libraryTitle" tabindex="-1">Mis notas</h1>
+          <p id="libraryDescription">Tus notas guardadas.</p>
+        </header>
+        <div class="library-search" id="librarySearch" hidden>
+          <label for="noteSearchInput">Buscar en títulos y contenido</label>
+          <input id="noteSearchInput" type="search" placeholder="Escribe una palabra o frase" autocomplete="off" />
+        </div>
+        <div class="notes-library-list" id="libraryNotesList"></div>
+        <p class="notes-library-empty" id="libraryEmpty" role="status" hidden></p>
+      </section>
+      <p class="global-status" id="globalStatus" role="status" aria-live="polite"></p>
+    </main>
+
+    <dialog class="share-dialog" id="shareDialog">
+      <form method="dialog" class="dialog-close-form">
+        <button class="icon-button" aria-label="Cerrar" value="cancel">×</button>
+      </form>
+      <h2>Compartir nota</h2>
+      <p>Elige un usuario y define qué podrá hacer con esta nota.</p>
+      <form id="shareForm" class="share-form">
+        <label for="shareUsername">Usuario</label>
+        <select id="shareUsername" required>
+          <option value="">Selecciona un usuario</option>
+        </select>
+        <label for="sharePermission">Permiso</label>
+        <select id="sharePermission">
+          <option value="view">Solo lectura</option>
+          <option value="edit">Puede editar</option>
+        </select>
+        <div class="dialog-actions">
+          <button class="button button--quiet" type="button" id="cancelShare">Cancelar</button>
+          <button class="button button--primary" type="submit">Compartir</button>
+        </div>
+      </form>
+      <p class="status" id="shareStatus" role="status" aria-live="polite"></p>
+    </dialog>
+
+  </body>
+</html>

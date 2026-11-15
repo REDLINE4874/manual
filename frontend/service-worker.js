@@ -1,4 +1,5 @@
-const CACHE_NAME = 'manual-banamex-shell-v5';
+const CACHE_PREFIX = 'manual-banamex-shell-';
+const CACHE_NAME = `${CACHE_PREFIX}v5`;
 const APP_SHELL = new URL('./', self.location.href).toString();
 
 self.addEventListener('install', (event) => {
@@ -13,7 +14,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME).map((key) => caches.delete(key))
       ))
       .then(() => self.clients.claim())
   );

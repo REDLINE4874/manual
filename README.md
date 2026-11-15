@@ -1,9 +1,9 @@
 # Manual de Tarjetas Banamex
 
-Sitio web estático hecho con HTML, CSS y JavaScript. El proyecto tiene frontend;
-no incluye backend ni requiere instalar dependencias o compilarse. Abre
-`frontend/index.html` en un navegador o sírvelo con una extensión de servidor
-local.
+Frontends estáticos hechos con HTML, CSS y JavaScript. El repositorio no incluye
+un servidor propio ni requiere instalar dependencias o compilarse; la
+autenticación y los datos usan Supabase. Sirve `frontend/` con un servidor local
+para probarlos.
 
 ## Estructura
 
@@ -11,6 +11,9 @@ local.
 .
 ├── frontend/
 │   ├── index.html
+│   ├── notas-app/          # PWA independiente de Notas
+│   ├── manifest.webmanifest
+│   ├── service-worker.js
 │   ├── assets/
 │   │   ├── icons/       # Iconos SVG de la interfaz
 │   │   └── images/      # Imágenes de tarjetas, bancos y favicon
@@ -29,7 +32,6 @@ local.
 │       │   ├── digitos.css                 # Consulta de dígitos bancarios
 │       │   ├── detalle-tarjetas.css        # Detalles y beneficios de tarjetas
 │       │   ├── calculadoras-y-modales.css  # Calculadora y ventanas modales
-│       │   ├── notas.css                   # Vista de notas
 │       │   ├── perfilamiento.css           # Vista de perfilamiento
 │       │   ├── panel-administrativo.css    # Panel administrativo
 │       │   ├── autenticacion.css           # Inicio de sesión
@@ -50,6 +52,10 @@ local.
 │           ├── navigation.js          # Menús y cambio de vistas
 │           ├── script.js              # Inicialización de la aplicación
 │           └── sidebar.js             # Comportamiento del menú lateral
+├── supabase/
+│   ├── notes.sql
+│   ├── note-sharing.sql
+│   └── profiles.sql
 └── README.md
 ```
 
@@ -61,9 +67,11 @@ de las tarjetas están en `frontend/`.
 Los estilos se organizan en módulos dentro de `frontend/src/css/`, con un archivo
 por vista o área de la interfaz. `estilos.css`, enlazado desde
 `frontend/index.html`, importa los módulos en el orden necesario. Para mantener
-una sección, edita su archivo (por ejemplo, `inicio.css`, `notas.css` o
-`comision.css`); deja en `fundamentos.css` los tokens y estilos globales. Al
-agregar o reorganizar módulos, actualiza el orden de importación en `estilos.css`.
+una sección del Manual, edita su archivo (por ejemplo, `inicio.css` o
+`comision.css`); deja en `fundamentos.css` los tokens y estilos globales. La
+interfaz de Notas se mantiene por separado en `frontend/notas-app/`. Al agregar
+o reorganizar módulos del Manual, actualiza el orden de importación en
+`estilos.css`.
 
 Los fondos principales y las superficies de panel usan HSL. El selector
 personalizado limita el fondo a una luminosidad de 15% como mínimo y los
@@ -81,22 +89,43 @@ de 6px, sin desenfoque, en `#171717` para darles un aspecto neobrutalista,
 también en el tema oscuro y los fondos personalizados. Las sombras pequeñas de
 interacción y enfoque se conservan.
 
-### Inicio de sesión local
+### App independiente de Notas
 
-Para probar las notas y el inicio de sesión con Google, sirve `frontend/` con
-un servidor local. Desde la raíz del proyecto ejecuta:
+Notas ahora es una PWA independiente ubicada en `frontend/notas-app/`. Se puede
+publicar esa carpeta en su propio sitio o servirla bajo `/notas-app/` junto al
+Manual. Ambos frontends usan el mismo proyecto de Supabase, las cuentas
+existentes, la tabla `notes` y las reglas de acceso compartido. La app recuerda
+su sesión en el dispositivo donde se inicia; la sesión del Manual no se copia
+automáticamente.
+
+La configuración pública del proyecto está en
+`frontend/notas-app/supabase-config.js`; si cambian la URL o la clave pública,
+actualízalas también en `frontend/src/js/auth/supabase-config.js`. Usa solo la
+clave `anon` protegida por RLS, nunca una clave `service_role`.
+
+Para probar ambas apps en local, sirve `frontend/` desde la raíz del proyecto:
 
 ```powershell
 py -m http.server 5500 --directory frontend
 ```
 
-Después abre `http://localhost:5500/`. No abras `frontend/index.html` como
-`file://`, porque Supabase no puede completar correctamente el retorno OAuth en
-ese modo.
+Abre `http://localhost:5500/` para el Manual y
+`http://localhost:5500/notas-app/` para Notas. No abras los archivos como
+`file://`, porque Supabase no puede completar correctamente el inicio de sesión
+en ese modo. La opción de instalar aparece en Chrome cuando se sirve por HTTPS
+o desde `localhost`.
+
+El acceso a Notas desde el menú del Manual usa la ruta relativa
+`notas-app/`. Si se publica Notas en otro dominio, cambia ese enlace por la URL
+pública de la app.
+
+### Backend de Notas
 
 En Supabase agrega `http://localhost:5500/**` en Authentication > URL
-Configuration > Redirect URLs. En Google conserva como URI de redirección la
-URL de callback de Supabase:
+Configuration > Redirect URLs. Al desplegar Notas, agrega también la URL HTTPS
+de la app con el patrón `https://<dominio-de-notas>/**` para los enlaces de
+recuperación. En Google conserva como URI de redirección la URL de callback de
+Supabase:
 `https://dpntowblygwkjybemoqk.supabase.co/auth/v1/callback`.
 
 Para habilitar la validación de usuarios al compartir notas, ejecuta también
@@ -130,17 +159,18 @@ sin sesión por si el acceso al manual se hace público más adelante.
 
 ### Instalar como aplicacion
 
-El frontend incluye un manifiesto web y un service worker para que Chrome pueda
-ofrecer la instalacion. Publica el contenido de `frontend/` como raiz del sitio
-y accede mediante HTTPS (o `localhost` durante desarrollo). Al abrir el sitio,
-Chrome mostrara la opcion de instalar cuando se cumplan sus criterios; el
-service worker conserva la pagina principal para abrirla sin conexion. Las
-funciones que dependen de Supabase o de servicios externos requieren conexion.
+El Manual y Notas tienen manifiestos e instalaciones PWA independientes.
+Publica `frontend/` como raíz del Manual y, si quieres desplegarlas en el mismo
+dominio, conserva `frontend/notas-app/` en la ruta `/notas-app/`. También puedes
+publicar el contenido de esa carpeta en otro dominio. Chrome permite instalarlas
+por separado desde HTTPS (o `localhost` durante desarrollo). Sus service workers
+mantienen cachés separadas; autenticación, sincronización y edición en Supabase
+requieren conexión.
 
 ### Backend
 
-No hay backend en este proyecto: no existe servidor, API ni base de datos.
-Actualmente, el sitio funciona enteramente en el navegador.
+Este repositorio no incluye un servidor propio. Ambos frontends son estáticos y
+usan Supabase como servicio externo de autenticación y datos.
 
 Al añadir recursos, conserva las rutas relativas a `frontend/index.html`:
 imágenes en `frontend/assets/images/`, iconos en `frontend/assets/icons/` y
