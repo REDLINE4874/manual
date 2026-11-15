@@ -175,18 +175,23 @@
       <h2>Compartir nota</h2>
       <p>Elige un usuario y define qué podrá hacer con esta nota.</p>
       <form id="shareForm" class="share-form">
-        <label for="shareUsername">Usuario</label>
-        <div class="share-select">
-          <select id="shareUsername" required>
-            <option value="">Selecciona un usuario</option>
-          </select>
+        <label id="shareUsernameLabel" for="shareUsernameButton">Usuario</label>
+        <div class="share-select" data-share-select="shareUsername">
+          <input id="shareUsername" type="hidden" value="" />
+          <button class="share-select__trigger" id="shareUsernameButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="shareUsernameOptions" aria-labelledby="shareUsernameLabel shareUsernameValue" aria-required="true">
+            <span id="shareUsernameValue">Selecciona un usuario</span>
+            <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <div class="share-select__options" id="shareUsernameOptions" role="listbox" aria-labelledby="shareUsernameButton" hidden></div>
         </div>
-        <label for="sharePermission">Permiso</label>
-        <div class="share-select">
-          <select id="sharePermission">
-            <option value="view">Solo lectura</option>
-            <option value="edit">Puede editar</option>
-          </select>
+        <label id="sharePermissionLabel" for="sharePermissionButton">Permiso</label>
+        <div class="share-select" data-share-select="sharePermission">
+          <input id="sharePermission" type="hidden" value="view" />
+          <button class="share-select__trigger" id="sharePermissionButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="sharePermissionOptions" aria-labelledby="sharePermissionLabel sharePermissionValue">
+            <span id="sharePermissionValue">Solo lectura</span>
+            <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <div class="share-select__options" id="sharePermissionOptions" role="listbox" aria-labelledby="sharePermissionButton" hidden></div>
         </div>
         <div class="dialog-actions">
           <button class="button button--quiet" type="button" id="cancelShare">Cancelar</button>
