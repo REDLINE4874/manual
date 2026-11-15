@@ -35,6 +35,12 @@ const noteEditor = document.getElementById("noteEditor");
 const emptyState = document.getElementById("emptyState");
 const noteTitle = document.getElementById("noteTitle");
 const noteContent = document.getElementById("noteContent");
+const noteContentHighlights = document.getElementById("noteContentHighlights");
+const noteFindPanel = document.getElementById("noteFindPanel");
+const noteFindInput = document.getElementById("noteFindInput");
+const noteFindCount = document.getElementById("noteFindCount");
+const noteFindPrevious = document.getElementById("noteFindPrevious");
+const noteFindNext = document.getElementById("noteFindNext");
 const noteDate = document.getElementById("noteDate");
 const themeToggles = document.querySelectorAll("[data-theme-toggle]");
 const editorHint = document.getElementById("editorHint");
@@ -83,6 +89,8 @@ let saveTimer = null;
 let saveQueue = Promise.resolve();
 let globalStatusTimer = null;
 let pendingConfirmResolution = null;
+let noteFindMatches = [];
+let noteFindCurrent = 0;
 const noteRevisions = new Map();
 
 function setAuthStatus(message, isError = false) {
@@ -581,6 +589,7 @@ function updateSectionVisibility() {
 
 async function navigateToSection(section) {
   if (section !== activeSection) await flushNoteSave();
+  if (section !== "editor" && !noteFindPanel.hidden) closeNoteFind(false);
   activeSection = section;
   updateSectionVisibility();
   if (section === "search") {
@@ -596,11 +605,123 @@ async function openNoteSearch() {
   await navigateToSection("search");
 }
 
+function updateNoteFindHighlights() {
+  const query = noteFindInput.value;
+  const content = noteContent.value;
+  noteFindMatches = [];
+  noteContentHighlights.replaceChildren();
+
+  if (!query) {
+    noteContentHighlights.append(document.createTextNode(content));
+    noteFindCount.textContent = "0 de 0";
+    noteFindPrevious.disabled = true;
+    noteFindNext.disabled = true;
+    return;
+  }
+
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const matcher = new RegExp(escapedQuery, "gi");
+  let match;
+  while ((match = matcher.exec(content)) !== null) {
+    noteFindMatches.push({ start: match.index, end: match.index + match[0].length });
+  }
+
+  noteFindCurrent = Math.min(noteFindCurrent, Math.max(noteFindMatches.length - 1, 0));
+  let textFrom = 0;
+  noteFindMatches.forEach((match, index) => {
+    noteContentHighlights.append(document.createTextNode(content.slice(textFrom, match.start)));
+    const mark = document.createElement("mark");
+    mark.dataset.findIndex = String(index);
+    mark.textContent = content.slice(match.start, match.end);
+    if (index === noteFindCurrent) mark.classList.add("is-current");
+    noteContentHighlights.append(mark);
+    textFrom = match.end;
+  });
+  noteContentHighlights.append(document.createTextNode(content.slice(textFrom)));
+  noteFindCount.textContent = noteFindMatches.length
+    ? `${noteFindCurrent + 1} de ${noteFindMatches.length}`
+    : "No hay resultados";
+  noteFindPrevious.disabled = noteFindMatches.length === 0;
+  noteFindNext.disabled = noteFindMatches.length === 0;
+  noteContentHighlights.style.transform = `translate(${-noteContent.scrollLeft}px, ${-noteContent.scrollTop}px)`;
+}
+
+function openNoteFind() {
+  if (!currentNote()) return false;
+  noteFindPanel.hidden = false;
+  noteContentHighlights.hidden = false;
+  noteContent.classList.add("is-find-open");
+  noteFindCurrent = 0;
+  updateNoteFindHighlights();
+  noteFindInput.focus();
+  noteFindInput.select();
+  return true;
+}
+
+function closeNoteFind(restoreFocus = true) {
+  noteFindPanel.hidden = true;
+  noteContentHighlights.hidden = true;
+  noteContent.classList.remove("is-find-open");
+  noteFindInput.value = "";
+  updateNoteFindHighlights();
+  if (restoreFocus && activeSection === "editor" && !noteEditor.hidden) noteContent.focus();
+}
+
+function moveNoteFindMatch(direction) {
+  if (noteFindMatches.length < 1) return;
+  noteFindCurrent = (noteFindCurrent + direction + noteFindMatches.length) % noteFindMatches.length;
+  updateNoteFindHighlights();
+  const mark = noteContentHighlights.querySelector(`[data-find-index="${noteFindCurrent}"]`);
+  if (!mark) return;
+  const textareaRect = noteContent.getBoundingClientRect();
+  const matchRect = mark.getBoundingClientRect();
+  noteContent.scrollTop = Math.max(
+    0,
+    Math.min(
+      noteContent.scrollHeight - noteContent.clientHeight,
+      noteContent.scrollTop + matchRect.top - textareaRect.top - noteContent.clientHeight * 0.35,
+    ),
+  );
+  noteContentHighlights.style.transform = `translate(${-noteContent.scrollLeft}px, ${-noteContent.scrollTop}px)`;
+}
+
 async function handleGlobalKeydown(event) {
-  if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === "f") {
-    if (!currentUser || shareDialog.open) return;
+  if (
+    (event.ctrlKey || event.metaKey)
+    && !event.altKey
+    && event.key.toLowerCase() === "y"
+    && !noteFindPanel.hidden
+    && activeSection === "editor"
+    && !shareDialog.open
+    && !confirmDialog.open
+  ) {
+    const focusedElement = document.activeElement;
+    const editTarget = focusedElement === noteTitle ? noteTitle : noteContent;
+    if (editTarget.disabled) return;
     event.preventDefault();
+    editTarget.focus();
+    document.execCommand("redo");
+    if (focusedElement !== editTarget && focusedElement instanceof HTMLElement) focusedElement.focus();
+    return;
+  }
+
+  if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === "f") {
+    if (!currentUser || shareDialog.open || confirmDialog.open) return;
+    event.preventDefault();
+    if (activeSection === "editor" && openNoteFind()) return;
     await openNoteSearch();
+    return;
+  }
+
+  if (noteFindPanel.hidden === false && event.key === "Escape") {
+    event.preventDefault();
+    closeNoteFind();
+    return;
+  }
+
+  if (noteFindPanel.hidden === false && event.key === "F3") {
+    event.preventDefault();
+    moveNoteFindMatch(event.shiftKey ? -1 : 1);
     return;
   }
 
@@ -638,6 +759,9 @@ function renderEditor() {
   if (!note) {
     draftNotice.hidden = true;
     sharingSection.hidden = true;
+    noteFindPanel.hidden = true;
+    noteContentHighlights.hidden = true;
+    noteContent.classList.remove("is-find-open");
     return;
   }
 
@@ -666,6 +790,10 @@ function renderEditor() {
     && typeof draft.content === "string"
     && (!Number.isFinite(serverTime) || !Number.isFinite(draftTime) || draftTime > serverTime)
   );
+  if (!noteFindPanel.hidden) {
+    noteFindCurrent = 0;
+    updateNoteFindHighlights();
+  }
 }
 
 function updateListPreview(noteId, title, content, updatedAt) {
@@ -1286,7 +1414,28 @@ if (!supabaseReady) {
   document.getElementById("discardDraft").addEventListener("click", discardDraft);
   document.getElementById("cancelShare").addEventListener("click", () => shareDialog.close());
   noteTitle.addEventListener("input", scheduleNoteSave);
-  noteContent.addEventListener("input", scheduleNoteSave);
+  noteContent.addEventListener("input", () => {
+    scheduleNoteSave();
+    if (!noteFindPanel.hidden) {
+      noteFindCurrent = 0;
+      updateNoteFindHighlights();
+    }
+  });
+  noteContent.addEventListener("scroll", () => {
+    noteContentHighlights.style.transform = `translate(${-noteContent.scrollLeft}px, ${-noteContent.scrollTop}px)`;
+  }, { passive: true });
+  noteFindInput.addEventListener("input", () => {
+    noteFindCurrent = 0;
+    updateNoteFindHighlights();
+  });
+  noteFindInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    moveNoteFindMatch(event.shiftKey ? -1 : 1);
+  });
+  noteFindPrevious.addEventListener("click", () => moveNoteFindMatch(-1));
+  noteFindNext.addEventListener("click", () => moveNoteFindMatch(1));
+  document.getElementById("closeNoteFind").addEventListener("click", closeNoteFind);
   noteSearchInput.addEventListener("input", renderLibrarySection);
   shareForm.addEventListener("submit", submitShare);
 

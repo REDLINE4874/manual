@@ -119,6 +119,18 @@
       </header>
 
       <section class="workspace" id="workspace" aria-label="Lienzo de escritura">
+        <div class="note-find" id="noteFindPanel" role="search" aria-label="Buscar en la nota" hidden>
+          <label class="sr-only" for="noteFindInput">Buscar en la nota</label>
+          <input id="noteFindInput" type="search" placeholder="Buscar" autocomplete="off" spellcheck="false" />
+          <span class="note-find__count" id="noteFindCount" role="status" aria-live="polite"></span>
+          <button class="note-find__button" id="noteFindPrevious" type="button" aria-label="Coincidencia anterior" title="Coincidencia anterior (Shift+Enter)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg>
+          </button>
+          <button class="note-find__button" id="noteFindNext" type="button" aria-label="Coincidencia siguiente" title="Coincidencia siguiente (Enter)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <button class="note-find__button note-find__close" id="closeNoteFind" type="button" aria-label="Cerrar búsqueda" title="Cerrar (Escape)">×</button>
+        </div>
         <div class="empty-state" id="emptyState">
           <div class="empty-state__icon" aria-hidden="true">✎</div>
           <h1>Un espacio para tus ideas</h1>
@@ -144,7 +156,10 @@
             </div>
           </div>
           <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" />
-          <textarea class="note-content" id="noteContent" maxlength="5000" placeholder="Empieza a escribir..." aria-label="Contenido de la nota"></textarea>
+          <div class="note-content-wrap" id="noteContentWrap">
+            <div class="note-content-highlights" id="noteContentHighlights" aria-hidden="true" hidden></div>
+            <textarea class="note-content" id="noteContent" maxlength="5000" placeholder="Empieza a escribir..." aria-label="Contenido de la nota"></textarea>
+          </div>
           <details class="sharing-section" id="sharingSection" hidden>
             <summary>Compartida con <span id="sharedUserCount"></span></summary>
             <ul id="sharedUsers"></ul>
