@@ -201,5 +201,14 @@
       <p class="status" id="shareStatus" role="status" aria-live="polite"></p>
     </dialog>
 
+    <dialog class="confirm-dialog" id="confirmDialog" aria-labelledby="confirmDialogTitle" aria-describedby="confirmDialogMessage">
+      <h2 id="confirmDialogTitle"></h2>
+      <p id="confirmDialogMessage"></p>
+      <div class="confirm-dialog__actions">
+        <button class="button button--quiet" id="cancelConfirmation" type="button">Cancelar</button>
+        <button class="button button--confirm-danger" id="acceptConfirmation" type="button">Confirmar</button>
+      </div>
+    </dialog>
+
   </body>
 </html>

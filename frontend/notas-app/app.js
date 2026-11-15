@@ -45,6 +45,11 @@ const sharedUsers = document.getElementById("sharedUsers");
 const shareDialog = document.getElementById("shareDialog");
 const shareForm = document.getElementById("shareForm");
 const shareStatus = document.getElementById("shareStatus");
+const confirmDialog = document.getElementById("confirmDialog");
+const confirmDialogTitle = document.getElementById("confirmDialogTitle");
+const confirmDialogMessage = document.getElementById("confirmDialogMessage");
+const cancelConfirmation = document.getElementById("cancelConfirmation");
+const acceptConfirmation = document.getElementById("acceptConfirmation");
 
 const config = window.SUPABASE_CONFIG || {};
 const supabaseReady = Boolean(
@@ -77,6 +82,7 @@ let installPrompt = null;
 let saveTimer = null;
 let saveQueue = Promise.resolve();
 let globalStatusTimer = null;
+let pendingConfirmResolution = null;
 const noteRevisions = new Map();
 
 function setAuthStatus(message, isError = false) {
@@ -99,6 +105,26 @@ function setGlobalStatus(message, isError = false) {
       globalStatus.classList.remove("is-error");
     }, isError ? 7000 : 3200);
   }
+}
+
+function finishConfirmation(confirmed) {
+  if (!pendingConfirmResolution) return;
+  const resolve = pendingConfirmResolution;
+  pendingConfirmResolution = null;
+  confirmDialog.close();
+  resolve(confirmed);
+}
+
+function requestConfirmation({ title, message, confirmLabel }) {
+  if (confirmDialog.open) return Promise.resolve(false);
+  confirmDialogTitle.textContent = title;
+  confirmDialogMessage.textContent = message;
+  acceptConfirmation.textContent = confirmLabel;
+  return new Promise((resolve) => {
+    pendingConfirmResolution = resolve;
+    confirmDialog.showModal();
+    cancelConfirmation.focus();
+  });
 }
 
 function applyTheme(theme) {
@@ -864,7 +890,12 @@ async function importTextFileContents(file) {
 async function deleteNoteRecord(note) {
   if (!note || !isNoteOwner(note)) return;
   const title = note.title?.trim() || "Nota sin título";
-  if (!window.confirm(`¿Eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
+  const confirmed = await requestConfirmation({
+    title: "Eliminar nota",
+    message: `¿Eliminar "${title}"? Esta acción no se puede deshacer.`,
+    confirmLabel: "Eliminar",
+  });
+  if (!confirmed) return;
   await flushNoteSave();
   const { data, error } = await client
     .from("notes")
@@ -1110,9 +1141,14 @@ async function submitShare(event) {
 }
 
 async function removeShare(noteId, email, name, isOwner) {
-  if (!window.confirm(isOwner
-    ? `¿Quieres quitarle el acceso a ${name}?`
-    : "¿Quieres dejar de ver esta nota compartida?")) return;
+  const confirmed = await requestConfirmation({
+    title: isOwner ? "Quitar acceso" : "Dejar de ver la nota",
+    message: isOwner
+      ? `¿Quieres quitarle el acceso a ${name}?`
+      : "¿Quieres dejar de ver esta nota compartida?",
+    confirmLabel: isOwner ? "Quitar acceso" : "Dejar de ver",
+  });
+  if (!confirmed) return;
   const { data, error } = await client
     .from("note_shares")
     .delete()
@@ -1173,6 +1209,15 @@ initializeShareSelect("sharePermission", "Selecciona un permiso", [
   { value: "view", label: "Solo lectura" },
   { value: "edit", label: "Puede editar" },
 ]);
+cancelConfirmation.addEventListener("click", () => finishConfirmation(false));
+acceptConfirmation.addEventListener("click", () => finishConfirmation(true));
+confirmDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  finishConfirmation(false);
+});
+confirmDialog.addEventListener("click", (event) => {
+  if (event.target === confirmDialog) finishConfirmation(false);
+});
 
 if (!supabaseReady) {
   authScreen.hidden = false;
