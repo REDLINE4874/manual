@@ -16,15 +16,15 @@
   <body>
     <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
       <button class="theme-toggle auth-theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
-        <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-        <span data-theme-label>Claro</span>
+        <span class="theme-toggle__track" aria-hidden="true">
+          <svg class="theme-toggle__icon theme-toggle__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
+          <span class="theme-toggle__thumb"></span>
+          <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.6 8.6 0 1 0 20.2 15.1Z" /></svg>
+        </span>
       </button>
       <div class="auth-card">
-      <a class="brand brand--auth" href="./" aria-label="Notas, inicio">
-        <span class="brand__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.75h7l4 4v12.5h-11z" /><path d="M13.5 3.75v4h4M9.5 12h5M9.5 15.5h5" /></svg></span>
-      </a>
+      
         <h1 id="authTitle">Inicia sesión</h1>
-        <p class="auth-intro">Entra con el mismo usuario y contraseña del Manual.</p>
 
         <form id="loginForm" class="auth-form" autocomplete="on">
           <label for="username">Usuario</label>
@@ -58,9 +58,7 @@
     <main class="app-shell" id="appShell" hidden>
       <header class="app-header">
         <div class="app-header__top">
-          <a class="brand" href="./" aria-label="Notas, inicio">
-            <span class="brand__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3.75h7l4 4v12.5h-11z" /><path d="M13.5 3.75v4h4M9.5 12h5M9.5 15.5h5" /></svg></span>
-          </a>
+          
           <div class="app-header__controls">
             <button class="button button--quiet section-nav-button" id="openEditor" type="button" aria-current="page" aria-controls="workspace">
               <span>Lienzo</span>
@@ -75,12 +73,14 @@
               <span class="my-notes-count" id="sharedNotesCount">0</span>
             </button>
             <button class="button button--quiet install-button" id="installApp" type="button" hidden>Instalar app</button>
-            <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
           </div>
           <div class="app-header__user-tools">
             <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
-              <span class="theme-toggle__track" aria-hidden="true"><span class="theme-toggle__thumb"></span></span>
-              <span data-theme-label>Claro</span>
+              <span class="theme-toggle__track" aria-hidden="true">
+                <svg class="theme-toggle__icon theme-toggle__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
+                <span class="theme-toggle__thumb"></span>
+                <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.6 8.6 0 1 0 20.2 15.1Z" /></svg>
+              </span>
             </button>
             <div class="account-menu">
               <button class="account-avatar" id="accountToggle" type="button" aria-label="Mostrar nombre de usuario" aria-expanded="false" aria-controls="accountPopover">U</button>
@@ -95,7 +95,7 @@
         </div>
         <div class="note-tabbar">
           <div class="note-tabbar__label">
-            <span>Pestañas abiertas</span>
+   
             <span class="note-tabbar__count" id="noteCount"></span>
           </div>
           <div class="note-tabbar__content">
@@ -133,7 +133,10 @@
             <button class="text-button" id="discardDraft" type="button">Descartar</button>
           </div>
           <div class="note-editor__toolbar">
-            <time class="note-date" id="noteDate"></time>
+            <div class="note-editor__meta">
+              <time class="note-date" id="noteDate"></time>
+              <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+            </div>
             <div class="note-actions">
               <button class="button button--quiet" id="shareNote" type="button" hidden>Compartir</button>
               <button class="button button--quiet button--danger" id="deleteNote" type="button" hidden>Eliminar</button>
@@ -173,14 +176,18 @@
       <p>Elige un usuario y define qué podrá hacer con esta nota.</p>
       <form id="shareForm" class="share-form">
         <label for="shareUsername">Usuario</label>
-        <select id="shareUsername" required>
-          <option value="">Selecciona un usuario</option>
-        </select>
+        <div class="share-select">
+          <select id="shareUsername" required>
+            <option value="">Selecciona un usuario</option>
+          </select>
+        </div>
         <label for="sharePermission">Permiso</label>
-        <select id="sharePermission">
-          <option value="view">Solo lectura</option>
-          <option value="edit">Puede editar</option>
-        </select>
+        <div class="share-select">
+          <select id="sharePermission">
+            <option value="view">Solo lectura</option>
+            <option value="edit">Puede editar</option>
+          </select>
+        </div>
         <div class="dialog-actions">
           <button class="button button--quiet" type="button" id="cancelShare">Cancelar</button>
           <button class="button button--primary" type="submit">Compartir</button>

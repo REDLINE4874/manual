@@ -108,7 +108,6 @@ function applyTheme(theme) {
   themeToggles.forEach((toggle) => {
     toggle.setAttribute("aria-checked", String(isDark));
     toggle.title = `Cambiar a tema ${isDark ? "claro" : "oscuro"}`;
-    toggle.querySelector("[data-theme-label]").textContent = isDark ? "Oscuro" : "Claro";
   });
   document.querySelector('meta[name="theme-color"]').content = isDark ? "#171a22" : "#f6f7fb";
 }
@@ -1021,8 +1020,7 @@ if (!supabaseReady) {
 } else {
   client = window.supabase.createClient(config.url, config.anonKey, {
     auth: {
-      storage: window.localStorage,
-      persistSession: true,
+      persistSession: false,
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
