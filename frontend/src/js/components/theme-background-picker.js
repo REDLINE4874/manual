@@ -25,6 +25,7 @@ class ThemeBackgroundPicker extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
+        *, *::before, *::after { border: 0 !important; }
         :host { position: relative; display: inline-flex; }
         .picker {
           position: relative;
@@ -215,13 +216,13 @@ class ThemeBackgroundPicker extends HTMLElement {
           padding: 8px 10px;
           border: 1px solid var(--border, rgba(15, 23, 42, .2));
           border-radius: 8px;
-          background: var(--bg, hsl(0 0% 93%));
-          color: var(--custom-accent-text, var(--ink, #12232c));
+          background: var(--custom-control-background, var(--brand-teal, #003848));
+          color: var(--custom-control-text, #fff);
           font: 600 12px var(--font-body, Inter, sans-serif);
           cursor: pointer;
         }
-        .save-color:hover { background: var(--bg-3, hsl(40 20% 90%)); }
-        .save-color:disabled { cursor: default; opacity: .6; }
+        .save-color:hover { background: var(--custom-control-hover, var(--brand-teal-hover, #00556c)); }
+        .save-color:disabled { cursor: default; opacity: .72; }
       </style>
       <button class="picker" type="button" aria-label="Elegir color de fondo" aria-expanded="false" aria-controls="background-picker-panel" title="Elegir color de fondo">
         <span class="swatch" aria-hidden="true"></span>
@@ -638,8 +639,9 @@ class ThemeBackgroundPicker extends HTMLElement {
       : backgroundHsl.lightness >= ThemeBackgroundPicker.MAX_LIGHTNESS
         ? ThemeBackgroundPicker.MAX_LIGHTNESS + 2
         : Math.max(20, backgroundHsl.lightness - 3);
+    const inputLightnessOffset = backgroundHsl.lightness >= 50 ? 20 : 5;
     const inputSurfaceHsl = this._clampHsl(
-      { ...backgroundHsl, lightness: panelBaseLightness - 1 },
+      { ...backgroundHsl, lightness: panelBaseLightness - inputLightnessOffset },
       ThemeBackgroundPicker.PANEL_MIN_LIGHTNESS
     );
     const renderedHex = (hsl) => this._hslToHex(

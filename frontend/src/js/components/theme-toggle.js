@@ -46,6 +46,7 @@ class ThemeToggle extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <style>
+        *, *::before, *::after { border: 0 !important; }
         :host{
   display:inline-block;
 

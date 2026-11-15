@@ -122,3 +122,9 @@ body.custom-background .tcard {
   border: 0;
   box-shadow: none;
 }
+
+*,
+*::before,
+*::after {
+  border: 0 !important;
+}

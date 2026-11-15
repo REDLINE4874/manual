@@ -30,7 +30,7 @@
 .admin-form-section__heading p,.admin-form-help{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.5;}
 .admin-card-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
 .admin-card-form label{display:grid;gap:7px;color:var(--ink-soft);font-size:13px;font-weight:600;}
-.admin-card-form input,.admin-card-form select,.admin-card-form textarea{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;resize:vertical;}
+.admin-card-form input,.admin-card-form select,.admin-card-form textarea{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--input-bg);color:var(--ink);font:inherit;resize:vertical;}
 .admin-card-form .calculator-select{position:relative;z-index:5;width:100%;}
 .admin-card-form .calculator-select__menu{z-index:80;}
 .admin-validity-launcher{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border:1px solid var(--line);border-radius:11px;background:color-mix(in srgb,var(--paper) 82%,var(--bg));}
@@ -40,14 +40,14 @@
 .admin-modal .modal-box h2{margin:0 0 8px;color:var(--ink);font:700 24px/1.2 var(--font-display);}
 .admin-validity-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px;padding:0;border:0;}
 .admin-validity-fields label{display:grid;gap:7px;color:var(--ink-soft);font-size:13px;font-weight:600;}
-.admin-validity-fields input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;}
+.admin-validity-fields input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--input-bg);color:var(--ink);font:inherit;}
 .admin-validity-empty{margin:0;color:var(--ink-soft);font-size:13px;}
 .admin-form-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding-top:2px;}
 .admin-form-actions .notes-button{min-width:180px;}
 .admin-modal__actions{display:flex;justify-content:flex-end;margin-top:20px;}
 .admin-password-form{display:grid;gap:14px;margin-top:18px;}
 .admin-password-form label{display:grid;gap:7px;color:var(--ink-soft);font-size:13px;font-weight:600;}
-.admin-password-form input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;}
+.admin-password-form input{box-sizing:border-box;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--input-bg);color:var(--ink);font:inherit;}
 .admin-password-form input[readonly]{opacity:.75;}
 .admin-password-form .admin-modal__actions{gap:12px;}
 .confirm-modal__box{width:min(440px,calc(100vw - 28px));padding:28px;}
@@ -64,7 +64,7 @@ body.dark-mode .operation-notice,body.dark .operation-notice,body.dark-theme .op
 .profiling-suggestions{margin-top:24px;}
 .suggestion-form{display:grid;gap:18px;}
 .suggestion-form label{display:grid;gap:8px;color:var(--ink-soft);font-size:14px;font-weight:600;}
-.suggestion-form input,.suggestion-form textarea{box-sizing:border-box;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;}
+.suggestion-form input,.suggestion-form textarea{box-sizing:border-box;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--input-bg);color:var(--ink);font:inherit;}
 .suggestion-form textarea{min-height:150px;resize:vertical;line-height:1.5;}
 .suggestion-form .notes-button{justify-self:start;min-width:190px;}
 .suggestions-list{display:grid;gap:12px;margin-top:16px;}

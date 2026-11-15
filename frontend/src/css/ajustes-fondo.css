@@ -64,9 +64,14 @@ body.custom-background .admin-view .admin-users-table__actions .notes-button:dis
   opacity: .82;
 }
 
+body.custom-background .validation-column {
+  background: var(--input-bg);
+  color: var(--text);
+}
+
 body.custom-background .validation-column .validation-column-header,
 body.custom-background .validation-column.is-invalid .validation-column-header {
-  background: var(--custom-panel-background);
+  background: transparent;
 }
 
 body.custom-background .validation-column-header h3 {

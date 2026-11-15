@@ -48,7 +48,7 @@
   --card-highlight: rgba(255,255,255,0.70);
   --card-shadow-inset: rgba(255,255,255,0.45);
 
-  --input-bg: hsl(40 20% 90%);
+  --input-bg: var(--bg);
   --code-bg: hsl(200 43% 15% / .06);
 
   --shadow: 0 16px 34px rgba(0,0,0,.20), 0 4px 10px rgba(0,0,0,.14);
@@ -136,7 +136,7 @@ body.dark-theme{
   --card-highlight: rgba(255,255,255,0.055);
   --card-shadow-inset: rgba(255,255,255,0.06);
 
-  --input-bg: hsl(0 0% 21.18%);
+  --input-bg: var(--bg);
   --code-bg: hsl(0 0% 21.18%);
 
   --shadow: 0 16px 36px rgba(0,0,0,.42), 0 4px 12px rgba(0,0,0,.30);

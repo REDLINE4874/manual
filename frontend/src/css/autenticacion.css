@@ -229,7 +229,7 @@ body.custom-background .site-auth-card { background: color-mix(in srgb, var(--no
 body.custom-background .site-auth-card h1 { color: var(--notes-text, var(--text)); }
 body.custom-background .site-auth-card p,
 body.custom-background .site-auth-form label { color: var(--notes-muted, var(--text-muted)); }
-body.custom-background .site-auth-form input { background: var(--notes-editor-surface, var(--input-bg)); color: var(--notes-text, var(--text)); border-color: var(--input-border); }
+body.custom-background .site-auth-form input { background: var(--input-bg); color: var(--notes-text, var(--text)); border-color: var(--input-border); }
 body.custom-background .site-auth-form input:hover,
 body.custom-background .site-auth-form input:focus-visible { border-color: var(--custom-accent-text); }
 
