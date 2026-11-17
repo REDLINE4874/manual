@@ -776,7 +776,7 @@ function renderEditor() {
   document.getElementById("deleteNote").hidden = !owned;
   document.getElementById("leaveSharedNote").hidden = !(!owned && note.user_id !== currentUser?.id);
   editorHint.textContent = editable
-    ? "Se guarda automáticamente mientras escribes."
+    ? "Presiona Tab para insertar una sangría. Se guarda automáticamente mientras escribes."
     : `Solo lectura${shareOwners.get(note.id) ? ` · Compartida por ${shareOwners.get(note.id)}` : ""}.`;
   renderSharedUsers(note);
 
@@ -999,7 +999,7 @@ async function importTextFileContents(file) {
   if (!file.name.toLowerCase().endsWith(".txt")) {
     throw new Error("Selecciona un archivo con extensión .txt.");
   }
-  if (file.size > 20000) {
+  if (file.size > 60000) {
     throw new Error("El archivo es demasiado grande para importarlo como nota.");
   }
 
@@ -1007,8 +1007,8 @@ async function importTextFileContents(file) {
   if (content.includes("\u0000")) {
     throw new Error("El archivo contiene datos que no se pueden importar como texto.");
   }
-  if (content.length > 5000) {
-    throw new Error("El contenido supera el límite de 5,000 caracteres por nota.");
+  if (content.length > 20000) {
+    throw new Error("El contenido supera el límite de 20,000 caracteres por nota.");
   }
 
   const title = file.name.replace(/\.txt$/i, "").trim().slice(0, 120) || "Archivo de texto";
@@ -1414,6 +1414,16 @@ if (!supabaseReady) {
   document.getElementById("discardDraft").addEventListener("click", discardDraft);
   document.getElementById("cancelShare").addEventListener("click", () => shareDialog.close());
   noteTitle.addEventListener("input", scheduleNoteSave);
+  noteContent.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return;
+    event.preventDefault();
+
+    const { selectionStart, selectionEnd, value } = noteContent;
+    if (value.length - (selectionEnd - selectionStart) >= noteContent.maxLength) return;
+
+    noteContent.setRangeText("\t", selectionStart, selectionEnd, "end");
+    noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+  });
   noteContent.addEventListener("input", () => {
     scheduleNoteSave();
     if (!noteFindPanel.hidden) {
