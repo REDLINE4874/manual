@@ -59,7 +59,7 @@
 :root[data-theme="dark"] .button--primary:hover { background: #a9c0ff; }
 
 * { box-sizing: border-box; }
-body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--page); color: var(--text); }
+body { min-height: 100vh; margin: 0; background: var(--page); color: var(--text); }
 button, input, textarea, select { font: inherit; }
 button, a, select { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "notas-app-shell-v17";
+const CACHE_NAME = "notas-app-shell-v18";
 const CACHE_PREFIX = "notas-app-shell-";
 const APP_SHELL = new URL("./", self.location.href).toString();
 const SHELL_FILES = [
