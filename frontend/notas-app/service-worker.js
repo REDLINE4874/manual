@@ -1,4 +1,4 @@
-const CACHE_NAME = "notas-app-shell-v18";
+const CACHE_NAME = "notas-app-shell-v19";
 const CACHE_PREFIX = "notas-app-shell-";
 const APP_SHELL = new URL("./", self.location.href).toString();
 const SHELL_FILES = [
@@ -10,6 +10,7 @@ const SHELL_FILES = [
   new URL("./icon.svg", self.location.href).toString(),
   new URL("./icon-192.png", self.location.href).toString(),
   new URL("./icon-512.png", self.location.href).toString(),
+  new URL("./apple-touch-icon.png", self.location.href).toString(),
 ];
 
 self.addEventListener("install", (event) => {
