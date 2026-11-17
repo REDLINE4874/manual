@@ -24,7 +24,6 @@
   text-align:left;
   padding:6px 0 10px;
   background: linear-gradient(to bottom, var(--bg-main) 0%, hsl(210.00 44.44% 7.06% / 0.88) 30%, hsl(210.00 44.44% 7.06% / 0.2) 100%);
-  backdrop-filter: blur(6px);
 }
 .detail-header::before{
   content:"";
