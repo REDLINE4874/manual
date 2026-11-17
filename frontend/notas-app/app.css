@@ -177,7 +177,7 @@ button { color: inherit; }
 .empty-state__icon { display: grid; width: 72px; height: 72px; place-items: center; border-radius: 24px; background: var(--idea-surface); color: var(--idea-text); font-size: 36px; transform: rotate(-7deg); }
 .empty-state h1 { margin: 23px 0 8px; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.04em; }
 .empty-state p { max-width: 390px; margin: 0 0 20px; color: var(--muted); font-size: 14px; line-height: 1.6; }
-.note-editor { display: flex; width: min(100%, 840px); flex: 1; flex-direction: column; align-self: center; margin: 20px 0; border-radius: 22px; padding: clamp(24px, 5vw, 72px); background: var(--surface); box-shadow: 0 10px 35px rgb(25 34 56 / 5%); }
+.note-editor { display: flex; width: min(100%, 1000px); flex: 1; flex-direction: column; align-self: center; margin: 20px 0; border-radius: 22px; padding: clamp(24px, 5vw, 72px); background: var(--surface); box-shadow: 0 10px 35px rgb(25 34 56 / 5%); }
 .note-editor__toolbar { justify-content: space-between; gap: 16px; }
 .note-editor__meta { display: flex; min-width: 0; align-items: center; flex-wrap: wrap; gap: 8px; }
 .note-date { color: var(--muted-strong); font-size: 12px; }
@@ -268,7 +268,7 @@ button { color: inherit; }
   .note-content-wrap { min-height: 45vh; font-size: 15px; }
 }
 
-@media (max-width: 655px) {
+@media (max-width: 1000px) {
   .auth-card { padding: 26px 22px; }
   .auth-theme-toggle { top: 12px; right: 12px; }
   .app-header { padding: 10px 12px 0; }
