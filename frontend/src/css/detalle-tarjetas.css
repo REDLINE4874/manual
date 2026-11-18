@@ -256,6 +256,29 @@ body.dark-theme .detail-action-btn{
 .waiver-block{ margin-block-start:22px; background:var(--surface-gold); border:1px solid rgba(169,134,59,0.35); border-radius:var(--radius-lg); padding:18px 22px; max-width:fit-content; }
 .waiver-title{ font-family:var(--font-display); font-weight:600; font-size:16px; color:var(--gold-text); margin-bottom:6px;}
 .waiver-block p{ margin:0; font-size:14.5px; color:var(--ink-soft); line-height:1.55; }
+.waiver-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:12px;
+  padding:8px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--paper);
+  color:var(--brand-teal-text);
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+  transition:background-color .16s ease, border-color .16s ease, color .16s ease;
+}
+.waiver-link:hover{
+  border-color:var(--brand-teal-text);
+  background:var(--surface-soft);
+}
+.waiver-link:focus-visible{
+  outline:3px solid var(--input-focus-ring);
+  outline-offset:2px;
+}
 
 .explora-table-wrap {
   overflow-x: auto;

@@ -125,7 +125,9 @@ function openCard(id) {
     </div>
       <div class="waiver-block">
           <div class="waiver-title">${c.id === "joy" ? "Sin comisión de administración de por vida" : "Bonificación de administración mensual"}</div>
-          ${bonifHtml}</div>
+          ${bonifHtml}
+          ${c.id === "joy" ? "" : '<button class="waiver-link" type="button" data-view="comision">Ver más información sobre la comisión <span aria-hidden="true">→</span></button>'}
+      </div>
      
     <div class="detail-two-col">
       <div class="extra-block"><h1>Beneficios</h1>${benefitsHtml}</div>

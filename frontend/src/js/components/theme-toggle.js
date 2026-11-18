@@ -353,10 +353,9 @@ class ThemeToggle extends HTMLElement {
     this.$btn = this.shadowRoot.querySelector('.switch');
     this.$btn.addEventListener('click', () => this.toggle());
 
-    // Estado inicial: localStorage > preferencia del sistema
+    // Estado inicial: preferencia guardada > tema oscuro predeterminado
     const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialDark = saved ? saved === 'dark' : prefersDark;
+    const initialDark = saved ? saved === 'dark' : true;
 
     this._setTheme(initialDark, { persist: false });
     this._initialized = true;

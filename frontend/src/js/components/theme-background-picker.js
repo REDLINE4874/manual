@@ -2,6 +2,7 @@ class ThemeBackgroundPicker extends HTMLElement {
   static PROFILE_STORAGE_KEY = "agenda_profile";
   static BACKGROUND_PROFILE_KEY = "backgroundColor";
   static SAVED_COLORS_PROFILE_KEY = "backgroundColors";
+  static BACKGROUND_RESET_KEY = "backgroundReset";
   static BACKGROUND_MIN_LIGHTNESS = 15;
   static PANEL_MIN_LIGHTNESS = 20;
   static PANEL_LIGHTNESS_DIFFERENCE = 15;
@@ -270,6 +271,7 @@ class ThemeBackgroundPicker extends HTMLElement {
     this.savedColorsSection = this.shadowRoot.querySelector(".saved-section");
     this.savedColorsContainer = this.shadowRoot.querySelector(".saved-colors");
     this.saveColorButton = this.shadowRoot.querySelector(".save-color");
+    this._clearStoredActiveBackground();
     this.savedColors = this._getSavedColors();
     const savedColor = this._getSavedColor();
     const initialColor = this._normalizeColor(savedColor || "#f4f2ec");
@@ -296,7 +298,7 @@ class ThemeBackgroundPicker extends HTMLElement {
       if (isValid) this._applySelectedColor(color);
     });
     this.shadowRoot.querySelector(".reset").addEventListener("click", () => {
-      this._applySelectedColor("#F4F2EC");
+      this._resetBackground();
       this._setOpen(false);
       this.trigger.focus();
     });
@@ -458,19 +460,33 @@ class ThemeBackgroundPicker extends HTMLElement {
     this._applyColor(normalizedColor, true);
   }
 
+  _resetBackground() {
+    this._saveColor("");
+    this._clearCustomBackground();
+    this._lastAppliedColor = this._normalizeColor("#f4f2ec");
+    this._syncColorControls(this._lastAppliedColor);
+  }
+
   _normalizeColor(value) {
     if (!/^#[0-9a-f]{6}$/i.test(value)) value = "#f0eee8";
     const hsl = this._clampHsl(this._hexToHsl(value));
     return this._hslToHex(hsl.hue, hsl.saturation, hsl.lightness);
   }
 
-  _getSavedColor() {
+  _clearStoredActiveBackground() {
     try {
+      localStorage.removeItem("background-color");
       const profile = JSON.parse(localStorage.getItem(ThemeBackgroundPicker.PROFILE_STORAGE_KEY) || "{}");
-      if (profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY]) return profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY];
-      const legacyColor = localStorage.getItem("background-color");
-      if (legacyColor) { this._saveColor(legacyColor); return legacyColor; }
-    } catch (error) { /* El selector sigue funcionando si storage está bloqueado. */ }
+      if (profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY]) {
+        delete profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY];
+        localStorage.setItem(ThemeBackgroundPicker.PROFILE_STORAGE_KEY, JSON.stringify(profile));
+      }
+    } catch (error) { /* Los colores favoritos siguen disponibles si storage falla. */ }
+  }
+
+  _getSavedColor() {
+    // El fondo activo no se restaura automáticamente al abrir una nueva sesión.
+    // Solo los colores favoritos continúan disponibles en el selector.
     return "";
   }
 
@@ -480,9 +496,11 @@ class ThemeBackgroundPicker extends HTMLElement {
       if (color) {
         profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY] = color;
         localStorage.setItem("background-color", color);
+        localStorage.removeItem(ThemeBackgroundPicker.BACKGROUND_RESET_KEY);
       } else {
         delete profile[ThemeBackgroundPicker.BACKGROUND_PROFILE_KEY];
         localStorage.removeItem("background-color");
+        localStorage.setItem(ThemeBackgroundPicker.BACKGROUND_RESET_KEY, "1");
       }
       localStorage.setItem(ThemeBackgroundPicker.PROFILE_STORAGE_KEY, JSON.stringify(profile));
     } catch (error) { /* El color sigue aplicándose visualmente. */ }
