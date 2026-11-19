@@ -984,12 +984,17 @@ function updateNoteFindHighlights() {
 
   noteContent.classList.remove("is-syntax-highlighted");
   const query = noteFindInput.value;
-  const content = readNoteContentText();
+  const content = getPlainTextFromRichContent(noteContent);
   noteFindMatches = [];
   noteContentHighlights.replaceChildren();
 
+  const richOverlay = document.createDocumentFragment();
+  noteContent.childNodes.forEach((node) => richOverlay.appendChild(node.cloneNode(true)));
+  const richRoot = document.createElement("div");
+  richRoot.appendChild(richOverlay);
+
   if (!query) {
-    noteContentHighlights.append(document.createTextNode(content));
+    noteContentHighlights.append(...Array.from(richRoot.childNodes));
     noteFindCount.textContent = "0 de 0";
     noteFindPrevious.disabled = true;
     noteFindNext.disabled = true;
@@ -1004,17 +1009,57 @@ function updateNoteFindHighlights() {
   }
 
   noteFindCurrent = Math.min(noteFindCurrent, Math.max(noteFindMatches.length - 1, 0));
-  let textFrom = 0;
-  noteFindMatches.forEach((match, index) => {
-    noteContentHighlights.append(document.createTextNode(content.slice(textFrom, match.start)));
-    const mark = document.createElement("mark");
-    mark.dataset.findIndex = String(index);
-    mark.textContent = content.slice(match.start, match.end);
-    if (index === noteFindCurrent) mark.classList.add("is-current");
-    noteContentHighlights.append(mark);
-    textFrom = match.end;
+  noteContentHighlights.append(...Array.from(richRoot.childNodes));
+
+  let plainTextOffset = 0;
+  let plainTextEndsWithNewline = false;
+  const textNodes = [];
+  function collectTextRanges(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const start = plainTextOffset;
+      plainTextOffset += node.nodeValue.length;
+      plainTextEndsWithNewline = node.nodeValue.endsWith("\n");
+      textNodes.push({ node, start, end: plainTextOffset });
+      return;
+    }
+    if (!(node instanceof HTMLElement)) return;
+    if (node.tagName === "BR") {
+      plainTextOffset += 1;
+      plainTextEndsWithNewline = true;
+      return;
+    }
+    const start = plainTextOffset;
+    Array.from(node.childNodes).forEach(collectTextRanges);
+    if (["DIV", "P"].includes(node.tagName) && plainTextOffset > start && !plainTextEndsWithNewline) {
+      plainTextOffset += 1;
+      plainTextEndsWithNewline = true;
+    }
+  }
+  Array.from(noteContentHighlights.childNodes).forEach(collectTextRanges);
+
+  textNodes.forEach(({ node, start, end }) => {
+    if (!node.nodeValue || start === end) return;
+    const segments = [];
+    let textFrom = start;
+    noteFindMatches.forEach((match, index) => {
+      const overlapStart = Math.max(start, match.start);
+      const overlapEnd = Math.min(end, match.end);
+      if (overlapStart >= overlapEnd) return;
+      if (textFrom < overlapStart) {
+        segments.push(document.createTextNode(node.nodeValue.slice(textFrom - start, overlapStart - start)));
+      }
+      const mark = document.createElement("mark");
+      mark.dataset.findIndex = String(index);
+      mark.textContent = node.nodeValue.slice(overlapStart - start, overlapEnd - start);
+      if (index === noteFindCurrent) mark.classList.add("is-current");
+      segments.push(mark);
+      textFrom = overlapEnd;
+    });
+    if (textFrom < end) {
+      segments.push(document.createTextNode(node.nodeValue.slice(textFrom - start)));
+    }
+    if (segments.length > 0) node.replaceWith(...segments);
   });
-  noteContentHighlights.append(document.createTextNode(content.slice(textFrom)));
   noteFindCount.textContent = noteFindMatches.length
     ? `${noteFindCurrent + 1} de ${noteFindMatches.length}`
     : "No hay resultados";
