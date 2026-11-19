@@ -15,10 +15,11 @@
     <link rel="icon" href="logoapp.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="app.css?v=6" />
+    <link rel="stylesheet" href="app.css?v=7" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" integrity="sha384-RH2xi4eIQ/gjtbs9fUXM68sLSi99C7ZWBRX1vDrVv6GQXRibxXLbwO2NGZB74MbU" crossorigin="anonymous" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="supabase-config.js" defer></script>
-    <script src="app.js?v=6" defer></script>
+    <script src="app.js?v=7" defer></script>
   </head>
   <body>
     <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
@@ -291,8 +292,31 @@
           <button class="format-toolbar__button format-toolbar__button--italic" type="button" data-format-command="italic" aria-label="Cursiva" aria-pressed="false" title="Cursiva">K</button>
           <button class="format-toolbar__button format-toolbar__button--underline" type="button" data-format-command="underline" aria-label="Subrayado" aria-pressed="false" title="Subrayado">S</button>
         </div>
+        <span class="format-toolbar__separator" role="separator" aria-orientation="vertical"></span>
+        <div class="format-toolbar__group" role="group" aria-label="Código">
+          <label class="sr-only" for="codeLanguageSelect">Lenguaje del bloque de código</label>
+          <select class="format-toolbar__language" id="codeLanguageSelect">
+            <option value="plain">Texto normal</option>
+            <option value="auto">Detectar lenguaje</option>
+            <option value="javascript">JavaScript</option>
+            <option value="typescript">TypeScript</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="c">C</option>
+            <option value="cpp">C++</option>
+            <option value="csharp">C#</option>
+            <option value="css">CSS</option>
+            <option value="xml">HTML / XML</option>
+            <option value="json">JSON</option>
+            <option value="sql">SQL</option>
+            <option value="bash">Bash</option>
+            <option value="yaml">YAML</option>
+            <option value="markdown">Markdown</option>
+          </select>
+          <button class="format-toolbar__button format-toolbar__code-button" id="applyCodeFormat" type="button">Código</button>
+        </div>
       </div>
-      <p class="format-dialog__caption">Fuente</p>
+      <p class="format-dialog__caption">Estilo visual y código</p>
       <div class="format-dialog__actions">
         <button class="button button--quiet" id="cancelFontSize" type="button">Cancelar</button>
         <button class="button button--primary" id="confirmFontSize" type="button">Aplicar</button>

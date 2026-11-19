@@ -339,9 +339,25 @@ button { color: inherit; }
 .note-content-highlights[hidden] { display: none; }
 .note-content-highlights mark { border-radius: 2px; background: #ffe66b; color: #25220f; text-decoration: underline; text-decoration-color: #d7a900; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .note-content-highlights mark.is-current { background: #ffbf47; text-decoration-thickness: 2px; }
+.note-content-highlights .hljs-comment,.note-content-highlights .hljs-quote { color: #718096; font-style: italic; }
+.note-content-highlights .hljs-keyword,.note-content-highlights .hljs-selector-tag,.note-content-highlights .hljs-literal { color: #8b3fb0; }
+.note-content-highlights .hljs-string,.note-content-highlights .hljs-doctag,.note-content-highlights .hljs-regexp { color: #27804a; }
+.note-content-highlights .hljs-number,.note-content-highlights .hljs-built_in,.note-content-highlights .hljs-type { color: #b15a12; }
+.note-content-highlights .hljs-title,.note-content-highlights .hljs-function,.note-content-highlights .hljs-attr { color: #245db0; }
+.note-content-highlights .hljs-variable,.note-content-highlights .hljs-params,.note-content-highlights .hljs-property { color: #a13c58; }
+.note-content-highlights .hljs-meta,.note-content-highlights .hljs-symbol { color: #087c86; }
+.note-content code,.note-content-highlights code { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
+:root[data-theme="dark"] .note-content-highlights .hljs-comment,:root[data-theme="dark"] .note-content-highlights .hljs-quote { color: #a4b0c1; }
+:root[data-theme="dark"] .note-content-highlights .hljs-keyword,:root[data-theme="dark"] .note-content-highlights .hljs-selector-tag,:root[data-theme="dark"] .note-content-highlights .hljs-literal { color: #d3a0eb; }
+:root[data-theme="dark"] .note-content-highlights .hljs-string,:root[data-theme="dark"] .note-content-highlights .hljs-doctag,:root[data-theme="dark"] .note-content-highlights .hljs-regexp { color: #91d6a8; }
+:root[data-theme="dark"] .note-content-highlights .hljs-number,:root[data-theme="dark"] .note-content-highlights .hljs-built_in,:root[data-theme="dark"] .note-content-highlights .hljs-type { color: #f0b37e; }
+:root[data-theme="dark"] .note-content-highlights .hljs-title,:root[data-theme="dark"] .note-content-highlights .hljs-function,:root[data-theme="dark"] .note-content-highlights .hljs-attr { color: #9dc3ff; }
+:root[data-theme="dark"] .note-content-highlights .hljs-variable,:root[data-theme="dark"] .note-content-highlights .hljs-params,:root[data-theme="dark"] .note-content-highlights .hljs-property { color: #f0a3b8; }
+:root[data-theme="dark"] .note-content-highlights .hljs-meta,:root[data-theme="dark"] .note-content-highlights .hljs-symbol { color: #86dfe5; }
 .note-content { position: relative; z-index: 1; display: block; width: 100%; min-height: 0; flex: 1; overflow: auto; margin: 0; border: 0; padding: 0; background: transparent; font: inherit; line-height: inherit; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; }
 .note-content:empty::before { color: var(--muted-strong); content: attr(data-placeholder); pointer-events: none; }
 .note-content.is-find-open { color: transparent; -webkit-text-fill-color: transparent; caret-color: transparent; }
+.note-content.is-syntax-highlighted { color: transparent; -webkit-text-fill-color: transparent; caret-color: var(--text); }
 .note-title:disabled,.note-content[aria-readonly="true"] { color: var(--muted); opacity: 1; }
 .note-content:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .editor-hint { margin: 10px 0 0; color: var(--muted); font-size: 11px; }
@@ -371,6 +387,8 @@ button { color: inherit; }
 .format-toolbar select { min-height: 34px; border: 1px solid var(--line); border-radius: 5px; padding: 0 7px; background: var(--surface); color: var(--text); font: inherit; font-size: 13px; }
 .format-toolbar__family { width: min(220px, 48vw); }
 .format-toolbar__size { width: 72px; }
+.format-toolbar__language { width: min(170px, 44vw); }
+.format-toolbar__code-button { min-width: 62px; padding-inline: 8px; font-size: 13px; }
 .format-toolbar__separator { width: 1px; min-height: 30px; flex: 0 0 1px; border-inline-start: 1px solid var(--line); }
 .format-toolbar__button { display: grid; min-inline-size: 34px; min-block-size: 34px; place-items: center; border: 1px solid transparent; border-radius: 5px; padding: 0; background: transparent; color: var(--text-soft); font-size: 16px; cursor: pointer; }
 .format-toolbar__button[aria-pressed="true"] { border-color: var(--accent); background: var(--selected); color: var(--text-strong); }

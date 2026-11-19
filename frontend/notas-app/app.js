@@ -63,6 +63,8 @@ const fontSizeOption = document.getElementById("fontSizeOption");
 const fontSizeDialog = document.getElementById("fontSizeDialog");
 const fontFamilySelect = document.getElementById("fontFamilySelect");
 const fontSizeSelect = document.getElementById("fontSizeSelect");
+const codeLanguageSelect = document.getElementById("codeLanguageSelect");
+const applyCodeFormat = document.getElementById("applyCodeFormat");
 const cancelFontSize = document.getElementById("cancelFontSize");
 const confirmFontSize = document.getElementById("confirmFontSize");
 const formatToolbar = document.getElementById("formatToolbar");
@@ -79,6 +81,10 @@ const DRAFT_PREFIX = "notas-app-draft";
 const THEME_STORAGE_KEY = "notas-app-theme";
 const OPEN_TABS_PREFIX = "notas-app-open-tabs";
 const NOTE_CONTENT_PREFIX = "<!-- notas-app-rich-text:v1 -->";
+const CODE_LANGUAGE_IDS = [
+  "javascript", "typescript", "python", "java", "c", "cpp", "csharp",
+  "css", "xml", "json", "sql", "bash", "yaml", "markdown",
+];
 const NOTE_FONT_FAMILIES = [
   "Inter, 'Segoe UI', system-ui, sans-serif",
   "Arial, sans-serif",
@@ -199,7 +205,7 @@ function toggleTheme() {
 function sanitizeNoteContent(html) {
   const root = document.createElement("div");
   root.innerHTML = String(html ?? "");
-  const allowedTags = new Set(["B", "STRONG", "I", "EM", "U", "BR", "SPAN", "DIV", "P"]);
+  const allowedTags = new Set(["B", "STRONG", "I", "EM", "U", "BR", "SPAN", "DIV", "P", "CODE"]);
   const dangerousTags = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "SVG", "MATH", "TEMPLATE"]);
   const normalizeFont = (value) => String(value || "").replace(/["']/g, "").trim().toLowerCase();
 
@@ -222,7 +228,12 @@ function sanitizeNoteContent(html) {
 
       const fontFamily = node.tagName === "SPAN" ? node.style.fontFamily : "";
       const fontSize = node.tagName === "SPAN" ? node.style.fontSize : "";
+      const codeLanguage = node.tagName === "CODE"
+        && (CODE_LANGUAGE_IDS.includes(node.getAttribute("data-language")) || node.getAttribute("data-language") === "auto")
+        ? node.getAttribute("data-language")
+        : "";
       Array.from(node.attributes).forEach((attribute) => node.removeAttribute(attribute.name));
+      if (codeLanguage) node.dataset.language = codeLanguage;
       if (fontFamily) {
         const safeFamily = NOTE_FONT_FAMILIES.find((family) => normalizeFont(family) === normalizeFont(fontFamily));
         if (safeFamily) node.style.fontFamily = safeFamily;
@@ -246,7 +257,7 @@ function setNoteContent(content) {
   }
 }
 
-function getPlainTextFromRichContent(root) {
+function getPlainTextFromRichContent(root, trimTrailingNewline = true) {
   let text = "";
 
   function append(node) {
@@ -265,7 +276,7 @@ function getPlainTextFromRichContent(root) {
   }
 
   root.childNodes.forEach(append);
-  return text.endsWith("\n") ? text.slice(0, -1) : text;
+  return trimTrailingNewline && text.endsWith("\n") ? text.slice(0, -1) : text;
 }
 
 function getNoteContentText(content) {
@@ -321,6 +332,117 @@ function trimEditorContent(maxLength) {
 
 function serializeNoteContent() {
   return `${NOTE_CONTENT_PREFIX}${sanitizeNoteContent(noteContent.innerHTML)}`;
+}
+
+function getHighlightedFragment(source, language, requireConfidence = false) {
+  if (!window.hljs || !source) return null;
+  const result = language === "auto"
+    ? window.hljs.highlightAuto(source, CODE_LANGUAGE_IDS)
+    : window.hljs.highlight(source, { language });
+  if (requireConfidence
+    && (!CODE_LANGUAGE_IDS.includes(result.language) || result.relevance < 2)) return null;
+
+  const template = document.createElement("template");
+  template.innerHTML = result.value;
+  const fragment = document.createDocumentFragment();
+  const appendSafeNode = (node, parent) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      parent.append(document.createTextNode(node.nodeValue));
+      return;
+    }
+    if (!(node instanceof HTMLElement)) return;
+    if (node.tagName === "SPAN") {
+      const tokenClasses = Array.from(node.classList).filter((className) => /^hljs-[a-z0-9_-]+$/i.test(className));
+      if (tokenClasses.length) {
+        const token = document.createElement("span");
+        token.classList.add(...tokenClasses);
+        node.childNodes.forEach((child) => appendSafeNode(child, token));
+        parent.append(token);
+        return;
+      }
+    }
+    node.childNodes.forEach((child) => appendSafeNode(child, parent));
+  };
+  template.content.childNodes.forEach((node) => appendSafeNode(node, fragment));
+  return fragment;
+}
+
+function getImmediateCodeLanguage(text) {
+  const immediateLanguages = [
+    { language: "typescript", pattern: /^\s*(?:interface|type)\b/ },
+    { language: "javascript", pattern: /^\s*(?:const|let|var|function|return|import|export|async|await|class|if|for|while)\b/ },
+    { language: "python", pattern: /^\s*(?:def|from|print|elif|self)\b/ },
+    { language: "sql", pattern: /^\s*(?:select|insert|update|delete|create|where)\b/i },
+    { language: "bash", pattern: /^\s*(?:echo|cd|sudo|npm|node|git)\b/ },
+    { language: "xml", pattern: /^\s*<\/?[a-z][^>]*>/i },
+  ];
+  return immediateLanguages.find(({ pattern }) => pattern.test(text))?.language || "";
+}
+
+function isLikelyCode(text) {
+  if (getImmediateCodeLanguage(text)) return true;
+  if ((text.match(/<\/?[a-z][^>]*>/gi) || []).length >= 2) return true;
+  const signals = [
+    /(?:=>|->|===?|!==?|&&|\|\||\+\+|--|:=)/,
+    /[{}[\]();]/,
+    /\b(?:const|let|var|function|return|import|from|def|class|if|for|while|select|from|where|print|console)\b/i,
+    /<\/?[a-z][^>]*>/i,
+  ];
+  return signals.filter((signal) => signal.test(text)).length >= 2;
+}
+
+function highlightAutomaticTextNode(node) {
+  const text = node.nodeType === Node.TEXT_NODE
+    ? node.textContent
+    : getPlainTextFromRichContent(node);
+  if (!text || text.length > NOTE_MAX_LENGTH || !isLikelyCode(text)) return false;
+  const immediateLanguage = getImmediateCodeLanguage(text);
+  const fragment = immediateLanguage
+    ? getHighlightedFragment(text, immediateLanguage)
+    : getHighlightedFragment(text, "auto", true);
+  if (!fragment) return false;
+  if (node.nodeType === Node.TEXT_NODE) node.replaceWith(fragment);
+  else node.replaceChildren(fragment);
+  return true;
+}
+
+function updateSyntaxHighlights() {
+  if (noteFindPanel && !noteFindPanel.hidden) return false;
+  const overlay = noteContent.cloneNode(true);
+  let highlightedCount = 0;
+
+  overlay.querySelectorAll("code[data-language]").forEach((code) => {
+    const fragment = getHighlightedFragment(code.textContent, code.dataset.language);
+    if (fragment) {
+      code.replaceChildren(fragment);
+      highlightedCount += 1;
+    }
+  });
+
+  function highlightAutomaticBlocks(parent) {
+    Array.from(parent.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (highlightAutomaticTextNode(node)) highlightedCount += 1;
+        return;
+      }
+      if (!(node instanceof HTMLElement) || node.tagName === "CODE") return;
+      if (["DIV", "P"].includes(node.tagName)) {
+        const hasNestedElements = Array.from(node.children).some((child) => child.tagName !== "BR");
+        if (!hasNestedElements) {
+          if (highlightAutomaticTextNode(node)) highlightedCount += 1;
+          return;
+        }
+      }
+      highlightAutomaticBlocks(node);
+    });
+  }
+
+  highlightAutomaticBlocks(overlay);
+  noteContentHighlights.replaceChildren(...Array.from(overlay.childNodes));
+  noteContent.classList.toggle("is-syntax-highlighted", highlightedCount > 0);
+  noteContentHighlights.hidden = highlightedCount === 0;
+  noteContentHighlights.style.transform = `translate(${-noteContent.scrollLeft}px, ${-noteContent.scrollTop}px)`;
+  return highlightedCount > 0;
 }
 
 function escapeHtml(value) {
@@ -764,6 +886,13 @@ async function openNoteSearch() {
 }
 
 function updateNoteFindHighlights() {
+  if (noteFindPanel.hidden) {
+    noteFindMatches = [];
+    updateSyntaxHighlights();
+    return;
+  }
+
+  noteContent.classList.remove("is-syntax-highlighted");
   const query = noteFindInput.value;
   const content = readNoteContentText();
   noteFindMatches = [];
@@ -937,6 +1066,7 @@ function renderEditor() {
     noteFindPanel.hidden = true;
     noteContentHighlights.hidden = true;
     noteContent.classList.remove("is-find-open");
+    noteContent.classList.remove("is-syntax-highlighted");
     return;
   }
 
@@ -966,10 +1096,8 @@ function renderEditor() {
     && typeof draft.content === "string"
     && (!Number.isFinite(serverTime) || !Number.isFinite(draftTime) || draftTime > serverTime)
   );
-  if (!noteFindPanel.hidden) {
-    noteFindCurrent = 0;
-    updateNoteFindHighlights();
-  }
+  noteFindCurrent = 0;
+  updateNoteFindHighlights();
 }
 
 function updateListPreview(noteId, title, content, updatedAt) {
@@ -1615,6 +1743,57 @@ function getFormattingAncestor(node, tagNames) {
   return null;
 }
 
+function applyCodeFormatting() {
+  restoreEditorSelection();
+  const range = getEditorSelectionRange() || savedEditorSelection?.cloneRange();
+  if (!range || range.collapsed) {
+    setGlobalStatus("Selecciona el código que quieres resaltar.", true);
+    return;
+  }
+
+  const language = codeLanguageSelect.value;
+  const existingCode = getFormattingAncestor(range.startContainer, ["CODE"]);
+  if (existingCode && existingCode.contains(range.endContainer)) {
+    if (language === "plain") {
+      const plainText = document.createTextNode(existingCode.textContent);
+      existingCode.replaceWith(plainText);
+      range.selectNodeContents(plainText);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      saveEditorSelection();
+      noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    existingCode.dataset.language = language;
+    saveEditorSelection();
+    noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+    return;
+  }
+  if (language === "plain") {
+    setGlobalStatus("Selecciona un bloque de código para quitar su formato.", true);
+    return;
+  }
+
+  const selectedText = getPlainTextFromRichContent(range.cloneContents());
+  if (!selectedText) {
+    setGlobalStatus("Selecciona el código que quieres resaltar.", true);
+    return;
+  }
+
+  range.deleteContents();
+  const code = document.createElement("code");
+  code.dataset.language = language;
+  code.textContent = selectedText;
+  range.insertNode(code);
+  range.selectNodeContents(code);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  saveEditorSelection();
+  noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
 function isRangeFormatted(range, tagNames) {
   const startAncestor = getFormattingAncestor(range.startContainer, tagNames);
   if (startAncestor && startAncestor === getFormattingAncestor(range.endContainer, tagNames)) return true;
@@ -1730,6 +1909,10 @@ function updateFormatToolbarState() {
   const parent = range?.commonAncestorContainer;
   const element = parent instanceof Element ? parent : parent?.parentElement;
   const style = element && noteContent.contains(element) ? getComputedStyle(element) : null;
+  const code = range && getFormattingAncestor(range.startContainer, ["CODE"]);
+  if (code && Array.from(codeLanguageSelect.options).some((option) => option.value === code.dataset.language)) {
+    codeLanguageSelect.value = code.dataset.language;
+  } else codeLanguageSelect.value = "auto";
   fontFamilySelect.value = style
     ? NOTE_FONT_FAMILIES.find((family) => family.replace(/["']/g, "").toLowerCase() === style.fontFamily.replace(/["']/g, "").toLowerCase()) || NOTE_FONT_FAMILIES[0]
     : NOTE_FONT_FAMILIES[0];
@@ -1772,6 +1955,8 @@ formatToolbar.querySelectorAll("[data-format-command]").forEach((button) => {
   button.addEventListener("pointerdown", (event) => event.preventDefault());
   button.addEventListener("click", () => applyToggleFormat(button.dataset.formatCommand));
 });
+applyCodeFormat.addEventListener("pointerdown", (event) => event.preventDefault());
+applyCodeFormat.addEventListener("click", applyCodeFormatting);
 
 if (!("focusGroup" in HTMLElement.prototype)) {
   const toolbarItems = Array.from(formatToolbar.querySelectorAll("select, button"));
@@ -1950,8 +2135,8 @@ if (!supabaseReady) {
     if (!fontSizeDialog.open) scheduleNoteSave();
     if (!noteFindPanel.hidden) {
       noteFindCurrent = 0;
-      updateNoteFindHighlights();
     }
+    updateNoteFindHighlights();
   });
   noteContent.addEventListener("paste", (event) => {
     event.preventDefault();
@@ -1969,6 +2154,25 @@ if (!supabaseReady) {
     selection.removeAllRanges();
     selection.addRange(range);
     noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  noteContent.addEventListener("copy", (event) => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+
+    const range = selection.getRangeAt(0);
+    const commonAncestor = range.commonAncestorContainer;
+    const selectedWithinEditor = commonAncestor === noteContent
+      || (commonAncestor instanceof Node && noteContent.contains(commonAncestor));
+    if (!selectedWithinEditor) return;
+
+    const copiedFragment = range.cloneContents();
+    const copiedRoot = document.createElement("div");
+    copiedRoot.append(copiedFragment);
+    const copiedText = getPlainTextFromRichContent(copiedRoot);
+    if (!copiedText) return;
+
+    event.preventDefault();
+    event.clipboardData?.setData("text/plain", copiedText);
   });
   noteContent.addEventListener("keyup", saveEditorSelection);
   noteContent.addEventListener("mouseup", saveEditorSelection);
