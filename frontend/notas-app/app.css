@@ -82,7 +82,7 @@ button { color: inherit; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 
 .auth-shell { position: relative; display: grid; min-height: 70vh; place-items: center; padding: 24px; background: radial-gradient(ellipse at 18% 0%, rgb(243 199 79 / 12%) 0, transparent 40%), var(--page); }
-.auth-theme-toggle {
+.theme-toggle.auth-theme-toggle {
   position: fixed;
   z-index: 100;
   top: max(20px, env(safe-area-inset-top, 0px));
