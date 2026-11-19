@@ -80,6 +80,7 @@ const supabaseReady = Boolean(
 const DRAFT_PREFIX = "notas-app-draft";
 const THEME_STORAGE_KEY = "notas-app-theme";
 const OPEN_TABS_PREFIX = "notas-app-open-tabs";
+const OPEN_TAB_STATE_TABLE = "note_tab_states";
 const READ_SHARED_NOTES_PREFIX = "notas-app-read-shared-notes";
 const NOTE_CONTENT_PREFIX = "<!-- notas-app-rich-text:v1 -->";
 const CODE_LANGUAGE_IDS = [
@@ -120,6 +121,7 @@ let openTabsUserId = null;
 let activeSection = "editor";
 let sectionBeforeSearch = "editor";
 let activeNoteId = null;
+let openTabSaveQueue = Promise.resolve();
 let readSharedNoteIds = new Set();
 let installPrompt = null;
 let saveTimer = null;
@@ -518,12 +520,50 @@ function readOpenNoteIds() {
   }
 }
 
-function saveOpenNoteIds() {
+async function readRemoteOpenTabState() {
+  const { data, error } = await client
+    .from(OPEN_TAB_STATE_TABLE)
+    .select("note_ids, active_note_id")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+  if (error) {
+    setGlobalStatus(`No se pudieron sincronizar las pestañas abiertas: ${error.message}`, true);
+    return null;
+  }
+  if (!data) return null;
+  if (!Array.isArray(data.note_ids)
+    || !data.note_ids.every((noteId) => typeof noteId === "string")
+    || (data.active_note_id !== null && typeof data.active_note_id !== "string")) {
+    setGlobalStatus("No se pudieron sincronizar las pestañas abiertas: el estado guardado no es válido.", true);
+    return null;
+  }
+  return {
+    noteIds: [...new Set(data.note_ids)],
+    activeNoteId: data.active_note_id,
+  };
+}
+
+function saveOpenNoteState() {
   try {
     localStorage.setItem(openTabsKey(), JSON.stringify(openNoteIds));
   } catch (error) {
     setGlobalStatus(`No se pudieron guardar las pestañas abiertas: ${error.message}`, true);
   }
+
+  if (!currentUser) return;
+  const state = {
+    user_id: currentUser.id,
+    note_ids: [...openNoteIds],
+    active_note_id: activeNoteId,
+  };
+  openTabSaveQueue = openTabSaveQueue.then(async () => {
+    const { error } = await client
+      .from(OPEN_TAB_STATE_TABLE)
+      .upsert(state, { onConflict: "user_id" });
+    if (error) throw error;
+  }).catch((error) => {
+    setGlobalStatus(`No se pudieron sincronizar las pestañas abiertas: ${error.message}`, true);
+  });
 }
 
 function readSharedNotesKey() {
@@ -1335,16 +1375,22 @@ async function loadNotes() {
   const savedNoteIds = new Set(loadedNotes.map((note) => note.id));
   if (openTabsUserId !== currentUser.id) {
     openTabsUserId = currentUser.id;
-    const savedOpenNoteIds = readOpenNoteIds();
-    const firstOwnedNote = loadedNotes.find((note) => note.user_id === currentUser.id);
-    openNoteIds = savedOpenNoteIds === null
-      ? (firstOwnedNote ? [firstOwnedNote.id] : [])
-      : savedOpenNoteIds.filter((noteId) => savedNoteIds.has(noteId));
+    const savedState = await readRemoteOpenTabState();
+    if (savedState) {
+      openNoteIds = savedState.noteIds.filter((noteId) => savedNoteIds.has(noteId));
+      activeNoteId = savedState.activeNoteId;
+    } else {
+      const savedOpenNoteIds = readOpenNoteIds();
+      const firstOwnedNote = loadedNotes.find((note) => note.user_id === currentUser.id);
+      openNoteIds = savedOpenNoteIds === null
+        ? (firstOwnedNote ? [firstOwnedNote.id] : [])
+        : savedOpenNoteIds.filter((noteId) => savedNoteIds.has(noteId));
+    }
   } else {
     openNoteIds = openNoteIds.filter((noteId) => savedNoteIds.has(noteId));
   }
   if (!openNoteIds.includes(activeNoteId)) activeNoteId = openNoteIds[0] || null;
-  saveOpenNoteIds();
+  saveOpenNoteState();
   renderNoteList();
   renderLibrarySection();
   renderEditor();
@@ -1368,8 +1414,8 @@ async function createNote(title = "", content = "", successMessage = "Nota nueva
   }
   loadedNotes.unshift(data);
   openNoteIds.unshift(data.id);
-  saveOpenNoteIds();
   activeNoteId = data.id;
+  saveOpenNoteState();
   renderNoteList();
   renderLibrarySection();
   renderEditor();
@@ -1422,11 +1468,11 @@ async function deleteNoteRecord(note) {
   }
   loadedNotes = loadedNotes.filter((item) => item.id !== note.id);
   openNoteIds = openNoteIds.filter((noteId) => noteId !== note.id);
-  saveOpenNoteIds();
   removeLocalDraft(note.id);
   if (activeNoteId === note.id) {
     activeNoteId = openNoteIds[0] || null;
   }
+  saveOpenNoteState();
   renderNoteList();
   renderLibrarySection();
   renderEditor();
@@ -1568,6 +1614,7 @@ function initializeShareSelect(selectId, placeholder, items, onSelect) {
       shareStatus.classList.remove("is-error");
     }
     closeShareSelect(root, true);
+    if (selectId === "codeLanguageSelect") restoreEditorSelection();
     onSelect?.(value);
   });
 
@@ -1694,8 +1741,8 @@ async function openNoteFromLibrary(noteId) {
   if (!note) return;
   await flushNoteSave();
   if (!openNoteIds.includes(note.id)) openNoteIds.push(note.id);
-  saveOpenNoteIds();
   activeNoteId = note.id;
+  saveOpenNoteState();
   activeSection = "editor";
   updateSectionVisibility();
   renderNoteList();
@@ -1710,10 +1757,10 @@ async function closeNoteTab(noteId) {
   if (tabIndex < 0) return;
   await flushNoteSave();
   openNoteIds = openNoteIds.filter((id) => id !== noteId);
-  saveOpenNoteIds();
   if (activeNoteId === noteId) {
     activeNoteId = openNoteIds[Math.min(tabIndex, openNoteIds.length - 1)] || null;
   }
+  saveOpenNoteState();
   renderNoteList();
   renderEditor();
   const activeTab = notesList.querySelector('[role="tab"][aria-selected="true"]');
@@ -2333,6 +2380,7 @@ if (!supabaseReady) {
     if (!row) return;
     await flushNoteSave();
     activeNoteId = row.dataset.noteId;
+    saveOpenNoteState();
     renderNoteList();
     renderEditor();
     [...notesList.querySelectorAll('[role="tab"]')]
@@ -2356,6 +2404,7 @@ if (!supabaseReady) {
     const nextTab = tabs[(currentIndex + offset + tabs.length) % tabs.length];
     await flushNoteSave();
     activeNoteId = nextTab.dataset.noteId;
+    saveOpenNoteState();
     renderNoteList();
     renderEditor();
     [...notesList.querySelectorAll('[role="tab"]')]

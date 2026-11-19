@@ -149,6 +149,11 @@ Para habilitar las fechas en las notas (incluidas las existentes), ejecuta
 `supabase/notes.sql` en el SQL Editor de Supabase. Las notas anteriores reciben
 la fecha en que fueron creadas.
 
+Para sincronizar entre dispositivos las pestañas abiertas y la nota activa,
+ejecuta `supabase/note-tab-states.sql` en el SQL Editor de Supabase. El estado
+se guarda por cuenta; en cada dispositivo se restauran únicamente las notas
+que esa cuenta todavía puede consultar.
+
 Para habilitar el panel administrativo, ejecuta después `supabase/admin-panel.sql`.
 Además de los permisos y datos de tarjetas, este script crea la función protegida
 que permite a un administrador cambiar la contraseña de cualquier usuario desde
