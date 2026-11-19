@@ -56,6 +56,10 @@ const confirmDialogTitle = document.getElementById("confirmDialogTitle");
 const confirmDialogMessage = document.getElementById("confirmDialogMessage");
 const cancelConfirmation = document.getElementById("cancelConfirmation");
 const acceptConfirmation = document.getElementById("acceptConfirmation");
+const settingsButton = document.getElementById("settingsButton");
+const settingsMenu = document.getElementById("settingsMenu");
+const fontSizeOption = document.getElementById("fontSizeOption");
+const fontSizePanel = document.getElementById("fontSizePanel");
 
 const config = window.SUPABASE_CONFIG || {};
 const supabaseReady = Boolean(
@@ -68,6 +72,7 @@ const supabaseReady = Boolean(
 const DRAFT_PREFIX = "notas-app-draft";
 const THEME_STORAGE_KEY = "notas-app-theme";
 const OPEN_TABS_PREFIX = "notas-app-open-tabs";
+const NOTE_FONT_SIZE_STORAGE_KEY = "notas-app-note-font-size";
 
 let client = null;
 let currentUser = null;
@@ -143,7 +148,7 @@ function applyTheme(theme) {
     toggle.setAttribute("aria-checked", String(isDark));
     toggle.title = `Cambiar a tema ${isDark ? "claro" : "oscuro"}`;
   });
-  document.querySelector('meta[name="theme-color"]').content = isDark ? "#171a22" : "#f6f7fb";
+  document.querySelector('meta[name="theme-color"]').content = isDark ? "#292929" : "#f6f7fb";
 }
 
 function initializeTheme() {
@@ -165,6 +170,33 @@ function toggleTheme() {
   } catch (error) {
     setGlobalStatus(`No se pudo guardar la preferencia del tema: ${error.message}`, true);
   }
+}
+
+function applyNoteFontSize(size) {
+  const parsedSize = Number(size);
+  const selectedSize = Number.isFinite(parsedSize)
+    ? Math.min(72, Math.max(8, parsedSize))
+    : 16;
+  document.documentElement.style.setProperty("--note-font-size", `${selectedSize}px`);
+  const fontSizeSelect = document.getElementById("fontSizeSelect");
+  if (fontSizeSelect) {
+    let option = Array.from(fontSizeSelect.options).find((item) => Number(item.value) === selectedSize);
+    if (!option) {
+      option = new Option(String(selectedSize), String(selectedSize));
+      fontSizeSelect.add(option);
+    }
+    fontSizeSelect.value = String(selectedSize);
+  }
+}
+
+function initializeNoteFontSize() {
+  let size = 16;
+  try {
+    size = Number(localStorage.getItem(NOTE_FONT_SIZE_STORAGE_KEY)) || 16;
+  } catch (error) {
+    setGlobalStatus(`No se pudo leer el tamaño de fuente: ${error.message}`, true);
+  }
+  applyNoteFontSize(size);
 }
 
 function escapeHtml(value) {
@@ -524,6 +556,8 @@ function renderLibrarySection() {
 
   myNotesCount.textContent = String(ownedNotes.length);
   sharedNotesCount.textContent = String(sharedNotes.length);
+  myNotesCount.hidden = ownedNotes.length === 0;
+  sharedNotesCount.hidden = sharedNotes.length === 0;
   libraryTitle.textContent = searching ? "Buscar notas" : showingShared ? "Compartidas" : "Mis notas";
   libraryDescription.textContent = searching
     ? "Busca por título o contenido en tus notas y las compartidas contigo."
@@ -776,7 +810,7 @@ function renderEditor() {
   document.getElementById("deleteNote").hidden = !owned;
   document.getElementById("leaveSharedNote").hidden = !(!owned && note.user_id !== currentUser?.id);
   editorHint.textContent = editable
-    ? "Presiona Tab para insertar una sangría. Se guarda automáticamente mientras escribes."
+    ? "Se guarda automáticamente mientras escribes."
     : `Solo lectura${shareOwners.get(note.id) ? ` · Compartida por ${shareOwners.get(note.id)}` : ""}.`;
   renderSharedUsers(note);
 
@@ -1332,6 +1366,70 @@ async function closeNoteTab(noteId) {
 
 themeToggles.forEach((toggle) => toggle.addEventListener("click", toggleTheme));
 initializeTheme();
+initializeNoteFontSize();
+settingsButton.addEventListener("click", () => {
+  const willOpen = settingsMenu.hidden;
+  settingsMenu.hidden = !willOpen;
+  settingsButton.setAttribute("aria-expanded", String(willOpen));
+  if (willOpen) fontSizeOption.focus();
+  else {
+    fontSizePanel.hidden = true;
+    fontSizeOption.setAttribute("aria-expanded", "false");
+  }
+});
+fontSizeOption.addEventListener("click", () => {
+  const willOpen = fontSizePanel.hidden;
+  fontSizePanel.hidden = !willOpen;
+  fontSizeOption.setAttribute("aria-expanded", String(willOpen));
+  if (willOpen) document.getElementById("fontSizeSelect").focus();
+});
+function saveNoteFontSize(size) {
+  try {
+    localStorage.setItem(NOTE_FONT_SIZE_STORAGE_KEY, String(size));
+  } catch (error) {
+    setGlobalStatus(`No se pudo guardar el tamaño de fuente: ${error.message}`, true);
+  }
+}
+
+document.getElementById("fontSizeSelect").addEventListener("change", (event) => {
+  const size = Number(event.target.value);
+  applyNoteFontSize(size);
+  saveNoteFontSize(size);
+});
+
+document.getElementById("decreaseFontSize").addEventListener("click", () => {
+  const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
+  const size = currentSize - 1;
+  applyNoteFontSize(size);
+  saveNoteFontSize(size);
+});
+
+document.getElementById("increaseFontSize").addEventListener("click", () => {
+  const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
+  const size = currentSize + 1;
+  applyNoteFontSize(size);
+  saveNoteFontSize(size);
+});
+document.addEventListener("click", (event) => {
+  if (settingsMenu.hidden || event.target.closest(".settings-control")) return;
+  settingsMenu.hidden = true;
+  settingsButton.setAttribute("aria-expanded", "false");
+  fontSizePanel.hidden = true;
+  fontSizeOption.setAttribute("aria-expanded", "false");
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !settingsMenu.hidden) {
+    if (!fontSizePanel.hidden) {
+      fontSizePanel.hidden = true;
+      fontSizeOption.setAttribute("aria-expanded", "false");
+      fontSizeOption.focus();
+    } else {
+      settingsMenu.hidden = true;
+      settingsButton.setAttribute("aria-expanded", "false");
+      settingsButton.focus();
+    }
+  }
+});
 initializeShareSelect("shareUsername", "Selecciona un usuario", []);
 initializeShareSelect("sharePermission", "Selecciona un permiso", [
   { value: "view", label: "Solo lectura" },

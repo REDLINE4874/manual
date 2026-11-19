@@ -9,6 +9,9 @@
     <meta name="apple-mobile-web-app-title" content="Notas" />
     <meta name="description" content="Tus notas personales, siempre sincronizadas." />
     <title>Notas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" href="icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
@@ -20,11 +23,9 @@
   <body>
     <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
       <button class="theme-toggle auth-theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
-        <span class="theme-toggle__track" aria-hidden="true">
-          <svg class="theme-toggle__icon theme-toggle__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
-          <span class="theme-toggle__thumb"></span>
-          <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.6 8.6 0 1 0 20.2 15.1Z" /></svg>
-        </span>
+        <span class="theme-toggle__clouds" aria-hidden="true"><span></span><span></span></span>
+        <span class="theme-toggle__stars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span class="theme-toggle__thumb" aria-hidden="true"><span class="theme-toggle__crater theme-toggle__crater--one"></span><span class="theme-toggle__crater theme-toggle__crater--two"></span><span class="theme-toggle__crater theme-toggle__crater--three"></span></span>
       </button>
       <div class="auth-card">
       
@@ -67,32 +68,64 @@
             <button class="button button--quiet section-nav-button" id="openEditor" type="button" aria-current="page" aria-controls="workspace">
               <span>Lienzo</span>
             </button>
-            <button class="button button--quiet my-notes-button section-nav-button" id="openMyNotes" type="button" aria-controls="libraryView">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM8 9h8M8 12h8M8 15h5" /></svg>
-              <span>Mis notas</span>
-              <span class="my-notes-count" id="myNotesCount">0</span>
+            <button class="icon-button section-icon-button my-notes-button" id="openMyNotes" type="button" aria-label="Mis notas" aria-controls="libraryView">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM10 16H7v-2h3v2zm7 0h-5v-2h5v2zm0-4H7v-2h10v2zm0-4H7V6h10v2z"/></svg>
+              <span class="my-notes-count" id="myNotesCount" hidden>0</span>
+              <span class="floating-label" role="tooltip">Mis notas</span>
             </button>
-            <button class="button button--quiet shared-notes-button section-nav-button" id="openSharedNotes" type="button" aria-controls="libraryView">
-              <span>Compartidas</span>
-              <span class="my-notes-count" id="sharedNotesCount">0</span>
+            <button class="icon-button section-icon-button shared-notes-button" id="openSharedNotes" type="button" aria-label="Compartidas" aria-controls="libraryView">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-.36 0-.69.08-1 .19.63.76 1 1.74 1 2.81s-.37 2.05-1 2.81c.31.11.64.19 1 .19zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 .5c-.29 0-.62.02-.97.05 1.16.84 1.97 1.92 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              <span class="my-notes-count" id="sharedNotesCount" hidden>0</span>
+              <span class="floating-label" role="tooltip">Compartidas</span>
             </button>
+            <div class="settings-control">
+              <button class="icon-button section-icon-button" id="settingsButton" type="button" aria-label="Ajustes" aria-expanded="false" aria-controls="settingsMenu">
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.3 7.3 0 0 0-1.62-.94l-.36-2.54a.49.49 0 0 0-.49-.42h-3.84a.49.49 0 0 0-.49.42L9.2 5.32c-.59.23-1.13.55-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.66 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.05.3-.08.62-.08.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .61.22l2.39-.96c.49.39 1.03.71 1.62.94l.36 2.54c.04.24.24.42.49.42h3.84c.25 0 .45-.18.49-.42l.36-2.54c.59-.23 1.13-.55 1.62-.94l2.39.96a.5.5 0 0 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+                <span class="floating-label" role="tooltip">Ajustes</span>
+              </button>
+              <div class="settings-menu" id="settingsMenu" role="region" aria-label="Ajustes" hidden>
+                <span class="settings-menu__title">Ajustes</span>
+                <div class="settings-menu__options">
+                  <button class="settings-menu__option" id="fontSizeOption" type="button" aria-expanded="false" aria-controls="fontSizePanel">
+                    <span>Tamaño de fuente</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </button>
+                  <div class="font-size-panel" id="fontSizePanel" hidden>
+                    <label class="font-size-control__label" for="fontSizeSelect">Tamaño de fuente</label>
+                    <div class="font-size-control">
+                      <button class="font-size-control__step" id="decreaseFontSize" type="button" aria-label="Disminuir tamaño de fuente">A<sup>−</sup></button>
+                      <select class="font-size-control__select" id="fontSizeSelect" aria-label="Tamaño de fuente">
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="21">21</option>
+                        <option value="24">24</option>
+                        <option value="28">28</option>
+                        <option value="32">32</option>
+                      </select>
+                      <button class="font-size-control__step" id="increaseFontSize" type="button" aria-label="Aumentar tamaño de fuente">A<sup>+</sup></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button class="button button--quiet install-button" id="installApp" type="button" hidden>Instalar app</button>
           </div>
           <div class="app-header__user-tools">
             <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
-              <span class="theme-toggle__track" aria-hidden="true">
-                <svg class="theme-toggle__icon theme-toggle__sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
-                <span class="theme-toggle__thumb"></span>
-                <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24"><path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.6 8.6 0 1 0 20.2 15.1Z" /></svg>
-              </span>
+              <span class="theme-toggle__clouds" aria-hidden="true"><span></span><span></span></span>
+              <span class="theme-toggle__stars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+              <span class="theme-toggle__thumb" aria-hidden="true"><span class="theme-toggle__crater theme-toggle__crater--one"></span><span class="theme-toggle__crater theme-toggle__crater--two"></span><span class="theme-toggle__crater theme-toggle__crater--three"></span></span>
             </button>
             <div class="account-menu">
               <button class="account-avatar" id="accountToggle" type="button" aria-label="Mostrar nombre de usuario" aria-expanded="false" aria-controls="accountPopover">U</button>
               <div class="account-popover" id="accountPopover" role="dialog" aria-labelledby="accountPopoverName" tabindex="-1" hidden>
                 <span id="accountPopoverName"></span>
               </div>
-              <button class="icon-button icon-button--small" id="signOut" type="button" aria-label="Cerrar sesión" title="Cerrar sesión">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M21 3v18" /></svg>
+              <button class="icon-button icon-button--small sign-out-button" id="signOut" type="button" aria-label="Cerrar sesión">
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                <span class="floating-label" role="tooltip">Cerrar sesión</span>
               </button>
             </div>
           </div>
@@ -111,11 +144,13 @@
             <button class="icon-button icon-button--small tab-scroll" id="scrollTabsRight" type="button" aria-label="Desplazar pestañas a la derecha" aria-controls="notesList" title="Pestañas siguientes" hidden>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
             </button>
-            <button class="icon-button tab-create" id="createNote" type="button" aria-label="Crear nota nueva" title="Crear nota nueva">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            <button class="icon-button tab-create" id="createNote" type="button" aria-label="Crear nota nueva">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              <span class="floating-label" role="tooltip">Crear nota nueva</span>
             </button>
-            <button class="icon-button tab-import" id="importTextFile" type="button" aria-label="Importar un archivo TXT como nota nueva" title="Importar archivo TXT">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.75h8l4 4v12.5H6zM14 3.75v4h4" /><path d="M12 17v-6m-2.5 2.5L12 11l2.5 2.5" /></svg>
+            <button class="icon-button tab-import" id="importTextFile" type="button" aria-label="Importar un archivo TXT como nota nueva">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm-1 1.5L18.5 9H13zM18 20H6V4h6v6h6zm-4.5-5.5V18h-3v-3.5H8l4-4 4 4z"/></svg>
+              <span class="floating-label" role="tooltip">Importar archivo TXT</span>
             </button>
             <input id="textFileInput" type="file" accept=".txt,text/plain" hidden />
           </div>
@@ -152,17 +187,23 @@
             <div class="note-editor__meta">
               <time class="note-date" id="noteDate"></time>
               <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+              <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" lang="es-MX" spellcheck="true" />
             </div>
             <div class="note-actions">
-              <button class="button button--quiet" id="shareNote" type="button" hidden>Compartir</button>
-              <button class="button button--quiet button--danger" id="deleteNote" type="button" hidden>Eliminar</button>
+              <button class="icon-button action-icon-button" id="shareNote" type="button" aria-label="Compartir" hidden>
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.39l7.05-4.11A3 3 0 1 0 15 5c0 .24.03.47.08.69L8.03 9.8a3 3 0 1 0 0 4.4l7.12 4.16A3 3 0 1 0 18 16.08z"/></svg>
+                <span class="floating-label" role="tooltip">Compartir</span>
+              </button>
+              <button class="icon-button action-icon-button action-icon-button--danger" id="deleteNote" type="button" aria-label="Eliminar" hidden>
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
+                <span class="floating-label" role="tooltip">Eliminar</span>
+              </button>
               <button class="button button--quiet button--danger" id="leaveSharedNote" type="button" hidden>Dejar de ver</button>
             </div>
           </div>
-          <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" />
           <div class="note-content-wrap" id="noteContentWrap">
             <div class="note-content-highlights" id="noteContentHighlights" aria-hidden="true" hidden></div>
-            <textarea class="note-content" id="noteContent" maxlength="20000" placeholder="Empieza a escribir..." aria-label="Contenido de la nota"></textarea>
+            <textarea class="note-content" id="noteContent" maxlength="20000" placeholder="Empieza a escribir..." aria-label="Contenido de la nota" lang="es-MX" spellcheck="true"></textarea>
           </div>
           <details class="sharing-section" id="sharingSection" hidden>
             <summary>Compartida con <span id="sharedUserCount"></span></summary>
