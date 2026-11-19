@@ -59,7 +59,10 @@ const acceptConfirmation = document.getElementById("acceptConfirmation");
 const settingsButton = document.getElementById("settingsButton");
 const settingsMenu = document.getElementById("settingsMenu");
 const fontSizeOption = document.getElementById("fontSizeOption");
-const fontSizePanel = document.getElementById("fontSizePanel");
+const fontSizeDialog = document.getElementById("fontSizeDialog");
+const fontSizeSelect = document.getElementById("fontSizeSelect");
+const cancelFontSize = document.getElementById("cancelFontSize");
+const confirmFontSize = document.getElementById("confirmFontSize");
 
 const config = window.SUPABASE_CONFIG || {};
 const supabaseReady = Boolean(
@@ -78,6 +81,7 @@ let client = null;
 let currentUser = null;
 let recoveryActive = false;
 let persistentAuthMessage = "";
+let pendingFontSize = null;
 let loadedNotes = [];
 let loadedShares = [];
 let sharePermissions = new Map();
@@ -1372,16 +1376,16 @@ settingsButton.addEventListener("click", () => {
   settingsMenu.hidden = !willOpen;
   settingsButton.setAttribute("aria-expanded", String(willOpen));
   if (willOpen) fontSizeOption.focus();
-  else {
-    fontSizePanel.hidden = true;
-    fontSizeOption.setAttribute("aria-expanded", "false");
-  }
+  else fontSizeOption.setAttribute("aria-expanded", "false");
 });
 fontSizeOption.addEventListener("click", () => {
-  const willOpen = fontSizePanel.hidden;
-  fontSizePanel.hidden = !willOpen;
-  fontSizeOption.setAttribute("aria-expanded", String(willOpen));
-  if (willOpen) document.getElementById("fontSizeSelect").focus();
+  pendingFontSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
+  fontSizeSelect.value = String(pendingFontSize);
+  fontSizeOption.setAttribute("aria-expanded", "false");
+  settingsMenu.hidden = true;
+  settingsButton.setAttribute("aria-expanded", "false");
+  fontSizeDialog.showModal();
+  fontSizeSelect.focus();
 });
 function saveNoteFontSize(size) {
   try {
@@ -1391,43 +1395,52 @@ function saveNoteFontSize(size) {
   }
 }
 
-document.getElementById("fontSizeSelect").addEventListener("change", (event) => {
+fontSizeSelect.addEventListener("change", (event) => {
   const size = Number(event.target.value);
   applyNoteFontSize(size);
-  saveNoteFontSize(size);
 });
 
 document.getElementById("decreaseFontSize").addEventListener("click", () => {
   const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
   const size = currentSize - 1;
   applyNoteFontSize(size);
-  saveNoteFontSize(size);
 });
 
 document.getElementById("increaseFontSize").addEventListener("click", () => {
   const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
   const size = currentSize + 1;
   applyNoteFontSize(size);
-  saveNoteFontSize(size);
+});
+
+function closeFontSizeDialog(saveChanges) {
+  const selectedSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
+  if (saveChanges) {
+    saveNoteFontSize(selectedSize);
+  } else if (pendingFontSize !== null) {
+    applyNoteFontSize(pendingFontSize);
+  }
+  pendingFontSize = null;
+  fontSizeDialog.close();
+  settingsButton.focus();
+}
+
+cancelFontSize.addEventListener("click", () => closeFontSizeDialog(false));
+confirmFontSize.addEventListener("click", () => closeFontSizeDialog(true));
+fontSizeDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  closeFontSizeDialog(false);
 });
 document.addEventListener("click", (event) => {
   if (settingsMenu.hidden || event.target.closest(".settings-control")) return;
   settingsMenu.hidden = true;
   settingsButton.setAttribute("aria-expanded", "false");
-  fontSizePanel.hidden = true;
   fontSizeOption.setAttribute("aria-expanded", "false");
 });
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !settingsMenu.hidden) {
-    if (!fontSizePanel.hidden) {
-      fontSizePanel.hidden = true;
-      fontSizeOption.setAttribute("aria-expanded", "false");
-      fontSizeOption.focus();
-    } else {
-      settingsMenu.hidden = true;
-      settingsButton.setAttribute("aria-expanded", "false");
-      settingsButton.focus();
-    }
+    settingsMenu.hidden = true;
+    settingsButton.setAttribute("aria-expanded", "false");
+    settingsButton.focus();
   }
 });
 initializeShareSelect("shareUsername", "Selecciona un usuario", []);
