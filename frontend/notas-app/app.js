@@ -89,6 +89,11 @@ const NOTE_FONT_FAMILIES = [
   "'Courier New', monospace",
 ];
 const NOTE_MAX_LENGTH = 20000;
+const shortDateTimeFormatter = new Intl.DateTimeFormat("es-MX", {
+  dateStyle: "short",
+  timeStyle: "short",
+  hour12: true,
+});
 
 let client = null;
 let currentUser = null;
@@ -840,6 +845,22 @@ function moveNoteFindMatch(direction) {
 
 async function handleGlobalKeydown(event) {
   if (
+    event.key === "F5"
+    && !event.ctrlKey
+    && !event.metaKey
+    && !event.altKey
+    && !event.shiftKey
+    && !event.repeat
+    && activeSection === "editor"
+    && document.activeElement === noteContent
+    && !shareDialog.open
+    && !confirmDialog.open
+  ) {
+    if (insertShortDateTime()) event.preventDefault();
+    return;
+  }
+
+  if (
     (event.ctrlKey || event.metaKey)
     && !event.altKey
     && event.key.toLowerCase() === "y"
@@ -1510,6 +1531,31 @@ function getEditorSelectionRange() {
   return noteContent.contains(range.startContainer) && noteContent.contains(range.endContainer)
     ? range.cloneRange()
     : null;
+}
+
+function insertShortDateTime() {
+  const note = currentNote();
+  const range = getEditorSelectionRange();
+  if (!note || !canEditNote(note) || !range) return false;
+
+  const text = shortDateTimeFormatter.format(new Date());
+  const availableLength = Math.max(0, NOTE_MAX_LENGTH - getEditorTextLength() + range.toString().length);
+  if (text.length > availableLength) {
+    setGlobalStatus("El contenido de la nota admite hasta 20 000 caracteres.", true);
+    return true;
+  }
+
+  const selection = window.getSelection();
+  range.deleteContents();
+  const insertedText = document.createTextNode(text);
+  range.insertNode(insertedText);
+  range.setStartAfter(insertedText);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+  saveEditorSelection();
+  noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+  return true;
 }
 
 function restoreEditorSelection(range = savedEditorSelection) {
