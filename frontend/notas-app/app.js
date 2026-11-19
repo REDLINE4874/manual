@@ -38,6 +38,7 @@ const noteContent = document.getElementById("noteContent");
 const noteContentHighlights = document.getElementById("noteContentHighlights");
 const noteFindPanel = document.getElementById("noteFindPanel");
 const noteFindInput = document.getElementById("noteFindInput");
+const findInNote = document.getElementById("findInNote");
 const noteFindCount = document.getElementById("noteFindCount");
 const noteFindPrevious = document.getElementById("noteFindPrevious");
 const noteFindNext = document.getElementById("noteFindNext");
@@ -60,9 +61,11 @@ const settingsButton = document.getElementById("settingsButton");
 const settingsMenu = document.getElementById("settingsMenu");
 const fontSizeOption = document.getElementById("fontSizeOption");
 const fontSizeDialog = document.getElementById("fontSizeDialog");
+const fontFamilySelect = document.getElementById("fontFamilySelect");
 const fontSizeSelect = document.getElementById("fontSizeSelect");
 const cancelFontSize = document.getElementById("cancelFontSize");
 const confirmFontSize = document.getElementById("confirmFontSize");
+const formatToolbar = document.getElementById("formatToolbar");
 
 const config = window.SUPABASE_CONFIG || {};
 const supabaseReady = Boolean(
@@ -75,13 +78,25 @@ const supabaseReady = Boolean(
 const DRAFT_PREFIX = "notas-app-draft";
 const THEME_STORAGE_KEY = "notas-app-theme";
 const OPEN_TABS_PREFIX = "notas-app-open-tabs";
-const NOTE_FONT_SIZE_STORAGE_KEY = "notas-app-note-font-size";
+const NOTE_CONTENT_PREFIX = "<!-- notas-app-rich-text:v1 -->";
+const NOTE_FONT_FAMILIES = [
+  "Inter, 'Segoe UI', system-ui, sans-serif",
+  "Arial, sans-serif",
+  "Aptos, sans-serif",
+  "Calibri, sans-serif",
+  "Georgia, serif",
+  "Verdana, sans-serif",
+  "'Courier New', monospace",
+];
+const NOTE_MAX_LENGTH = 20000;
 
 let client = null;
 let currentUser = null;
 let recoveryActive = false;
 let persistentAuthMessage = "";
-let pendingFontSize = null;
+let pendingFormatContent = null;
+let pendingEditorSelection = null;
+let savedEditorSelection = null;
 let loadedNotes = [];
 let loadedShares = [];
 let sharePermissions = new Map();
@@ -176,31 +191,131 @@ function toggleTheme() {
   }
 }
 
-function applyNoteFontSize(size) {
-  const parsedSize = Number(size);
-  const selectedSize = Number.isFinite(parsedSize)
-    ? Math.min(72, Math.max(8, parsedSize))
-    : 16;
-  document.documentElement.style.setProperty("--note-font-size", `${selectedSize}px`);
-  const fontSizeSelect = document.getElementById("fontSizeSelect");
-  if (fontSizeSelect) {
-    let option = Array.from(fontSizeSelect.options).find((item) => Number(item.value) === selectedSize);
-    if (!option) {
-      option = new Option(String(selectedSize), String(selectedSize));
-      fontSizeSelect.add(option);
-    }
-    fontSizeSelect.value = String(selectedSize);
+function sanitizeNoteContent(html) {
+  const root = document.createElement("div");
+  root.innerHTML = String(html ?? "");
+  const allowedTags = new Set(["B", "STRONG", "I", "EM", "U", "BR", "SPAN", "DIV", "P"]);
+  const dangerousTags = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "SVG", "MATH", "TEMPLATE"]);
+  const normalizeFont = (value) => String(value || "").replace(/["']/g, "").trim().toLowerCase();
+
+  function clean(parent) {
+    Array.from(parent.childNodes).forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) return;
+      if (!(node instanceof HTMLElement)) {
+        node.remove();
+        return;
+      }
+      if (dangerousTags.has(node.tagName)) {
+        node.remove();
+        return;
+      }
+      clean(node);
+      if (!allowedTags.has(node.tagName)) {
+        node.replaceWith(...Array.from(node.childNodes));
+        return;
+      }
+
+      const fontFamily = node.tagName === "SPAN" ? node.style.fontFamily : "";
+      const fontSize = node.tagName === "SPAN" ? node.style.fontSize : "";
+      Array.from(node.attributes).forEach((attribute) => node.removeAttribute(attribute.name));
+      if (fontFamily) {
+        const safeFamily = NOTE_FONT_FAMILIES.find((family) => normalizeFont(family) === normalizeFont(fontFamily));
+        if (safeFamily) node.style.fontFamily = safeFamily;
+      }
+      if (/^(?:[8-9]|[1-6]\d|7[0-2])px$/.test(fontSize)) node.style.fontSize = fontSize;
+      if (!node.getAttribute("style")) node.removeAttribute("style");
+    });
+  }
+
+  clean(root);
+  return root.innerHTML;
+}
+
+function setNoteContent(content) {
+  savedEditorSelection = null;
+  const storedContent = String(content ?? "");
+  if (storedContent.startsWith(NOTE_CONTENT_PREFIX)) {
+    noteContent.innerHTML = sanitizeNoteContent(storedContent.slice(NOTE_CONTENT_PREFIX.length));
+  } else {
+    noteContent.textContent = storedContent;
   }
 }
 
-function initializeNoteFontSize() {
-  let size = 16;
-  try {
-    size = Number(localStorage.getItem(NOTE_FONT_SIZE_STORAGE_KEY)) || 16;
-  } catch (error) {
-    setGlobalStatus(`No se pudo leer el tamaño de fuente: ${error.message}`, true);
+function getPlainTextFromRichContent(root) {
+  let text = "";
+
+  function append(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      text += node.nodeValue;
+      return;
+    }
+    if (!(node instanceof HTMLElement)) return;
+    if (node.tagName === "BR") {
+      text += "\n";
+      return;
+    }
+    const start = text.length;
+    node.childNodes.forEach(append);
+    if (["DIV", "P"].includes(node.tagName) && text.length > start && !text.endsWith("\n")) text += "\n";
   }
-  applyNoteFontSize(size);
+
+  root.childNodes.forEach(append);
+  return text.endsWith("\n") ? text.slice(0, -1) : text;
+}
+
+function getNoteContentText(content) {
+  const storedContent = String(content ?? "");
+  if (!storedContent.startsWith(NOTE_CONTENT_PREFIX)) return storedContent;
+  const root = document.createElement("div");
+  root.innerHTML = sanitizeNoteContent(storedContent.slice(NOTE_CONTENT_PREFIX.length));
+  return getPlainTextFromRichContent(root);
+}
+
+function readNoteContentText() {
+  return noteContent.innerText.replace(/\r/g, "");
+}
+
+function getEditorTextLength() {
+  let length = 0;
+  const walker = document.createTreeWalker(noteContent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node.nodeType === Node.TEXT_NODE) length += node.textContent.length;
+    else if (node instanceof HTMLElement && node.tagName === "BR") length += 1;
+  }
+  return length;
+}
+
+function trimEditorContent(maxLength) {
+  let length = 0;
+  const walker = document.createTreeWalker(noteContent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    if (node instanceof HTMLElement && node.tagName === "BR") {
+      if (length >= maxLength) {
+        const range = document.createRange();
+        range.setStartBefore(node);
+        range.setEnd(noteContent, noteContent.childNodes.length);
+        range.deleteContents();
+        return;
+      }
+      length += 1;
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      const textLength = node.textContent.length;
+      if (length + textLength > maxLength) {
+        const range = document.createRange();
+        range.setStart(node, maxLength - length);
+        range.setEnd(noteContent, noteContent.childNodes.length);
+        range.deleteContents();
+        return;
+      }
+      length += textLength;
+    }
+  }
+}
+
+function serializeNoteContent() {
+  return `${NOTE_CONTENT_PREFIX}${sanitizeNoteContent(noteContent.innerHTML)}`;
 }
 
 function escapeHtml(value) {
@@ -222,7 +337,7 @@ function normalizeSearchText(value) {
 
 function noteMatchesSearch(note, query) {
   const terms = normalizeSearchText(query).trim().split(/\s+/).filter(Boolean);
-  const searchableText = normalizeSearchText(`${note.title || ""}\n${note.content || ""}`);
+  const searchableText = normalizeSearchText(`${note.title || ""}\n${getNoteContentText(note.content)}`);
   return terms.length > 0 && terms.every((term) => searchableText.includes(term));
 }
 
@@ -586,7 +701,7 @@ function renderLibrarySection() {
       meta = owned
         ? (outgoingShareIds.has(note.id) ? "Compartida por ti" : "Tu nota")
         : `Compartida por ${shareOwners.get(note.id) || "otro usuario"}`;
-      const content = note.content?.trim().replace(/\s+/g, " ") || "";
+      const content = getNoteContentText(note.content).trim().replace(/\s+/g, " ");
       preview = content.length > 120 ? `${content.slice(0, 120)}…` : content;
     } else if (showingShared && owned) {
       const recipientCount = ownerShares.get(note.id)?.length || 0;
@@ -645,7 +760,7 @@ async function openNoteSearch() {
 
 function updateNoteFindHighlights() {
   const query = noteFindInput.value;
-  const content = noteContent.value;
+  const content = readNoteContentText();
   noteFindMatches = [];
   noteContentHighlights.replaceChildren();
 
@@ -792,6 +907,7 @@ function renderSharedUsers(note) {
 
 function renderEditor() {
   const note = currentNote();
+  fontSizeOption.setAttribute("aria-disabled", String(!note || !canEditNote(note)));
   emptyState.hidden = Boolean(note);
   noteEditor.hidden = !note;
   if (!note) {
@@ -806,9 +922,10 @@ function renderEditor() {
   const editable = canEditNote(note);
   const owned = isNoteOwner(note);
   noteTitle.value = note.title || "";
-  noteContent.value = note.content || "";
+  setNoteContent(note.content || "");
   noteTitle.disabled = !editable;
-  noteContent.disabled = !editable;
+  noteContent.contentEditable = String(editable);
+  noteContent.setAttribute("aria-readonly", String(!editable));
   noteDate.textContent = formatNoteDate(note.note_date);
   document.getElementById("shareNote").hidden = !owned;
   document.getElementById("deleteNote").hidden = !owned;
@@ -887,7 +1004,7 @@ function scheduleNoteSave() {
   if (!note || !canEditNote(note)) return;
   const revision = (noteRevisions.get(note.id) || 0) + 1;
   noteRevisions.set(note.id, revision);
-  const snapshot = { title: noteTitle.value, content: noteContent.value };
+  const snapshot = { title: noteTitle.value, content: serializeNoteContent() };
   writeLocalDraft(note.id, { ...snapshot, savedAt: new Date().toISOString() });
   setSaveStatus("Cambios sin guardar");
   renderNoteList();
@@ -898,18 +1015,26 @@ function scheduleNoteSave() {
   }, 700);
 }
 
+function noteContentHasChanged(note) {
+  const savedContent = note.content || "";
+  if (savedContent.startsWith(NOTE_CONTENT_PREFIX)) {
+    return serializeNoteContent() !== savedContent;
+  }
+  return readNoteContentText() !== getNoteContentText(savedContent);
+}
+
 async function flushNoteSave() {
   const note = currentNote();
   if (!note || !canEditNote(note)) return saveQueue;
   const hasPendingChanges = saveTimer !== null
     || noteTitle.value !== (note.title || "")
-    || noteContent.value !== (note.content || "");
+    || noteContentHasChanged(note);
   if (!hasPendingChanges) return saveQueue;
   window.clearTimeout(saveTimer);
   saveTimer = null;
   const revision = (noteRevisions.get(note.id) || 0) + 1;
   noteRevisions.set(note.id, revision);
-  const snapshot = { title: noteTitle.value, content: noteContent.value };
+  const snapshot = { title: noteTitle.value, content: serializeNoteContent() };
   writeLocalDraft(note.id, { ...snapshot, savedAt: new Date().toISOString() });
   return queueNoteSave(note.id, snapshot, revision);
 }
@@ -919,7 +1044,7 @@ function restoreDraft() {
   const draft = note && readLocalDraft(note.id);
   if (!note || !draft) return;
   noteTitle.value = draft.title;
-  noteContent.value = draft.content;
+  setNoteContent(draft.content);
   draftNotice.hidden = true;
   scheduleNoteSave();
 }
@@ -930,7 +1055,7 @@ function discardDraft() {
   removeLocalDraft(note.id);
   draftNotice.hidden = true;
   noteTitle.value = note.title || "";
-  noteContent.value = note.content || "";
+  setNoteContent(note.content || "");
   setSaveStatus("Borrador local descartado");
 }
 
@@ -1370,7 +1495,6 @@ async function closeNoteTab(noteId) {
 
 themeToggles.forEach((toggle) => toggle.addEventListener("click", toggleTheme));
 initializeTheme();
-initializeNoteFontSize();
 settingsButton.addEventListener("click", () => {
   const willOpen = settingsMenu.hidden;
   settingsMenu.hidden = !willOpen;
@@ -1378,58 +1502,289 @@ settingsButton.addEventListener("click", () => {
   if (willOpen) fontSizeOption.focus();
   else fontSizeOption.setAttribute("aria-expanded", "false");
 });
-fontSizeOption.addEventListener("click", () => {
-  pendingFontSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
-  fontSizeSelect.value = String(pendingFontSize);
+
+function getEditorSelectionRange() {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return null;
+  const range = selection.getRangeAt(0);
+  return noteContent.contains(range.startContainer) && noteContent.contains(range.endContainer)
+    ? range.cloneRange()
+    : null;
+}
+
+function restoreEditorSelection(range = savedEditorSelection) {
+  if (!range
+    || !noteContent.contains(range.startContainer)
+    || !noteContent.contains(range.endContainer)) return;
+  if (!fontSizeDialog.open) noteContent.focus();
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range.cloneRange());
+}
+
+function getFormattingRange() {
+  const savedRange = savedEditorSelection
+    && noteContent.contains(savedEditorSelection.startContainer)
+    && noteContent.contains(savedEditorSelection.endContainer)
+    ? savedEditorSelection.cloneRange()
+    : null;
+  const range = getEditorSelectionRange() || savedRange || document.createRange();
+  if (!range.collapsed) return range;
+  range.selectNodeContents(noteContent);
+  return range;
+}
+
+function saveEditorSelection() {
+  savedEditorSelection = getEditorSelectionRange();
+  updateFormatToolbarState();
+}
+
+function removeInlineStyle(fragment, property) {
+  fragment.querySelectorAll("span[style]").forEach((span) => {
+    span.style.removeProperty(property);
+    if (!span.getAttribute("style")) span.removeAttribute("style");
+  });
+}
+
+function getFullSelectionSpan(range) {
+  const selectedText = range.toString();
+  let element = range.commonAncestorContainer instanceof Element
+    ? range.commonAncestorContainer
+    : range.commonAncestorContainer.parentElement;
+  while (element && element !== noteContent) {
+    if (element.tagName === "SPAN"
+      && !element.querySelector("br")
+      && element.textContent === selectedText) return element;
+    element = element.parentElement;
+  }
+  return null;
+}
+
+function getFormattingAncestor(node, tagNames) {
+  let element = node instanceof Element ? node : node.parentElement;
+  while (element && element !== noteContent) {
+    if (tagNames.includes(element.tagName)) return element;
+    element = element.parentElement;
+  }
+  return null;
+}
+
+function isRangeFormatted(range, tagNames) {
+  const startAncestor = getFormattingAncestor(range.startContainer, tagNames);
+  if (startAncestor && startAncestor === getFormattingAncestor(range.endContainer, tagNames)) return true;
+  const contents = range.cloneContents();
+  const walker = document.createTreeWalker(contents, NodeFilter.SHOW_TEXT);
+  let hasText = false;
+  while (walker.nextNode()) {
+    if (!walker.currentNode.textContent) continue;
+    hasText = true;
+    if (!getFormattingAncestor(walker.currentNode, tagNames)) return false;
+  }
+  return hasText;
+}
+
+function applyInlineStyle(property, value) {
+  restoreEditorSelection();
+  const range = getFormattingRange();
+  if (range.collapsed) return;
+  const existingSpan = getFullSelectionSpan(range);
+  if (existingSpan) {
+    if (value) existingSpan.style.setProperty(property, value);
+    else existingSpan.style.removeProperty(property);
+    if (!existingSpan.getAttribute("style")) existingSpan.removeAttribute("style");
+    saveEditorSelection();
+    noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+    return;
+  }
+  const contents = range.extractContents();
+  removeInlineStyle(contents, property);
+  const wrapper = document.createElement("span");
+  if (value) wrapper.style.setProperty(property, value);
+  wrapper.append(contents);
+  range.insertNode(wrapper);
+  range.selectNodeContents(wrapper);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  saveEditorSelection();
+  noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function applyToggleFormat(command) {
+  restoreEditorSelection();
+  const range = getFormattingRange();
+  if (range.collapsed) return;
+  const tagNames = command === "bold" ? ["B", "STRONG"] : command === "italic" ? ["I", "EM"] : ["U"];
+  const alreadyFormatted = isRangeFormatted(range, tagNames);
+  const sharedWrapper = alreadyFormatted
+    ? getFormattingAncestor(range.startContainer, tagNames)
+    : null;
+  const contents = range.extractContents();
+  if (alreadyFormatted) {
+    Array.from(contents.querySelectorAll(tagNames.join(","))).reverse().forEach((element) => {
+      element.replaceWith(...Array.from(element.childNodes));
+    });
+    const firstSelected = contents.firstChild;
+    const lastSelected = contents.lastChild;
+    if (sharedWrapper && sharedWrapper.isConnected) {
+      const point = range.cloneRange();
+      const beforeRange = document.createRange();
+      const afterRange = document.createRange();
+      let before = document.createDocumentFragment();
+      let after = document.createDocumentFragment();
+      if (sharedWrapper.contains(point.startContainer)) {
+        beforeRange.selectNodeContents(sharedWrapper);
+        beforeRange.setEnd(point.startContainer, point.startOffset);
+        before = beforeRange.cloneContents();
+        afterRange.selectNodeContents(sharedWrapper);
+        afterRange.setStart(point.startContainer, point.startOffset);
+        after = afterRange.cloneContents();
+      }
+      const replacement = document.createDocumentFragment();
+      if (before.textContent || before.querySelector("br")) {
+        const beforeWrapper = sharedWrapper.cloneNode(false);
+        beforeWrapper.append(before);
+        replacement.append(beforeWrapper);
+      }
+      replacement.append(contents);
+      if (after.textContent || after.querySelector("br")) {
+        const afterWrapper = sharedWrapper.cloneNode(false);
+        afterWrapper.append(after);
+        replacement.append(afterWrapper);
+      }
+      sharedWrapper.replaceWith(replacement);
+    } else {
+      range.insertNode(contents);
+    }
+    if (firstSelected && lastSelected) {
+      range.setStartBefore(firstSelected);
+      range.setEndAfter(lastSelected);
+    }
+  } else {
+    const wrapper = document.createElement(command === "bold" ? "strong" : command === "italic" ? "em" : "u");
+    wrapper.append(contents);
+    range.insertNode(wrapper);
+    range.selectNodeContents(wrapper);
+  }
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  saveEditorSelection();
+  noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function rangeHasFormat(range, command) {
+  const tagNames = command === "bold" ? ["B", "STRONG"] : command === "italic" ? ["I", "EM"] : ["U"];
+  return isRangeFormatted(range, tagNames);
+}
+
+function updateFormatToolbarState() {
+  if (!fontSizeDialog.open) return;
+  const range = getEditorSelectionRange() || savedEditorSelection;
+  const parent = range?.commonAncestorContainer;
+  const element = parent instanceof Element ? parent : parent?.parentElement;
+  const style = element && noteContent.contains(element) ? getComputedStyle(element) : null;
+  fontFamilySelect.value = style
+    ? NOTE_FONT_FAMILIES.find((family) => family.replace(/["']/g, "").toLowerCase() === style.fontFamily.replace(/["']/g, "").toLowerCase()) || NOTE_FONT_FAMILIES[0]
+    : NOTE_FONT_FAMILIES[0];
+  const size = style ? `${Math.round(parseFloat(style.fontSize))}px` : "";
+  fontSizeSelect.value = Array.from(fontSizeSelect.options).some((option) => option.value === size) ? size : "16px";
+  formatToolbar.querySelectorAll("[data-format-command]").forEach((button) => {
+    let pressed = false;
+    if (range && noteContent.contains(range.startContainer)) {
+      pressed = rangeHasFormat(range, button.dataset.formatCommand);
+    }
+    button.setAttribute("aria-pressed", String(pressed));
+  });
+}
+
+function openFormatDialog() {
+  if (fontSizeOption.getAttribute("aria-disabled") === "true") return;
+  pendingFormatContent = noteContent.innerHTML;
+  const activeSelection = getEditorSelectionRange();
+  const savedSelectionIsActive = savedEditorSelection
+    && noteContent.contains(savedEditorSelection.startContainer)
+    && noteContent.contains(savedEditorSelection.endContainer);
+  pendingEditorSelection = activeSelection || (savedSelectionIsActive ? savedEditorSelection.cloneRange() : null);
+  savedEditorSelection = pendingEditorSelection?.cloneRange() || null;
   fontSizeOption.setAttribute("aria-expanded", "false");
   settingsMenu.hidden = true;
   settingsButton.setAttribute("aria-expanded", "false");
   fontSizeDialog.showModal();
+  updateFormatToolbarState();
   fontSizeSelect.focus();
-});
-function saveNoteFontSize(size) {
-  try {
-    localStorage.setItem(NOTE_FONT_SIZE_STORAGE_KEY, String(size));
-  } catch (error) {
-    setGlobalStatus(`No se pudo guardar el tamaño de fuente: ${error.message}`, true);
-  }
 }
 
-fontSizeSelect.addEventListener("change", (event) => {
-  const size = Number(event.target.value);
-  applyNoteFontSize(size);
+fontSizeOption.addEventListener("click", openFormatDialog);
+fontFamilySelect.addEventListener("change", () => {
+  applyInlineStyle("font-family", fontFamilySelect.value);
+});
+fontSizeSelect.addEventListener("change", () => {
+  applyInlineStyle("font-size", fontSizeSelect.value);
+});
+formatToolbar.querySelectorAll("[data-format-command]").forEach((button) => {
+  button.addEventListener("pointerdown", (event) => event.preventDefault());
+  button.addEventListener("click", () => applyToggleFormat(button.dataset.formatCommand));
 });
 
-document.getElementById("decreaseFontSize").addEventListener("click", () => {
-  const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
-  const size = currentSize - 1;
-  applyNoteFontSize(size);
-});
+if (!("focusGroup" in HTMLElement.prototype)) {
+  const toolbarItems = Array.from(formatToolbar.querySelectorAll("select, button"));
+  toolbarItems.forEach((item, index) => {
+    item.tabIndex = index === 0 ? 0 : -1;
+  });
+  formatToolbar.addEventListener("focusin", (event) => {
+    if (!toolbarItems.includes(event.target)) return;
+    toolbarItems.forEach((item) => {
+      item.tabIndex = item === event.target ? 0 : -1;
+    });
+  });
+  formatToolbar.addEventListener("keydown", (event) => {
+    const rtl = getComputedStyle(formatToolbar).direction === "rtl";
+    const steps = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 };
+    const step = steps[event.key];
+    const currentIndex = toolbarItems.indexOf(document.activeElement);
+    let nextIndex = currentIndex;
+    if (step) nextIndex = (currentIndex + step + toolbarItems.length) % toolbarItems.length;
+    else if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = toolbarItems.length - 1;
+    else return;
+    event.preventDefault();
+    toolbarItems[nextIndex].focus();
+  });
+}
 
-document.getElementById("increaseFontSize").addEventListener("click", () => {
-  const currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
-  const size = currentSize + 1;
-  applyNoteFontSize(size);
-});
-
-function closeFontSizeDialog(saveChanges) {
-  const selectedSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--note-font-size"), 10) || 16;
-  if (saveChanges) {
-    saveNoteFontSize(selectedSize);
-  } else if (pendingFontSize !== null) {
-    applyNoteFontSize(pendingFontSize);
+function closeFormatDialog(saveChanges) {
+  const contentChanged = noteContent.innerHTML !== pendingFormatContent;
+  const selectionToRestore = saveChanges ? savedEditorSelection : pendingEditorSelection;
+  if (saveChanges && contentChanged) scheduleNoteSave();
+  if (!saveChanges && pendingFormatContent !== null) {
+    noteContent.innerHTML = pendingFormatContent;
+    updateNoteFindHighlights();
   }
-  pendingFontSize = null;
+  pendingFormatContent = null;
+  savedEditorSelection = selectionToRestore;
+  pendingEditorSelection = null;
   fontSizeDialog.close();
-  settingsButton.focus();
+  if (currentNote()) {
+    noteContent.focus();
+    restoreEditorSelection(savedEditorSelection);
+  } else {
+    settingsButton.focus();
+  }
 }
 
-cancelFontSize.addEventListener("click", () => closeFontSizeDialog(false));
-confirmFontSize.addEventListener("click", () => closeFontSizeDialog(true));
+cancelFontSize.addEventListener("click", () => closeFormatDialog(false));
+confirmFontSize.addEventListener("click", () => closeFormatDialog(true));
 fontSizeDialog.addEventListener("cancel", (event) => {
   event.preventDefault();
-  closeFontSizeDialog(false);
+  closeFormatDialog(false);
 });
+document.addEventListener("selectionchange", () => {
+  const range = getEditorSelectionRange();
+  if (range) savedEditorSelection = range;
+  if (fontSizeDialog.open) updateFormatToolbarState();
+});
+findInNote.addEventListener("click", openNoteFind);
 document.addEventListener("click", (event) => {
   if (settingsMenu.hidden || event.target.closest(".settings-control")) return;
   settingsMenu.hidden = true;
@@ -1528,20 +1883,49 @@ if (!supabaseReady) {
   noteContent.addEventListener("keydown", (event) => {
     if (event.key !== "Tab" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return;
     event.preventDefault();
-
-    const { selectionStart, selectionEnd, value } = noteContent;
-    if (value.length - (selectionEnd - selectionStart) >= noteContent.maxLength) return;
-
-    noteContent.setRangeText("\t", selectionStart, selectionEnd, "end");
+    const selection = window.getSelection();
+    const range = getEditorSelectionRange() || document.createRange();
+    if (readNoteContentText().length >= NOTE_MAX_LENGTH && range.collapsed) return;
+    range.deleteContents();
+    const tab = document.createTextNode("\t");
+    range.insertNode(tab);
+    range.setStartAfter(tab);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    saveEditorSelection();
     noteContent.dispatchEvent(new Event("input", { bubbles: true }));
   });
   noteContent.addEventListener("input", () => {
-    scheduleNoteSave();
+    if (getEditorTextLength() > NOTE_MAX_LENGTH) {
+      trimEditorContent(NOTE_MAX_LENGTH);
+      setGlobalStatus("El contenido de la nota admite hasta 20 000 caracteres.", true);
+    }
+    if (!fontSizeDialog.open) scheduleNoteSave();
     if (!noteFindPanel.hidden) {
       noteFindCurrent = 0;
       updateNoteFindHighlights();
     }
   });
+  noteContent.addEventListener("paste", (event) => {
+    event.preventDefault();
+    const pastedText = event.clipboardData?.getData("text/plain") || "";
+    const selection = window.getSelection();
+    const range = getEditorSelectionRange();
+    if (!range) return;
+    const availableLength = Math.max(0, NOTE_MAX_LENGTH - readNoteContentText().length + range.toString().length);
+    const text = pastedText.slice(0, availableLength);
+    range.deleteContents();
+    const pastedNode = document.createTextNode(text);
+    range.insertNode(pastedNode);
+    range.setStartAfter(pastedNode);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    noteContent.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  noteContent.addEventListener("keyup", saveEditorSelection);
+  noteContent.addEventListener("mouseup", saveEditorSelection);
   noteContent.addEventListener("scroll", () => {
     noteContentHighlights.style.transform = `translate(${-noteContent.scrollLeft}px, ${-noteContent.scrollTop}px)`;
   }, { passive: true });

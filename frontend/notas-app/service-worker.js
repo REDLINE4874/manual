@@ -1,10 +1,10 @@
-const CACHE_NAME = "notas-app-shell-v26";
+const CACHE_NAME = "notas-app-shell-v28";
 const CACHE_PREFIX = "notas-app-shell-";
 const APP_SHELL = new URL("./", self.location.href).toString();
 const SHELL_FILES = [
   APP_SHELL,
-  new URL("./app.css", self.location.href).toString(),
-  new URL("./app.js", self.location.href).toString(),
+  new URL("./app.css?v=4", self.location.href).toString(),
+  new URL("./app.js?v=5", self.location.href).toString(),
   new URL("./supabase-config.js", self.location.href).toString(),
   new URL("./manifest.webmanifest", self.location.href).toString(),
   new URL("./logoapp.svg", self.location.href).toString(),
