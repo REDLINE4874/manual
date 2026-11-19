@@ -98,6 +98,10 @@ existentes, la tabla `notes` y las reglas de acceso compartido. La app recuerda
 su sesión en el dispositivo donde se inicia; la sesión del Manual no se copia
 automáticamente.
 
+El título y el contenido de cada nota usan el corrector ortográfico nativo del
+navegador en español. La detección y las sugerencias dependen de que el
+navegador o el sistema operativo tenga habilitado un diccionario de español.
+
 La configuración pública del proyecto está en
 `frontend/notas-app/supabase-config.js`; si cambian la URL o la clave pública,
 actualízalas también en `frontend/src/js/auth/supabase-config.js`. Usa solo la
