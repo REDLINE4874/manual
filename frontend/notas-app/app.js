@@ -12,7 +12,6 @@ const notesEmpty = document.getElementById("notesEmpty");
 const openEditor = document.getElementById("openEditor");
 const openMyNotes = document.getElementById("openMyNotes");
 const openSharedNotes = document.getElementById("openSharedNotes");
-const myNotesCount = document.getElementById("myNotesCount");
 const sharedNotesCount = document.getElementById("sharedNotesCount");
 const workspace = document.getElementById("workspace");
 const noteTabbar = document.querySelector(".note-tabbar");
@@ -30,6 +29,7 @@ const accountPopover = document.getElementById("accountPopover");
 const accountPopoverName = document.getElementById("accountPopoverName");
 const accountMenu = document.querySelector(".account-menu");
 const saveStatus = document.getElementById("saveStatus");
+const noteSharingStatus = document.getElementById("noteSharingStatus");
 const globalStatus = document.getElementById("globalStatus");
 const noteEditor = document.getElementById("noteEditor");
 const emptyState = document.getElementById("emptyState");
@@ -80,6 +80,7 @@ const supabaseReady = Boolean(
 const DRAFT_PREFIX = "notas-app-draft";
 const THEME_STORAGE_KEY = "notas-app-theme";
 const OPEN_TABS_PREFIX = "notas-app-open-tabs";
+const READ_SHARED_NOTES_PREFIX = "notas-app-read-shared-notes";
 const NOTE_CONTENT_PREFIX = "<!-- notas-app-rich-text:v1 -->";
 const CODE_LANGUAGE_IDS = [
   "javascript", "typescript", "python", "java", "c", "cpp", "csharp",
@@ -119,6 +120,7 @@ let openTabsUserId = null;
 let activeSection = "editor";
 let sectionBeforeSearch = "editor";
 let activeNoteId = null;
+let readSharedNoteIds = new Set();
 let installPrompt = null;
 let saveTimer = null;
 let saveQueue = Promise.resolve();
@@ -524,6 +526,53 @@ function saveOpenNoteIds() {
   }
 }
 
+function readSharedNotesKey() {
+  return `${READ_SHARED_NOTES_PREFIX}-${currentUser?.id}`;
+}
+
+function loadReadSharedNoteIds(sharedNoteIds) {
+  let savedIds;
+  try {
+    const savedValue = localStorage.getItem(readSharedNotesKey());
+    savedIds = savedValue === null ? [] : JSON.parse(savedValue);
+  } catch (error) {
+    setGlobalStatus(`No se pudo leer el estado de notas compartidas: ${error.message}`, true);
+    readSharedNoteIds = new Set();
+    return;
+  }
+  if (!Array.isArray(savedIds) || !savedIds.every((noteId) => typeof noteId === "string")) {
+    setGlobalStatus("No se pudo leer el estado de notas compartidas: el formato guardado no es válido.", true);
+    readSharedNoteIds = new Set();
+    return;
+  }
+  readSharedNoteIds = new Set(savedIds.filter((noteId) => sharedNoteIds.has(noteId)));
+}
+
+function saveReadSharedNoteIds() {
+  try {
+    localStorage.setItem(readSharedNotesKey(), JSON.stringify([...readSharedNoteIds]));
+  } catch (error) {
+    setGlobalStatus(`No se pudo guardar el estado de notas compartidas: ${error.message}`, true);
+  }
+}
+
+function updateSharedNotesCount() {
+  const unreadCount = loadedNotes.filter((note) => !isNoteOwner(note) && !readSharedNoteIds.has(note.id)).length;
+  sharedNotesCount.textContent = String(unreadCount);
+  sharedNotesCount.hidden = unreadCount === 0;
+  openSharedNotes.setAttribute(
+    "aria-label",
+    unreadCount ? `Compartidas, ${unreadCount} ${unreadCount === 1 ? "nota nueva" : "notas nuevas"}` : "Compartidas",
+  );
+}
+
+function markSharedNoteAsRead(note) {
+  if (isNoteOwner(note) || readSharedNoteIds.has(note.id)) return;
+  readSharedNoteIds.add(note.id);
+  saveReadSharedNoteIds();
+  updateSharedNotesCount();
+}
+
 function readLocalDraft(noteId) {
   try {
     const raw = localStorage.getItem(noteDraftKey(noteId));
@@ -763,11 +812,11 @@ function renderNoteList() {
 
   notesEmpty.hidden = true;
   notesList.innerHTML = openNotes.map((note) => {
-    const shared = note.user_id !== currentUser?.id;
+    const sharedWithMe = note.user_id !== currentUser?.id;
     const title = note.title?.trim() || "Nota sin título";
-    const meta = shared ? '<span class="note-tab__meta">Compartida contigo</span>' : "";
+    const meta = sharedWithMe ? '<span class="note-tab__meta">Compartida contigo</span>' : "";
     return `
-      <div class="note-tab-item${note.id === activeNoteId ? " is-active" : ""}" role="presentation">
+      <div class="note-tab-item${note.id === activeNoteId ? " is-active" : ""}${sharedWithMe ? " is-shared-with-me" : ""}" role="presentation">
         <button id="note-tab-${escapeHtml(note.id)}" class="note-tab" type="button" role="tab" aria-selected="${note.id === activeNoteId}" aria-controls="noteEditor" tabindex="${note.id === activeNoteId ? "0" : "-1"}" data-note-id="${escapeHtml(note.id)}" title="${escapeHtml(title)}">
           <span class="note-tab__title">${escapeHtml(title)}</span>
           ${meta}
@@ -800,11 +849,10 @@ function renderLibrarySection() {
       ? sharedNotes
       : ownedNotes;
 
-  myNotesCount.textContent = String(ownedNotes.length);
-  sharedNotesCount.textContent = String(sharedNotes.length);
-  myNotesCount.hidden = ownedNotes.length === 0;
-  sharedNotesCount.hidden = sharedNotes.length === 0;
-  libraryTitle.textContent = searching ? "Buscar notas" : showingShared ? "Compartidas" : "Mis notas";
+  updateSharedNotesCount();
+  libraryTitle.textContent = searching
+    ? "Buscar notas"
+    : `${showingShared ? "Compartidas" : "Mis notas"} (${visibleNotes.length})`;
   libraryDescription.textContent = searching
     ? "Busca por título o contenido en tus notas y las compartidas contigo."
     : showingShared
@@ -820,6 +868,7 @@ function renderLibrarySection() {
 
   libraryNotesList.innerHTML = visibleNotes.map((note) => {
     const owned = isNoteOwner(note);
+    const isNewSharedNote = showingShared && !owned && !readSharedNoteIds.has(note.id);
     const title = note.title?.trim() || "Nota sin título";
     let meta = formatNoteDate(note.note_date);
     let removeAction = activeSection === "my-notes" && owned ? "Eliminar" : "";
@@ -840,8 +889,9 @@ function renderLibrarySection() {
 
     return `
       <div class="notes-library-item" role="group" aria-label="Nota ${escapeHtml(title)}">
-        <button class="notes-library-item__open" type="button" data-open-note-id="${escapeHtml(note.id)}" aria-label="Abrir ${escapeHtml(title)}">
+        <button class="notes-library-item__open" type="button" data-open-note-id="${escapeHtml(note.id)}" aria-label="Abrir ${escapeHtml(title)}${isNewSharedNote ? ", nueva" : ""}">
           <span class="notes-library-item__title">${escapeHtml(title)}</span>
+          ${isNewSharedNote ? '<span class="notes-library-item__new">Nueva</span>' : ""}
           <span class="notes-library-item__meta">${escapeHtml(meta)}</span>
           ${searching && preview ? `<span class="notes-library-item__preview">${escapeHtml(preview)}</span>` : ""}
         </button>
@@ -1055,12 +1105,24 @@ function renderSharedUsers(note) {
   `).join("");
 }
 
+function getNoteSharingStatus(note) {
+  if (!isNoteOwner(note)) {
+    return `· Compartida por ${shareOwners.get(note.id) || "Usuario"}`;
+  }
+  const usernames = (ownerShares.get(note.id) || [])
+    .map((share) => share.recipient_username || share.recipient_email || "Usuario");
+  return usernames.length ? `· Compartida con ${usernames.join(", ")}` : "";
+}
+
 function renderEditor() {
   const note = currentNote();
+  if (note) markSharedNoteAsRead(note);
   fontSizeOption.setAttribute("aria-disabled", String(!note || !canEditNote(note)));
   emptyState.hidden = Boolean(note);
   noteEditor.hidden = !note;
   if (!note) {
+    noteSharingStatus.textContent = "";
+    noteSharingStatus.removeAttribute("title");
     draftNotice.hidden = true;
     sharingSection.hidden = true;
     noteFindPanel.hidden = true;
@@ -1078,6 +1140,9 @@ function renderEditor() {
   noteContent.contentEditable = String(editable);
   noteContent.setAttribute("aria-readonly", String(!editable));
   noteDate.textContent = formatNoteDate(note.note_date);
+  noteSharingStatus.textContent = getNoteSharingStatus(note);
+  if (noteSharingStatus.textContent) noteSharingStatus.title = noteSharingStatus.textContent.slice(2);
+  else noteSharingStatus.removeAttribute("title");
   document.getElementById("shareNote").hidden = !owned;
   document.getElementById("deleteNote").hidden = !owned;
   document.getElementById("leaveSharedNote").hidden = !(!owned && note.user_id !== currentUser?.id);
@@ -1263,12 +1328,17 @@ async function loadNotes() {
   }
 
   loadedNotes = data || [];
+  const incomingSharedNoteIds = new Set(
+    loadedNotes.filter((note) => note.user_id !== currentUser.id).map((note) => note.id),
+  );
+  loadReadSharedNoteIds(incomingSharedNoteIds);
   const savedNoteIds = new Set(loadedNotes.map((note) => note.id));
   if (openTabsUserId !== currentUser.id) {
     openTabsUserId = currentUser.id;
     const savedOpenNoteIds = readOpenNoteIds();
+    const firstOwnedNote = loadedNotes.find((note) => note.user_id === currentUser.id);
     openNoteIds = savedOpenNoteIds === null
-      ? (loadedNotes[0] ? [loadedNotes[0].id] : [])
+      ? (firstOwnedNote ? [firstOwnedNote.id] : [])
       : savedOpenNoteIds.filter((noteId) => savedNoteIds.has(noteId));
   } else {
     openNoteIds = openNoteIds.filter((noteId) => savedNoteIds.has(noteId));
@@ -1420,6 +1490,12 @@ function setShareSelectValue(selectId, value) {
   });
 }
 
+function shareSelectHasOption(selectId, value) {
+  const root = document.querySelector(`[data-share-select="${selectId}"]`);
+  return Array.from(root.querySelectorAll('[role="option"]'))
+    .some((option) => option.dataset.value === value);
+}
+
 function setShareSelectOptions(selectId, items) {
   const root = document.querySelector(`[data-share-select="${selectId}"]`);
   const options = root.querySelector(".share-select__options");
@@ -1449,7 +1525,7 @@ function setShareSelectOptions(selectId, items) {
   );
 }
 
-function initializeShareSelect(selectId, placeholder, items) {
+function initializeShareSelect(selectId, placeholder, items, onSelect) {
   const root = document.querySelector(`[data-share-select="${selectId}"]`);
   const trigger = root.querySelector(".share-select__trigger");
   const options = root.querySelector(".share-select__options");
@@ -1485,12 +1561,14 @@ function initializeShareSelect(selectId, placeholder, items) {
   options.addEventListener("click", (event) => {
     const option = event.target.closest('[role="option"]');
     if (!option || !options.contains(option)) return;
-    setShareSelectValue(selectId, option.dataset.value);
+    const value = option.dataset.value;
+    setShareSelectValue(selectId, value);
     if (selectId === "shareUsername") {
       shareStatus.textContent = "";
       shareStatus.classList.remove("is-error");
     }
     closeShareSelect(root, true);
+    onSelect?.(value);
   });
 
   root.addEventListener("keydown", (event) => {
@@ -1910,14 +1988,16 @@ function updateFormatToolbarState() {
   const element = parent instanceof Element ? parent : parent?.parentElement;
   const style = element && noteContent.contains(element) ? getComputedStyle(element) : null;
   const code = range && getFormattingAncestor(range.startContainer, ["CODE"]);
-  if (code && Array.from(codeLanguageSelect.options).some((option) => option.value === code.dataset.language)) {
-    codeLanguageSelect.value = code.dataset.language;
-  } else codeLanguageSelect.value = "auto";
-  fontFamilySelect.value = style
+  const codeLanguage = code && shareSelectHasOption("codeLanguageSelect", code.dataset.language)
+    ? code.dataset.language
+    : "auto";
+  setShareSelectValue("codeLanguageSelect", codeLanguage);
+  const fontFamily = style
     ? NOTE_FONT_FAMILIES.find((family) => family.replace(/["']/g, "").toLowerCase() === style.fontFamily.replace(/["']/g, "").toLowerCase()) || NOTE_FONT_FAMILIES[0]
     : NOTE_FONT_FAMILIES[0];
+  setShareSelectValue("fontFamilySelect", fontFamily);
   const size = style ? `${Math.round(parseFloat(style.fontSize))}px` : "";
-  fontSizeSelect.value = Array.from(fontSizeSelect.options).some((option) => option.value === size) ? size : "16px";
+  setShareSelectValue("fontSizeSelect", shareSelectHasOption("fontSizeSelect", size) ? size : "16px");
   formatToolbar.querySelectorAll("[data-format-command]").forEach((button) => {
     let pressed = false;
     if (range && noteContent.contains(range.startContainer)) {
@@ -1941,16 +2021,10 @@ function openFormatDialog() {
   settingsButton.setAttribute("aria-expanded", "false");
   fontSizeDialog.showModal();
   updateFormatToolbarState();
-  fontSizeSelect.focus();
+  document.getElementById("fontSizeSelectButton").focus();
 }
 
 fontSizeOption.addEventListener("click", openFormatDialog);
-fontFamilySelect.addEventListener("change", () => {
-  applyInlineStyle("font-family", fontFamilySelect.value);
-});
-fontSizeSelect.addEventListener("change", () => {
-  applyInlineStyle("font-size", fontSizeSelect.value);
-});
 formatToolbar.querySelectorAll("[data-format-command]").forEach((button) => {
   button.addEventListener("pointerdown", (event) => event.preventDefault());
   button.addEventListener("click", () => applyToggleFormat(button.dataset.formatCommand));
@@ -1959,7 +2033,7 @@ applyCodeFormat.addEventListener("pointerdown", (event) => event.preventDefault(
 applyCodeFormat.addEventListener("click", applyCodeFormatting);
 
 if (!("focusGroup" in HTMLElement.prototype)) {
-  const toolbarItems = Array.from(formatToolbar.querySelectorAll("select, button"));
+  const toolbarItems = Array.from(formatToolbar.querySelectorAll("button"));
   toolbarItems.forEach((item, index) => {
     item.tabIndex = index === 0 ? 0 : -1;
   });
@@ -2029,6 +2103,37 @@ document.addEventListener("keydown", (event) => {
     settingsButton.focus();
   }
 });
+initializeShareSelect("fontFamilySelect", "Predeterminada", [
+  { value: NOTE_FONT_FAMILIES[0], label: "Predeterminada" },
+  { value: NOTE_FONT_FAMILIES[1], label: "Arial" },
+  { value: NOTE_FONT_FAMILIES[2], label: "Aptos (Cuerpo)" },
+  { value: NOTE_FONT_FAMILIES[3], label: "Calibri" },
+  { value: NOTE_FONT_FAMILIES[4], label: "Georgia" },
+  { value: NOTE_FONT_FAMILIES[5], label: "Verdana" },
+  { value: NOTE_FONT_FAMILIES[6], label: "Courier New" },
+], (value) => applyInlineStyle("font-family", value));
+initializeShareSelect("fontSizeSelect", "16", [
+  "8px", "9px", "10px", "11px", "12px", "13px", "14px", "16px",
+  "18px", "20px", "22px", "24px", "26px", "28px", "32px", "36px", "48px", "72px",
+].map((value) => ({ value, label: value.slice(0, -2) })), (value) => applyInlineStyle("font-size", value));
+initializeShareSelect("codeLanguageSelect", "Detectar lenguaje", [
+  { value: "plain", label: "Texto normal" },
+  { value: "auto", label: "Detectar lenguaje" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "python", label: "Python" },
+  { value: "java", label: "Java" },
+  { value: "c", label: "C" },
+  { value: "cpp", label: "C++" },
+  { value: "csharp", label: "C#" },
+  { value: "css", label: "CSS" },
+  { value: "xml", label: "HTML / XML" },
+  { value: "json", label: "JSON" },
+  { value: "sql", label: "SQL" },
+  { value: "bash", label: "Bash" },
+  { value: "yaml", label: "YAML" },
+  { value: "markdown", label: "Markdown" },
+]);
 initializeShareSelect("shareUsername", "Selecciona un usuario", []);
 initializeShareSelect("sharePermission", "Selecciona un permiso", [
   { value: "view", label: "Solo lectura" },

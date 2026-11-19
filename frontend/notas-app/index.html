@@ -15,11 +15,11 @@
     <link rel="icon" href="logoapp.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="app.css?v=7" />
+    <link rel="stylesheet" href="app.css?v=10" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" integrity="sha384-RH2xi4eIQ/gjtbs9fUXM68sLSi99C7ZWBRX1vDrVv6GQXRibxXLbwO2NGZB74MbU" crossorigin="anonymous" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="supabase-config.js" defer></script>
-    <script src="app.js?v=7" defer></script>
+    <script src="app.js?v=10" defer></script>
   </head>
   <body>
     <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
@@ -72,12 +72,11 @@
             </button>
             <button class="icon-button section-icon-button my-notes-button" id="openMyNotes" type="button" aria-label="Mis notas" aria-controls="libraryView">
               <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM10 16H7v-2h3v2zm7 0h-5v-2h5v2zm0-4H7v-2h10v2zm0-4H7V6h10v2z"/></svg>
-              <span class="my-notes-count" id="myNotesCount" hidden>0</span>
               <span class="floating-label" role="tooltip">Mis notas</span>
             </button>
             <button class="icon-button section-icon-button shared-notes-button" id="openSharedNotes" type="button" aria-label="Compartidas" aria-controls="libraryView">
               <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-.36 0-.69.08-1 .19.63.76 1 1.74 1 2.81s-.37 2.05-1 2.81c.31.11.64.19 1 .19zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 .5c-.29 0-.62.02-.97.05 1.16.84 1.97 1.92 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-              <span class="my-notes-count" id="sharedNotesCount" hidden>0</span>
+              <span class="shared-notes-count" id="sharedNotesCount" hidden>0</span>
               <span class="floating-label" role="tooltip">Compartidas</span>
             </button>
             <div class="settings-control">
@@ -170,8 +169,11 @@
           </div>
           <div class="note-editor__toolbar">
             <div class="note-editor__meta">
-              <time class="note-date" id="noteDate"></time>
-              <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+              <div class="note-editor__date-line">
+                <time class="note-date" id="noteDate"></time>
+                <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+                <span class="note-sharing-status" id="noteSharingStatus"></span>
+              </div>
               <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" lang="es" spellcheck="true" />
             </div>
             <div class="note-actions">
@@ -263,28 +265,24 @@
       <h2 id="fontSizeDialogTitle">Formato</h2>
       <div class="format-toolbar" id="formatToolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Formato de texto" aria-controls="noteContent">
         <div class="format-toolbar__group" role="group" aria-label="Fuente y tamaño">
-          <label class="sr-only" for="fontFamilySelect">Fuente</label>
-          <select class="format-toolbar__family" id="fontFamilySelect">
-            <option value="Inter, 'Segoe UI', system-ui, sans-serif">Predeterminada</option>
-            <option value="Arial, sans-serif">Arial</option>
-            <option value="Aptos, sans-serif">Aptos (Cuerpo)</option>
-            <option value="Calibri, sans-serif">Calibri</option>
-            <option value="Georgia, serif">Georgia</option>
-            <option value="Verdana, sans-serif">Verdana</option>
-            <option value="'Courier New', monospace">Courier New</option>
-          </select>
-          <label class="sr-only" for="fontSizeSelect">Tamaño de fuente</label>
-          <select class="format-toolbar__size" id="fontSizeSelect">
-            <option value="8px">8</option><option value="9px">9</option>
-            <option value="10px">10</option><option value="11px">11</option>
-            <option value="12px">12</option><option value="13px">13</option>
-            <option value="14px">14</option><option value="16px">16</option>
-            <option value="18px">18</option><option value="20px">20</option>
-            <option value="22px">22</option><option value="24px">24</option>
-            <option value="26px">26</option><option value="28px">28</option>
-            <option value="32px">32</option><option value="36px">36</option>
-            <option value="48px">48</option><option value="72px">72</option>
-          </select>
+          <div class="share-select format-toolbar__family" data-share-select="fontFamilySelect">
+            <input id="fontFamilySelect" type="hidden" value="Inter, 'Segoe UI', system-ui, sans-serif" />
+            <label class="sr-only" id="fontFamilySelectLabel" for="fontFamilySelectButton">Fuente</label>
+            <button class="share-select__trigger" id="fontFamilySelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fontFamilySelectOptions" aria-labelledby="fontFamilySelectLabel fontFamilySelectValue">
+              <span id="fontFamilySelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="fontFamilySelectOptions" role="listbox" aria-labelledby="fontFamilySelectLabel" hidden></div>
+          </div>
+          <div class="share-select format-toolbar__size" data-share-select="fontSizeSelect">
+            <input id="fontSizeSelect" type="hidden" value="16px" />
+            <label class="sr-only" id="fontSizeSelectLabel" for="fontSizeSelectButton">Tamaño de fuente</label>
+            <button class="share-select__trigger" id="fontSizeSelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fontSizeSelectOptions" aria-labelledby="fontSizeSelectLabel fontSizeSelectValue">
+              <span id="fontSizeSelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="fontSizeSelectOptions" role="listbox" aria-labelledby="fontSizeSelectLabel" hidden></div>
+          </div>
         </div>
         <span class="format-toolbar__separator" role="separator" aria-orientation="vertical"></span>
         <div class="format-toolbar__group" role="group" aria-label="Estilo">
@@ -294,25 +292,15 @@
         </div>
         <span class="format-toolbar__separator" role="separator" aria-orientation="vertical"></span>
         <div class="format-toolbar__group" role="group" aria-label="Código">
-          <label class="sr-only" for="codeLanguageSelect">Lenguaje del bloque de código</label>
-          <select class="format-toolbar__language" id="codeLanguageSelect">
-            <option value="plain">Texto normal</option>
-            <option value="auto">Detectar lenguaje</option>
-            <option value="javascript">JavaScript</option>
-            <option value="typescript">TypeScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="c">C</option>
-            <option value="cpp">C++</option>
-            <option value="csharp">C#</option>
-            <option value="css">CSS</option>
-            <option value="xml">HTML / XML</option>
-            <option value="json">JSON</option>
-            <option value="sql">SQL</option>
-            <option value="bash">Bash</option>
-            <option value="yaml">YAML</option>
-            <option value="markdown">Markdown</option>
-          </select>
+          <div class="share-select format-toolbar__language" data-share-select="codeLanguageSelect">
+            <input id="codeLanguageSelect" type="hidden" value="auto" />
+            <label class="sr-only" id="codeLanguageSelectLabel" for="codeLanguageSelectButton">Lenguaje del bloque de código</label>
+            <button class="share-select__trigger" id="codeLanguageSelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="codeLanguageSelectOptions" aria-labelledby="codeLanguageSelectLabel codeLanguageSelectValue">
+              <span id="codeLanguageSelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="codeLanguageSelectOptions" role="listbox" aria-labelledby="codeLanguageSelectLabel" hidden></div>
+          </div>
           <button class="format-toolbar__button format-toolbar__code-button" id="applyCodeFormat" type="button">Código</button>
         </div>
       </div>
