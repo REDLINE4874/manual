@@ -12,7 +12,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Manual Banamex" />
-    <script src="src/js/components/visual-style-toggle.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,8 +24,6 @@
     <link rel="stylesheet" href="src/css/ajustes-fondo.css" />
     <link rel="stylesheet" href="src/css/ajustes-indice.css" />
     <link rel="stylesheet" href="src/css/tipografia.css?v=3" />
-    <link rel="stylesheet" href="src/css/estilo-suave.css" />
-    <link rel="stylesheet" href="src/css/personalizacion.css" />
     <!-- JS -->
     <script src="src/js/core/page-sections.js" defer></script>
     <script
@@ -55,7 +52,6 @@
     <script src="src/js/core/script.js?v=4" defer></script>
     <script src="src/js/components/theme-toggle.js" defer></script>
     <script src="src/js/components/theme-background-picker.js" defer></script>
-    <script src="src/js/components/personalization-menu.js" defer></script>
     <script src="src/js/core/index-events.js" defer></script>
     <script src="src/js/core/pwa.js" defer></script>
   </head>
@@ -90,6 +86,20 @@
           </div>
         </div>
         <div id="navContainer"><!-- generado por navigation.js --></div>
+        <a
+          class="nav-item notes-app-launcher"
+          href="notas-app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Abrir app de Notas"
+        >
+          <span class="sidebar-auth__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5" />
+            </svg>
+          </span>
+          <span class="nav-label">Abrir Notas</span>
+        </a>
         <button
           class="nav-item admin-nav-item"
           id="adminNavButton"
@@ -293,48 +303,11 @@
           </div>
           <div class="utility-nav__appearance">
             <div class="utility-control">
-              <div class="personalization-menu" id="personalizationMenu">
-                <button
-                  class="personalization-menu__trigger"
-                  id="personalizationToggle"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="personalizationPanel"
-                  aria-label="Personalización"
-                  title="Personalización"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M2 14h4m4-6h4m4 8h4" />
-                  </svg>
-                </button>
-                <div
-                  class="personalization-menu__panel"
-                  id="personalizationPanel"
-                  role="region"
-                  aria-label="Personalización"
-                  hidden
-                >
-                  <div class="utility-control">
-                    <span class="utility-control__label">Fondo</span>
-                    <theme-background-picker></theme-background-picker>
-                  </div>
-                  <div class="utility-control">
-                    <span class="utility-control__label">Estilo</span>
-                    <button
-                      class="visual-style-toggle"
-                      id="visualStyleToggle"
-                      type="button"
-                      aria-pressed="false"
-                      aria-label="Cambiar a estilo suave"
-                      title="Cambiar a estilo suave"
-                    >
-                      Brutalista
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <span class="utility-control__label">Fondo</span>
+              <theme-background-picker></theme-background-picker>
             </div>
             <div class="utility-control">
+              <span class="utility-control__label">Tema</span>
               <theme-toggle size="md"></theme-toggle>
             </div>
           </div>

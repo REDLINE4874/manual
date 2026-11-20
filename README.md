@@ -11,6 +11,7 @@ para probarlos.
 .
 ├── frontend/
 │   ├── index.html
+│   ├── notas-app/          # PWA independiente de Notas
 │   ├── manifest.webmanifest
 │   ├── service-worker.js
 │   ├── assets/
@@ -52,9 +53,9 @@ para probarlos.
 │           ├── script.js              # Inicialización de la aplicación
 │           └── sidebar.js             # Comportamiento del menú lateral
 ├── supabase/
-│   ├── admin-panel.sql
-│   ├── profiles.sql
-│   └── suggestions.sql
+│   ├── notes.sql
+│   ├── note-sharing.sql
+│   └── profiles.sql
 └── README.md
 ```
 
@@ -63,17 +64,13 @@ para probarlos.
 La interfaz, los estilos, la lógica de navegación, las calculadoras y los datos
 de las tarjetas están en `frontend/`.
 
-El menú **Personalización**, junto a Tema, agrupa los controles de Fondo y
-Estilo. El estilo alterna entre brutalista y una variante suave con sombras
-discretas; la elección se conserva en el navegador y no modifica el tema
-claro/oscuro ni los colores.
-
 Los estilos se organizan en módulos dentro de `frontend/src/css/`, con un archivo
 por vista o área de la interfaz. `estilos.css`, enlazado desde
 `frontend/index.html`, importa los módulos en el orden necesario. Para mantener
 una sección del Manual, edita su archivo (por ejemplo, `inicio.css` o
-`comision.css`); deja en `fundamentos.css` los tokens y estilos globales. Al
-agregar o reorganizar módulos del Manual, actualiza el orden de importación en
+`comision.css`); deja en `fundamentos.css` los tokens y estilos globales. La
+interfaz de Notas se mantiene por separado en `frontend/notas-app/`. Al agregar
+o reorganizar módulos del Manual, actualiza el orden de importación en
 `estilos.css`.
 
 Los fondos principales y las superficies de panel usan HSL. El selector
@@ -92,17 +89,72 @@ de 6px, sin desenfoque, en `#171717` para darles un aspecto neobrutalista,
 también en el tema oscuro y los fondos personalizados. Las sombras pequeñas de
 interacción y enfoque se conservan.
 
-### Backend
+### App independiente de Notas
 
-Este repositorio no incluye un servidor propio. El frontend es estático y usa
-Supabase como servicio externo de autenticación y datos. La configuración pública
-está en `frontend/src/js/auth/supabase-config.js`; usa solo la clave `anon`
-protegida por RLS, nunca una clave `service_role`.
+Notas ahora es una PWA independiente ubicada en `frontend/notas-app/`. Se puede
+publicar esa carpeta en su propio sitio o servirla bajo `/notas-app/` junto al
+Manual. Ambos frontends usan el mismo proyecto de Supabase, las cuentas
+existentes, la tabla `notes` y las reglas de acceso compartido. La app recuerda
+su sesión en el dispositivo donde se inicia; la sesión del Manual no se copia
+automáticamente.
 
-La tabla `profiles` y los usuarios Auth deben existir antes de ejecutar
-`supabase/profiles.sql`. Este script configura la consulta de nombre de usuario
-usada por el inicio de sesión y protege la lectura de perfiles. Para habilitar el
-panel administrativo, ejecuta después `supabase/admin-panel.sql`.
+El título y el contenido de cada nota usan el corrector ortográfico nativo del
+navegador en español. La detección y las sugerencias dependen de que el
+navegador o el sistema operativo tenga habilitado un diccionario de español.
+
+La configuración pública del proyecto está en
+`frontend/notas-app/supabase-config.js`; si cambian la URL o la clave pública,
+actualízalas también en `frontend/src/js/auth/supabase-config.js`. Usa solo la
+clave `anon` protegida por RLS, nunca una clave `service_role`.
+
+Para probar ambas apps en local, sirve `frontend/` desde la raíz del proyecto:
+
+```powershell
+py -m http.server 5500 --directory frontend
+```
+
+Abre `http://localhost:5500/` para el Manual y
+`http://localhost:5500/notas-app/` para Notas. No abras los archivos como
+`file://`, porque Supabase no puede completar correctamente el inicio de sesión
+en ese modo. La opción de instalar aparece en Chrome cuando se sirve por HTTPS
+o desde `localhost`.
+
+El acceso a Notas desde el menú del Manual usa la ruta relativa
+`notas-app/`. Si se publica Notas en otro dominio, cambia ese enlace por la URL
+pública de la app.
+
+### Backend de Notas
+
+En Supabase agrega `http://localhost:5500/**` en Authentication > URL
+Configuration > Redirect URLs. Al desplegar Notas, agrega también la URL HTTPS
+de la app con el patrón `https://<dominio-de-notas>/**` para los enlaces de
+recuperación. En Google conserva como URI de redirección la URL de callback de
+Supabase:
+`https://dpntowblygwkjybemoqk.supabase.co/auth/v1/callback`.
+
+Para habilitar la validación de usuarios al compartir notas, ejecuta también
+el contenido actualizado de `supabase/note-sharing.sql` en el SQL Editor de
+Supabase. Este script también habilita que el propietario quite accesos y que
+cada destinatario deje de ver una nota compartida.
+
+Para habilitar el acceso por nombre de usuario y la recuperación por correo,
+ejecuta primero `supabase/profiles.sql` y después `supabase/note-sharing.sql`.
+El script supone que `profiles` y los usuarios Auth ya existen con sus `id` y
+`username`; no crea usuarios nuevos. El correo se obtiene internamente desde
+`auth.users` solo al guardar el acceso. Al compartir una nota se muestran
+los nombres de usuario, aunque el acceso se guarda internamente con el correo
+para conservar compatibilidad con las notas existentes.
+
+Para habilitar las fechas en las notas (incluidas las existentes), ejecuta
+`supabase/notes.sql` en el SQL Editor de Supabase. Las notas anteriores reciben
+la fecha en que fueron creadas.
+
+Para sincronizar entre dispositivos las pestañas abiertas y la nota activa,
+ejecuta `supabase/note-tab-states.sql` en el SQL Editor de Supabase. El estado
+se guarda por cuenta; en cada dispositivo se restauran únicamente las notas
+que esa cuenta todavía puede consultar.
+
+Para habilitar el panel administrativo, ejecuta después `supabase/admin-panel.sql`.
 Además de los permisos y datos de tarjetas, este script crea la función protegida
 que permite a un administrador cambiar la contraseña de cualquier usuario desde
 la tabla de usuarios. La contraseña se guarda como hash en Supabase Auth y el
@@ -114,10 +166,20 @@ mensaje y dejar el nombre en blanco; solo un administrador activo podrá leer lo
 mensajes en Panel administrativo > Sugerencias. El SQL también permite inserciones
 sin sesión por si el acceso al manual se hace público más adelante.
 
-### Instalar como aplicación
+### Instalar como aplicacion
 
-El Manual es una PWA. Publícalo desde `frontend/`; Chrome permite instalarlo
-desde HTTPS o `localhost`. La autenticación y los datos requieren conexión.
+El Manual y Notas tienen manifiestos e instalaciones PWA independientes.
+Publica `frontend/` como raíz del Manual y, si quieres desplegarlas en el mismo
+dominio, conserva `frontend/notas-app/` en la ruta `/notas-app/`. También puedes
+publicar el contenido de esa carpeta en otro dominio. Chrome permite instalarlas
+por separado desde HTTPS (o `localhost` durante desarrollo). Sus service workers
+mantienen cachés separadas; autenticación, sincronización y edición en Supabase
+requieren conexión.
+
+### Backend
+
+Este repositorio no incluye un servidor propio. Ambos frontends son estáticos y
+usan Supabase como servicio externo de autenticación y datos.
 
 Al añadir recursos, conserva las rutas relativas a `frontend/index.html`:
 imágenes en `frontend/assets/images/`, iconos en `frontend/assets/icons/` y

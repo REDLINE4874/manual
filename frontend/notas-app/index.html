@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Notas" />
+    <meta name="description" content="Tus notas personales, siempre sincronizadas." />
+    <title>Notas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" href="logoapp.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="app.css?v=13" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" integrity="sha384-RH2xi4eIQ/gjtbs9fUXM68sLSi99C7ZWBRX1vDrVv6GQXRibxXLbwO2NGZB74MbU" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="supabase-config.js" defer></script>
+    <script src="app.js?v=11" defer></script>
+  </head>
+  <body>
+    <section class="auth-shell" id="authScreen" aria-labelledby="authTitle">
+      <button class="theme-toggle auth-theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
+        <span class="theme-toggle__clouds" aria-hidden="true"><span></span><span></span></span>
+        <span class="theme-toggle__stars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span class="theme-toggle__thumb" aria-hidden="true"><span class="theme-toggle__crater theme-toggle__crater--one"></span><span class="theme-toggle__crater theme-toggle__crater--two"></span><span class="theme-toggle__crater theme-toggle__crater--three"></span></span>
+      </button>
+      <div class="auth-card">
+      
+        <h1 id="authTitle">Inicia sesión</h1>
+
+        <form id="loginForm" class="auth-form" autocomplete="on">
+          <label for="username">Usuario</label>
+          <input id="username" name="username" type="text" autocomplete="username" minlength="3" required />
+          <label for="password">Contraseña</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button class="button button--primary" type="submit">Iniciar sesión</button>
+        </form>
+        <button class="text-button" id="forgotPassword" type="button">Olvidé mi contraseña</button>
+
+        <form id="recoveryForm" class="auth-form" hidden>
+          <p>Escribe el correo asociado a tu cuenta y te enviaremos un enlace.</p>
+          <label for="recoveryEmail">Correo electrónico</label>
+          <input id="recoveryEmail" type="email" autocomplete="email" required />
+          <button class="button button--primary" type="submit">Enviar enlace</button>
+          <button class="text-button" id="backToLogin" type="button">Volver a iniciar sesión</button>
+        </form>
+
+        <form id="updatePasswordForm" class="auth-form" hidden>
+          <p>Elige tu nueva contraseña.</p>
+          <label for="newPassword">Contraseña nueva</label>
+          <input id="newPassword" type="password" autocomplete="new-password" required />
+          <label for="confirmPassword">Confirmar contraseña</label>
+          <input id="confirmPassword" type="password" autocomplete="new-password" required />
+          <button class="button button--primary" type="submit">Guardar contraseña</button>
+        </form>
+        <p class="status auth-status" id="authStatus" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <main class="app-shell" id="appShell" hidden>
+      <header class="app-header">
+        <div class="app-header__top">
+          
+          <div class="app-header__controls">
+            <button class="icon-button section-icon-button" id="openEditor" type="button" aria-label="Lienzo" aria-current="page" aria-controls="workspace">
+              <img class="app-icon" src="logoapp.svg" alt="" aria-hidden="true" />
+              <span class="floating-label" role="tooltip">Lienzo</span>
+            </button>
+            <button class="icon-button section-icon-button my-notes-button" id="openMyNotes" type="button" aria-label="Mis notas" aria-controls="libraryView">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM10 16H7v-2h3v2zm7 0h-5v-2h5v2zm0-4H7v-2h10v2zm0-4H7V6h10v2z"/></svg>
+              <span class="floating-label" role="tooltip">Mis notas</span>
+            </button>
+            <button class="icon-button section-icon-button shared-notes-button" id="openSharedNotes" type="button" aria-label="Compartidas" aria-controls="libraryView">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-.36 0-.69.08-1 .19.63.76 1 1.74 1 2.81s-.37 2.05-1 2.81c.31.11.64.19 1 .19zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 .5c-.29 0-.62.02-.97.05 1.16.84 1.97 1.92 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              <span class="shared-notes-count" id="sharedNotesCount" hidden>0</span>
+              <span class="floating-label" role="tooltip">Compartidas</span>
+            </button>
+            <div class="settings-control">
+              <button class="icon-button section-icon-button" id="settingsButton" type="button" aria-label="Ajustes" aria-expanded="false" aria-controls="settingsMenu">
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.3 7.3 0 0 0-1.62-.94l-.36-2.54a.49.49 0 0 0-.49-.42h-3.84a.49.49 0 0 0-.49.42L9.2 5.32c-.59.23-1.13.55-1.62.94l-2.39-.96a.5.5 0 0 0-.61.22L2.66 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.05.3-.08.62-.08.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32a.5.5 0 0 0 .61.22l2.39-.96c.49.39 1.03.71 1.62.94l.36 2.54c.04.24.24.42.49.42h3.84c.25 0 .45-.18.49-.42l.36-2.54c.59-.23 1.13-.55 1.62-.94l2.39.96a.5.5 0 0 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+                <span class="floating-label" role="tooltip">Ajustes</span>
+              </button>
+              <div class="settings-menu" id="settingsMenu" role="region" aria-label="Ajustes" hidden>
+                <span class="settings-menu__title">Ajustes</span>
+                <div class="settings-menu__options">
+                  <button class="settings-menu__option" id="fontSizeOption" type="button" aria-expanded="false" aria-disabled="true" aria-controls="fontSizeDialog">
+                    <span>Formato</span>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button class="button button--quiet install-button" id="installApp" type="button" hidden>Instalar app</button>
+          </div>
+          <div class="app-header__user-tools">
+            <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro" title="Cambiar a tema oscuro" data-theme-toggle>
+              <span class="theme-toggle__clouds" aria-hidden="true"><span></span><span></span></span>
+              <span class="theme-toggle__stars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+              <span class="theme-toggle__thumb" aria-hidden="true"><span class="theme-toggle__crater theme-toggle__crater--one"></span><span class="theme-toggle__crater theme-toggle__crater--two"></span><span class="theme-toggle__crater theme-toggle__crater--three"></span></span>
+            </button>
+            <div class="account-menu">
+              <button class="account-avatar" id="accountToggle" type="button" aria-label="Mostrar nombre de usuario" aria-expanded="false" aria-controls="accountPopover">U</button>
+              <div class="account-popover" id="accountPopover" role="dialog" aria-labelledby="accountPopoverName" tabindex="-1" hidden>
+                <span id="accountPopoverName"></span>
+              </div>
+              <button class="icon-button icon-button--small sign-out-button" id="signOut" type="button" aria-label="Cerrar sesión">
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                <span class="floating-label" role="tooltip">Cerrar sesión</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="note-tabbar">
+          <div class="note-tabbar__label">
+   
+            <span class="note-tabbar__count" id="noteCount"></span>
+          </div>
+          <div class="note-tabbar__content">
+            <button class="icon-button icon-button--small tab-scroll" id="scrollTabsLeft" type="button" aria-label="Desplazar pestañas a la izquierda" aria-controls="notesList" title="Pestañas anteriores" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <nav class="notes-list" id="notesList" role="tablist" aria-label="Pestañas de notas"></nav>
+            <p class="tabs-empty" id="notesEmpty" role="status" hidden></p>
+            <button class="icon-button icon-button--small tab-scroll" id="scrollTabsRight" type="button" aria-label="Desplazar pestañas a la derecha" aria-controls="notesList" title="Pestañas siguientes" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+            <button class="icon-button tab-create" id="createNote" type="button" aria-label="Crear nota nueva">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              <span class="floating-label" role="tooltip">Crear nota nueva</span>
+            </button>
+            <button class="icon-button tab-import" id="importTextFile" type="button" aria-label="Importar un archivo TXT como nota nueva">
+              <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8zm-1 1.5L18.5 9H13zM18 20H6V4h6v6h6zm-4.5-5.5V18h-3v-3.5H8l4-4 4 4z"/></svg>
+              <span class="floating-label" role="tooltip">Importar archivo TXT</span>
+            </button>
+            <input id="textFileInput" type="file" accept=".txt,text/plain" hidden />
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace" id="workspace" aria-label="Lienzo de escritura">
+        <div class="note-find" id="noteFindPanel" role="search" aria-label="Buscar en la nota" hidden>
+          <label class="sr-only" for="noteFindInput">Buscar en la nota</label>
+          <input id="noteFindInput" type="search" placeholder="Buscar" autocomplete="off" spellcheck="false" />
+          <span class="note-find__count" id="noteFindCount" role="status" aria-live="polite"></span>
+          <button class="note-find__button" id="noteFindPrevious" type="button" aria-label="Coincidencia anterior" title="Coincidencia anterior (Shift+Enter)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6" /></svg>
+          </button>
+          <button class="note-find__button" id="noteFindNext" type="button" aria-label="Coincidencia siguiente" title="Coincidencia siguiente (Enter)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <button class="note-find__button note-find__close" id="closeNoteFind" type="button" aria-label="Cerrar búsqueda" title="Cerrar (Escape)">×</button>
+        </div>
+        <div class="empty-state" id="emptyState">
+          <div class="empty-state__icon" aria-hidden="true">✎</div>
+          <h1>Un espacio para tus ideas</h1>
+          <p>Crea una nota y empieza a escribir. Tus cambios se guardan automáticamente.</p>
+          <button class="button button--primary" id="emptyCreateNote" type="button">Crear una nota</button>
+        </div>
+
+        <article class="note-editor" id="noteEditor" role="tabpanel" tabindex="0" hidden>
+          <div class="draft-notice" id="draftNotice" hidden>
+            <span>Hay cambios locales que todavía no se sincronizaron.</span>
+            <button class="text-button" id="restoreDraft" type="button">Restaurar</button>
+            <button class="text-button" id="discardDraft" type="button">Descartar</button>
+          </div>
+          <div class="note-editor__toolbar">
+            <div class="note-editor__meta">
+              <div class="note-editor__date-line">
+                <time class="note-date" id="noteDate"></time>
+                <span class="status save-status" id="saveStatus" role="status" aria-live="polite"></span>
+                <span class="note-sharing-status" id="noteSharingStatus"></span>
+              </div>
+              <input class="note-title" id="noteTitle" type="text" maxlength="120" placeholder="Título" aria-label="Título de la nota" lang="es" spellcheck="true" />
+            </div>
+            <div class="note-actions">
+              <button class="icon-button action-icon-button" id="findInNote" type="button" aria-label="Buscar en la nota" title="Buscar en la nota">
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 4.99L20.49 20l-4.99-5zm-5 0A4.5 4.5 0 1 1 10.5 5a4.5 4.5 0 0 1 0 9z"/></svg>
+                <span class="floating-label" role="tooltip">Buscar en la nota</span>
+              </button>
+              <button class="icon-button action-icon-button" id="shareNote" type="button" aria-label="Compartir" hidden>
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.1 3.1 0 0 0 0-1.39l7.05-4.11A3 3 0 1 0 15 5c0 .24.03.47.08.69L8.03 9.8a3 3 0 1 0 0 4.4l7.12 4.16A3 3 0 1 0 18 16.08z"/></svg>
+                <span class="floating-label" role="tooltip">Compartir</span>
+              </button>
+              <button class="icon-button action-icon-button action-icon-button--danger" id="deleteNote" type="button" aria-label="Eliminar" hidden>
+                <svg class="material-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
+                <span class="floating-label" role="tooltip">Eliminar</span>
+              </button>
+              <button class="button button--quiet button--danger" id="leaveSharedNote" type="button" hidden>Dejar de ver</button>
+            </div>
+          </div>
+          <div class="note-content-wrap" id="noteContentWrap">
+            <div class="note-content-highlights" id="noteContentHighlights" aria-hidden="true" hidden></div>
+            <div class="note-content" id="noteContent" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Empieza a escribir..." aria-label="Contenido de la nota" lang="es" spellcheck="true"></div>
+          </div>
+          <details class="sharing-section" id="sharingSection" hidden>
+            <summary>Compartida con <span id="sharedUserCount"></span></summary>
+            <ul id="sharedUsers"></ul>
+          </details>
+          <p class="editor-hint" id="editorHint"></p>
+        </article>
+      </section>
+
+      <section class="library-view" id="libraryView" aria-labelledby="libraryTitle" hidden>
+        <header class="library-view__header">
+          <h1 id="libraryTitle" tabindex="-1">Mis notas</h1>
+          <p id="libraryDescription">Tus notas guardadas.</p>
+        </header>
+        <div class="library-search" id="librarySearch" hidden>
+          <label for="noteSearchInput">Buscar en títulos y contenido</label>
+          <input id="noteSearchInput" type="search" placeholder="Escribe una palabra o frase" autocomplete="off" />
+        </div>
+        <div class="notes-library-list" id="libraryNotesList"></div>
+        <p class="notes-library-empty" id="libraryEmpty" role="status" hidden></p>
+      </section>
+      <p class="global-status" id="globalStatus" role="status" aria-live="polite"></p>
+    </main>
+
+    <dialog class="share-dialog" id="shareDialog">
+      <form method="dialog" class="dialog-close-form">
+        <button class="icon-button" aria-label="Cerrar" value="cancel">×</button>
+      </form>
+      <h2>Compartir nota</h2>
+      <p>Elige un usuario y define qué podrá hacer con esta nota.</p>
+      <form id="shareForm" class="share-form">
+        <label id="shareUsernameLabel" for="shareUsernameButton">Usuario</label>
+        <div class="share-select" data-share-select="shareUsername">
+          <input id="shareUsername" type="hidden" value="" />
+          <button class="share-select__trigger" id="shareUsernameButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="shareUsernameOptions" aria-labelledby="shareUsernameLabel shareUsernameValue" aria-required="true">
+            <span id="shareUsernameValue">Selecciona un usuario</span>
+            <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <div class="share-select__options" id="shareUsernameOptions" role="listbox" aria-labelledby="shareUsernameButton" hidden></div>
+        </div>
+        <label id="sharePermissionLabel" for="sharePermissionButton">Permiso</label>
+        <div class="share-select" data-share-select="sharePermission">
+          <input id="sharePermission" type="hidden" value="view" />
+          <button class="share-select__trigger" id="sharePermissionButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="sharePermissionOptions" aria-labelledby="sharePermissionLabel sharePermissionValue">
+            <span id="sharePermissionValue">Solo lectura</span>
+            <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </button>
+          <div class="share-select__options" id="sharePermissionOptions" role="listbox" aria-labelledby="sharePermissionButton" hidden></div>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button--quiet" type="button" id="cancelShare">Cancelar</button>
+          <button class="button button--primary" type="submit">Compartir</button>
+        </div>
+      </form>
+      <p class="status" id="shareStatus" role="status" aria-live="polite"></p>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="confirmDialog" aria-labelledby="confirmDialogTitle" aria-describedby="confirmDialogMessage">
+      <h2 id="confirmDialogTitle"></h2>
+      <p id="confirmDialogMessage"></p>
+      <div class="confirm-dialog__actions">
+        <button class="button button--quiet" id="cancelConfirmation" type="button">Cancelar</button>
+        <button class="button button--confirm-danger" id="acceptConfirmation" type="button">Confirmar</button>
+      </div>
+    </dialog>
+
+    <dialog class="format-dialog" id="fontSizeDialog" aria-labelledby="fontSizeDialogTitle">
+      <h2 id="fontSizeDialogTitle">Formato</h2>
+      <div class="format-toolbar" id="formatToolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Formato de texto" aria-controls="noteContent">
+        <div class="format-toolbar__group" role="group" aria-label="Fuente y tamaño">
+          <div class="share-select format-toolbar__family" data-share-select="fontFamilySelect">
+            <input id="fontFamilySelect" type="hidden" value="Inter, 'Segoe UI', system-ui, sans-serif" />
+            <label class="sr-only" id="fontFamilySelectLabel" for="fontFamilySelectButton">Fuente</label>
+            <button class="share-select__trigger" id="fontFamilySelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fontFamilySelectOptions" aria-labelledby="fontFamilySelectLabel fontFamilySelectValue">
+              <span id="fontFamilySelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="fontFamilySelectOptions" role="listbox" aria-labelledby="fontFamilySelectLabel" hidden></div>
+          </div>
+          <div class="share-select format-toolbar__size" data-share-select="fontSizeSelect">
+            <input id="fontSizeSelect" type="hidden" value="16px" />
+            <label class="sr-only" id="fontSizeSelectLabel" for="fontSizeSelectButton">Tamaño de fuente</label>
+            <button class="share-select__trigger" id="fontSizeSelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fontSizeSelectOptions" aria-labelledby="fontSizeSelectLabel fontSizeSelectValue">
+              <span id="fontSizeSelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="fontSizeSelectOptions" role="listbox" aria-labelledby="fontSizeSelectLabel" hidden></div>
+          </div>
+        </div>
+        <span class="format-toolbar__separator" role="separator" aria-orientation="vertical"></span>
+        <div class="format-toolbar__group" role="group" aria-label="Estilo">
+          <button class="format-toolbar__button" type="button" data-format-command="bold" aria-label="Negrita" aria-pressed="false" title="Negrita"><strong>N</strong></button>
+          <button class="format-toolbar__button format-toolbar__button--italic" type="button" data-format-command="italic" aria-label="Cursiva" aria-pressed="false" title="Cursiva">K</button>
+          <button class="format-toolbar__button format-toolbar__button--underline" type="button" data-format-command="underline" aria-label="Subrayado" aria-pressed="false" title="Subrayado">S</button>
+        </div>
+        <span class="format-toolbar__separator" role="separator" aria-orientation="vertical"></span>
+        <div class="format-toolbar__group" role="group" aria-label="Código">
+          <div class="share-select format-toolbar__language" data-share-select="codeLanguageSelect">
+            <input id="codeLanguageSelect" type="hidden" value="auto" />
+            <label class="sr-only" id="codeLanguageSelectLabel" for="codeLanguageSelectButton">Lenguaje del bloque de código</label>
+            <button class="share-select__trigger" id="codeLanguageSelectButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="codeLanguageSelectOptions" aria-labelledby="codeLanguageSelectLabel codeLanguageSelectValue">
+              <span id="codeLanguageSelectValue"></span>
+              <svg class="share-select__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div class="share-select__options" id="codeLanguageSelectOptions" role="listbox" aria-labelledby="codeLanguageSelectLabel" hidden></div>
+          </div>
+          <button class="format-toolbar__button format-toolbar__code-button" id="applyCodeFormat" type="button">Código</button>
+        </div>
+      </div>
+      <p class="format-dialog__caption">Estilo visual y código</p>
+      <div class="format-dialog__actions">
+        <button class="button button--quiet" id="cancelFontSize" type="button">Cancelar</button>
+        <button class="button button--primary" id="confirmFontSize" type="button">Aplicar</button>
+      </div>
+    </dialog>
+
+  </body>
+</html>
