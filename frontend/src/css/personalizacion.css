@@ -69,6 +69,17 @@
   justify-content: space-between;
 }
 
+.utility-control__new-badge {
+  border-radius: 999px;
+  padding: 2px 6px;
+  background: var(--brand-red);
+  color: var(--brand-on-red);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
 @media (max-width: 999px) {
   .mobile-preferences-bar .personalization-menu {
     position: static;

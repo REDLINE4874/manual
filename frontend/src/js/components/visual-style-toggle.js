@@ -1,5 +1,6 @@
 (() => {
   const STORAGE_KEY = "manual-visual-style";
+  const NEW_BADGE_EXPIRES_AT = Date.parse("2026-11-27T05:22:41.483Z");
   const root = document.documentElement;
   let initialStyle = "brutalist";
 
@@ -11,6 +12,11 @@
 
   root.dataset.visualStyle = initialStyle;
 
+  function initializeNewBadge() {
+    const badge = document.querySelector(".utility-control__new-badge");
+    if (badge) badge.hidden = Date.now() >= NEW_BADGE_EXPIRES_AT;
+  }
+
   function updateButton(button, style) {
     const isSoft = style === "soft";
     button.textContent = isSoft ? "Suave" : "Brutalista";
@@ -20,6 +26,7 @@
   }
 
   function initializeToggle() {
+    initializeNewBadge();
     const button = document.getElementById("visualStyleToggle");
     if (!button) return;
 
