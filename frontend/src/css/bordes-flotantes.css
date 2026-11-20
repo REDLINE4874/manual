@@ -111,8 +111,8 @@ body.custom-background .tcard {
   box-shadow: none;
 }
 
-*,
-*::before,
-*::after {
+html:not([data-visual-style="soft"]) *,
+html:not([data-visual-style="soft"]) *::before,
+html:not([data-visual-style="soft"]) *::after {
   border: 0 !important;
 }
