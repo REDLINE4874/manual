@@ -1,0 +1,96 @@
+.personalization-menu {
+  position: relative;
+}
+
+.personalization-menu__trigger,
+.visual-style-toggle {
+  min-height: 34px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 9px;
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--sidebar-text);
+  font: 600 11px var(--font-body);
+  cursor: pointer;
+  transition: background-color .18s ease, box-shadow .18s ease;
+}
+
+.personalization-menu__trigger {
+  display: grid;
+  width: 38px;
+  place-items: center;
+  padding: 6px;
+}
+
+.personalization-menu__trigger svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.personalization-menu__trigger:hover,
+.personalization-menu__trigger[aria-expanded="true"],
+.visual-style-toggle:hover {
+  background: var(--sidebar-hover);
+  box-shadow: var(--elevation-shadow);
+}
+
+.personalization-menu__trigger:focus-visible,
+.visual-style-toggle:focus-visible {
+  outline: 2px solid var(--brand-teal-text);
+  outline-offset: 2px;
+}
+
+.personalization-menu__panel {
+  position: absolute;
+  z-index: 120;
+  top: calc(100% + 10px);
+  right: 0;
+  display: grid;
+  min-width: 220px;
+  gap: 14px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  box-shadow: var(--shadow-nav);
+}
+
+.personalization-menu__panel[hidden] {
+  display: none;
+}
+
+.personalization-menu__panel .utility-control {
+  justify-content: space-between;
+}
+
+@media (max-width: 999px) {
+  .mobile-preferences-bar .personalization-menu {
+    position: static;
+  }
+
+  .mobile-preferences-bar .personalization-menu__panel {
+    position: fixed;
+    top: calc(72px + env(safe-area-inset-top, 0px));
+    right: 12px;
+    left: auto;
+    max-height: calc(100dvh - 96px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+  }
+}
+
+html[data-visual-style="soft"] .personalization-menu__panel {
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+
+html[data-visual-style="soft"] .personalization-menu__trigger:hover,
+html[data-visual-style="soft"] .personalization-menu__trigger[aria-expanded="true"],
+html[data-visual-style="soft"] .visual-style-toggle:hover {
+  box-shadow: var(--elevation-shadow);
+}

@@ -63,6 +63,11 @@ para probarlos.
 La interfaz, los estilos, la lógica de navegación, las calculadoras y los datos
 de las tarjetas están en `frontend/`.
 
+El menú **Personalización**, junto a Tema, agrupa los controles de Fondo y
+Estilo. El estilo alterna entre brutalista y una variante suave con sombras
+discretas; la elección se conserva en el navegador y no modifica el tema
+claro/oscuro ni los colores.
+
 Los estilos se organizan en módulos dentro de `frontend/src/css/`, con un archivo
 por vista o área de la interfaz. `estilos.css`, enlazado desde
 `frontend/index.html`, importa los módulos en el orden necesario. Para mantener
